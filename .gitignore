@@ -36,6 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
+logs/
 application-local.yml
 application-prod.yml
 application-secret.yml
