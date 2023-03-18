@@ -43,19 +43,19 @@ public class JwtProvider {
 	public TokenDto generateAccessTokenAndRefreshToken(Long userId) {
 		Date now = new Date();
 
-		Date accessTokenExpiresIn = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
+		Date accessTokenExpirationIn = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
 		String accessToken = Jwts.builder()
 			.setSubject(String.valueOf(userId))
 			.setIssuedAt(now)
-			.setExpiration(accessTokenExpiresIn)
+			.setExpiration(accessTokenExpirationIn)
 			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 
-		Date refreshTokenExpiresIn = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
+		Date refreshTokenExpirationIn = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
 		String refreshToken = Jwts.builder()
 			.setSubject(String.valueOf(userId))
 			.setIssuedAt(now)
-			.setExpiration(refreshTokenExpiresIn)
+			.setExpiration(refreshTokenExpirationIn)
 			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 
@@ -63,7 +63,9 @@ public class JwtProvider {
 
 		return TokenDto.builder()
 			.accessToken(accessToken)
+			.accessTokenExpirationIn(accessTokenExpirationIn)
 			.refreshToken(refreshToken)
+			.refreshTokenExpirationIn(refreshTokenExpirationIn)
 			.build();
 	}
 
