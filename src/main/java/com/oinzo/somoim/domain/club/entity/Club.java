@@ -1,16 +1,14 @@
 package com.oinzo.somoim.domain.club.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
+import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
@@ -23,15 +21,27 @@ public class Club extends BaseEntity {
     private Long id;
     @NotNull
     private String name;
+    @NotNull
     private String description;
+    @NotNull
     private String imageUrl;
     @NotNull
     private String area;
     @NotNull
     private int memberLimit;
-    @NotNull
     private int memberCnt;
     @NotNull
     private String favorite;
     private int cnt;
+
+    public static Club from(Club club){
+        return Club.builder()
+                .name(club.getName())
+                .description(club.getDescription())
+                .imageUrl(club.getImageUrl())
+                .area(club.getArea())
+                .memberLimit(club.getMemberLimit())
+                .favorite(club.getFavorite())
+                .build();
+    }
 }
