@@ -1,4 +1,4 @@
-package com.oinzo.somoim.common.security;
+package com.oinzo.somoim.config.security;
 
 import static com.oinzo.somoim.common.exception.ErrorCode.USER_NOT_FOUND;
 

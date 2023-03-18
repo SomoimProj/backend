@@ -1,7 +1,10 @@
 package com.oinzo.somoim.config;
 
-import com.oinzo.somoim.common.jwt.JwtAuthenticationFilter;
+import com.oinzo.somoim.config.security.JwtExceptionHandlerFilter;
+import com.oinzo.somoim.config.security.JwtAuthenticationEntryPoint;
+import com.oinzo.somoim.config.security.JwtAuthenticationFilter;
 import com.oinzo.somoim.common.jwt.JwtProvider;
+import com.oinzo.somoim.config.security.JwtAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +29,14 @@ public class SecurityConfiguration {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
 			.and()
-			// JWT 토큰으로 사용자 확인
+			.exceptionHandling()
+			.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+			.accessDeniedHandler(new JwtAccessDeniedHandler())
+
+			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
-				UsernamePasswordAuthenticationFilter.class);
+				UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(new JwtExceptionHandlerFilter(), JwtAuthenticationFilter.class);
 
 		return http.build();
 	}

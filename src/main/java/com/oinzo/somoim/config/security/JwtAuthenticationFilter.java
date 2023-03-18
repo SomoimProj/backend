@@ -1,37 +1,38 @@
-package com.oinzo.somoim.common.jwt;
+package com.oinzo.somoim.config.security;
 
 import static com.oinzo.somoim.common.jwt.JwtProperties.AUTHORIZATION_HEADER;
 import static com.oinzo.somoim.common.jwt.JwtProperties.TOKEN_PREFIX;
 
-import java.io.IOException;
+import com.oinzo.somoim.common.jwt.JwtProvider;
+import java.util.NoSuchElementException;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+@Slf4j
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtProvider jwtProvider;
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-		throws ServletException, IOException {
-		String token = resolveToken((HttpServletRequest) request);
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		FilterChain filterChain) {
+		String token = resolveToken(request);
 
-		if (StringUtils.hasText(token) && jwtProvider.isValidateToken(token)) {
+		if (StringUtils.hasText(token)) {
 			// 토큰 속 사용자 정보를 통해 만들어진 시큐리티 유저의 Authentication을 시큐리티 컨텍스트에 저장
 			Authentication authentication = jwtProvider.getAuthentication(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
+		} else {
+			throw new NoSuchElementException("token 정보가 없습니다.");
 		}
-
-		chain.doFilter(request, response);
 	}
 
 	// Request Header에서 JWT 토큰 정보 추출

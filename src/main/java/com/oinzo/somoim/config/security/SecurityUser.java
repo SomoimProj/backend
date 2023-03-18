@@ -1,4 +1,4 @@
-package com.oinzo.somoim.common.security;
+package com.oinzo.somoim.config.security;
 
 import com.oinzo.somoim.domain.user.entity.User;
 import org.springframework.security.core.authority.AuthorityUtils;

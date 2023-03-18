@@ -3,7 +3,6 @@ package com.oinzo.somoim.common.jwt;
 import static com.oinzo.somoim.common.jwt.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
 import static com.oinzo.somoim.common.jwt.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
 
-import com.oinzo.somoim.common.exception.BaseException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -91,13 +90,13 @@ public class JwtProvider {
 			Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
 			return true;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-			log.error("Invalid JWT Token", e);
+			log.error("잘못된 JWT 토큰입니다.", e);
 		} catch (ExpiredJwtException e) {
-			log.info("Expired JWT Token", e);
+			log.warn("만료된 JWT 토큰입니다.", e);
 		} catch (UnsupportedJwtException e) {
-			log.error("Unsupported JWT Token", e);
+			log.error("지원하지 않는 JWT 토큰 형식입니다.", e);
 		} catch (IllegalArgumentException e) {
-			log.error("JWT claims string is empty.", e);
+			log.error("JWT claims 값이 없습니다.", e);
 		}
 		return false;
 	}
