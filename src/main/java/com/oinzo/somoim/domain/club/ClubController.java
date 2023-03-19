@@ -1,5 +1,6 @@
 package com.oinzo.somoim.domain.club;
 
+import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
 import lombok.AllArgsConstructor;
@@ -23,8 +24,10 @@ public class ClubController {
     }
 
     @GetMapping("/search")
-    public List<Club> readClubByName(@RequestBody String name) {
-        return clubService.readClubByName(name);
+    public Object readClubByName(@RequestBody String name) {
+        if(clubService.readClubByName(name).isEmpty())
+            return ErrorCode.NO_DATA_FOUND;
+        else {return clubService.readClubByName(name);}
     }
 
     @GetMapping("/favorite")
@@ -33,11 +36,25 @@ public class ClubController {
     }
 
     @GetMapping("/{clubId}")
-    public Club readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
-                                        @CookieValue(value="count", required=false) Cookie countCookie){
+    public Object readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
+                               @CookieValue(value="count", required=false) Cookie countCookie){
         Optional<Club> club = clubService.readClubById(clubId);
-        Integer newCnt = clubService.updateCookie(response,countCookie,clubId,club.get().getCnt());
-        clubService.updateCnt(clubId,newCnt);
-        return club.get();
+        if(club.isPresent())
+        {
+            Integer newCnt = clubService.updateCookie(response,countCookie,clubId,club.get().getCnt());
+            clubService.updateCnt(clubId,newCnt);
+            return club.get();
+        }
+        else return ErrorCode.WRONG_CLUB;
     }
+
+    @GetMapping("/random")
+    public Object readClubByArea(@RequestBody Club request){
+        List<Club> result = clubService.readClubByArea(request.getArea());
+        if(result.isEmpty())
+            return ErrorCode.NO_DATA_FOUND;
+        else return clubService.readClubByArea(request.getArea());
+    }
+
+
 }
