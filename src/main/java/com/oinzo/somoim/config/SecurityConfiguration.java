@@ -29,6 +29,11 @@ public class SecurityConfiguration {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
 			.and()
+			.authorizeRequests()
+			.antMatchers("/users/oauth/**").permitAll()
+			.anyRequest().hasRole("USER")
+
+			.and()
 			.exceptionHandling()
 			.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
 			.accessDeniedHandler(new JwtAccessDeniedHandler())
