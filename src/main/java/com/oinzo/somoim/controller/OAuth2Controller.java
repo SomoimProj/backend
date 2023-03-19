@@ -3,6 +3,7 @@ package com.oinzo.somoim.controller;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.jwt.TokenService;
+import com.oinzo.somoim.controller.dto.GoogleLoginRequest;
 import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.controller.dto.kakaoLoginRequest;
 import com.oinzo.somoim.domain.user.service.OAuth2Service;
@@ -34,4 +35,14 @@ public class OAuth2Controller {
 		return TokenResponse.from(tokenDto);
 	}
 
+	@PostMapping("/google")
+	public TokenResponse googleLogin(
+		@RequestBody @Valid GoogleLoginRequest request,
+		HttpServletResponse response) {
+		Long userId = oAuth2Service.googleLogin(request.getCode());
+		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+		String refreshToken = tokenDto.getRefreshToken();
+		tokenService.setRefreshTokenCookie(refreshToken, response);
+		return TokenResponse.from(tokenDto);
+	}
 }

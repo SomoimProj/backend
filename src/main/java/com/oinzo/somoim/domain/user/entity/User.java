@@ -3,6 +3,7 @@ package com.oinzo.somoim.domain.user.entity;
 import com.oinzo.somoim.common.entity.BaseEntity;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.common.type.SocialType;
+import com.oinzo.somoim.domain.user.dto.GoogleUserInfoDto;
 import com.oinzo.somoim.domain.user.dto.KakaoUserInfoDto;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -49,6 +50,15 @@ public class User extends BaseEntity {
 //            .birth(kakaoUserInfoDto.getBirthday())
 			.gender(kakaoUserInfoDto.getGender())
 			.profileUrl(kakaoUserInfoDto.getProfileUrl())
+			.build();
+	}
+
+	public static User from(GoogleUserInfoDto googleUserInfoDto) {
+		return User.builder()
+			.socialType(SocialType.GOOGLE)
+			.socialId(googleUserInfoDto.getGoogleId())
+			.name(googleUserInfoDto.getName())
+			.profileUrl(googleUserInfoDto.getProfileUrl())
 			.build();
 	}
 }
