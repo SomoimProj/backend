@@ -1,5 +1,7 @@
 package com.oinzo.somoim.domain.club.service;
 
+import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
@@ -18,24 +20,55 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
 
-    public Club addClub(Club club){
-        return clubRepository.save(Club.from(club));
+    public Object addClub(Club club){
+        String favorite = club.getFavorite();
+        try{
+            Favorite.valueOf(favorite);
+            return clubRepository.save(Club.from(club));
+        } catch (IllegalArgumentException e)  {
+            return ErrorCode.WRONG_FAVORITE;
+        }
     }
 
-    public List<Club> readClubByName(String name){
-        return clubRepository.findAllByNameContaining(name);
+    public Object readClubByName(Club request){
+        try{
+            String name = request.getName();
+            List<Club> result = clubRepository.findAllByNameContaining(name);
+            if(name.length()<1) { return ErrorCode.NO_SEARCH_NAME; }
+            else if (result.isEmpty()) { return ErrorCode.NO_DATA_FOUND; }
+            else{ return clubRepository.findAllByNameContaining(name); }
+        }catch (IllegalArgumentException e) {
+            return ErrorCode.NO_SEARCH_NAME;
+        }
     }
 
-    public List<Club> readClubByFavorite(String favorite, String area){
-        return clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
+    public Object readClubByFavorite(String favorite, String area){
+        List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
+        if(favorite.length()<1) { return ErrorCode.NO_SEARCH_NAME; }
+        try{
+            Favorite.valueOf(favorite);
+            if (result.isEmpty()) { return ErrorCode.NO_DATA_FOUND; }
+            else { return result; }
+        } catch (IllegalArgumentException e)  {
+            return ErrorCode.WRONG_FAVORITE;
+        }
     }
 
-    public Optional<Club> readClubById(Long clubId){
-        return clubRepository.findById(clubId);
+    public Object readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
+        Optional<Club> club = clubRepository.findById(clubId);
+        if(club.isPresent())
+        {
+            Integer newCnt = updateCookie(response,countCookie,clubId,club.get().getCnt());
+            updateCnt(club.get(),newCnt);
+            return club.get();
+        }
+        else return ErrorCode.WRONG_CLUB;
     }
 
-    public List<Club> readClubByArea(String area){
-        return clubRepository.findAllByAreaLikeOrderByCntDesc(area);
+    public Object readClubByArea(Club request){
+        if(request.getArea().isEmpty())
+            return ErrorCode.NO_DATA_FOUND;
+        return clubRepository.findAllByAreaLikeOrderByCntDesc(request.getArea());
     }
 
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){
@@ -75,9 +108,8 @@ public class ClubService {
         }
     }
 
-    public void updateCnt(Long clubId, Integer cnt){
-        Optional<Club> club2 = clubRepository.findById(clubId);
-        club2.ifPresent(clubRepository::save);
+    public void updateCnt(Club club, Integer newCnt){
+        clubRepository.save(club.setCnt(newCnt));
     }
 
 }

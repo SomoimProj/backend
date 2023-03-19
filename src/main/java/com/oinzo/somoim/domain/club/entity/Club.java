@@ -32,6 +32,12 @@ public class Club extends BaseEntity {
     private int memberCnt;
     @NotNull
     private String favorite;
+
+    public Club setCnt(int cnt) {
+        this.cnt = cnt;
+        return this;
+    }
+
     private int cnt;
 
     public static Club from(Club club){
@@ -41,7 +47,10 @@ public class Club extends BaseEntity {
                 .imageUrl(club.getImageUrl())
                 .area(club.getArea())
                 .memberLimit(club.getMemberLimit())
+                .memberCnt(0)
                 .favorite(club.getFavorite())
+                .cnt(0)
                 .build();
     }
+
 }

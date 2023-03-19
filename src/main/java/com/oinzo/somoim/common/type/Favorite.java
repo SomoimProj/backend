@@ -1,7 +1,8 @@
 package com.oinzo.somoim.common.type;
 
-public enum favorite {
+public enum Favorite {
     SPORTS,
     GAME,
-    TRIP
+    TRIP;
+
 }
