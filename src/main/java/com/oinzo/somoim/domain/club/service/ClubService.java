@@ -36,8 +36,8 @@ public class ClubService {
             String name = request.getName();
             List<Club> result = clubRepository.findAllByNameContaining(name);
             if(name.length()<1) throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
-            else if (result.isEmpty()) { throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage()); }
-            else{ return clubRepository.findAllByNameContaining(name); }
+            else if (result.isEmpty()) throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+            else return clubRepository.findAllByNameContaining(name);
         }catch (IllegalArgumentException e) {
             throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
         }
@@ -47,11 +47,15 @@ public class ClubService {
         String favorite = request.getFavorite();
         String area = request.getArea();
         List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
-        if(favorite.length()<1) { throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage()); }
+        if (favorite.length()<1)
+            throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
         try{
             Favorite.valueOf(favorite);
-            if (result.isEmpty()) { throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage()); }
-            else { return result; }
+            if (result.isEmpty()) {
+                throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+            } else {
+                return result;
+            }
         } catch (RuntimeException e)  {
             throw new BaseException(ErrorCode.WRONG_FAVORITE,ErrorCode.WRONG_FAVORITE.getMessage());
         }
@@ -64,8 +68,7 @@ public class ClubService {
             Integer newCnt = updateCookie(response,countCookie,clubId,club.get().getCnt());
             updateCnt(club.get(),newCnt);
             return club;
-        }
-        else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
+        } else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
     }
 
     public List<Club> readClubByArea(Club request){
@@ -89,7 +92,7 @@ public class ClubService {
                         clubCnt -= 1;
                     }
                 }
-            }else {
+            } else {
                 if(Objects.equals(counts[0], clubId.toString()))
                 {
                     newValue = cookieCount;
@@ -101,8 +104,7 @@ public class ClubService {
             countCookie.setPath("/");
             response.addCookie(countCookie);
             return clubCnt;
-        }
-        else {
+        } else {
             Cookie newCookie = new Cookie("count",clubId.toString());
             newCookie.setMaxAge(60*60*24);
             newCookie.setPath("/");
