@@ -1,5 +1,6 @@
 package com.oinzo.somoim.domain.club.service;
 
+import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
@@ -20,56 +21,56 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
 
-    public Object addClub(Club club){
+    public Club addClub(Club club){
         String favorite = club.getFavorite();
         try{
             Favorite.valueOf(favorite);
             return clubRepository.save(Club.from(club));
         } catch (IllegalArgumentException e)  {
-            return ErrorCode.WRONG_FAVORITE;
+            throw new BaseException(ErrorCode.WRONG_FAVORITE,ErrorCode.WRONG_FAVORITE.getMessage());
         }
     }
 
-    public Object readClubByName(Club request){
+    public List<Club> readClubByName(Club request){
         try{
             String name = request.getName();
             List<Club> result = clubRepository.findAllByNameContaining(name);
-            if(name.length()<1) { return ErrorCode.NO_SEARCH_NAME; }
-            else if (result.isEmpty()) { return ErrorCode.NO_DATA_FOUND; }
+            if(name.length()<1) throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
+            else if (result.isEmpty()) { throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage()); }
             else{ return clubRepository.findAllByNameContaining(name); }
         }catch (IllegalArgumentException e) {
-            return ErrorCode.NO_SEARCH_NAME;
+            throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
         }
     }
 
-    public Object readClubByFavorite(Club request){
+    public List<Club> readClubByFavorite(Club request){
         String favorite = request.getFavorite();
         String area = request.getArea();
         List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
-        if(favorite.length()<1) { return ErrorCode.NO_SEARCH_NAME; }
+        if(favorite.length()<1) { throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage()); }
         try{
             Favorite.valueOf(favorite);
-            if (result.isEmpty()) { return ErrorCode.NO_DATA_FOUND; }
+            if (result.isEmpty()) { throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage()); }
             else { return result; }
-        } catch (IllegalArgumentException e)  {
-            return ErrorCode.WRONG_FAVORITE;
+        } catch (RuntimeException e)  {
+            throw new BaseException(ErrorCode.WRONG_FAVORITE,ErrorCode.WRONG_FAVORITE.getMessage());
         }
     }
 
-    public Object readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
+    public Optional<Club> readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
         Optional<Club> club = clubRepository.findById(clubId);
         if(club.isPresent())
         {
             Integer newCnt = updateCookie(response,countCookie,clubId,club.get().getCnt());
             updateCnt(club.get(),newCnt);
-            return club.get();
+            return club;
         }
-        else return ErrorCode.WRONG_CLUB;
+        else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
     }
 
-    public Object readClubByArea(Club request){
+    public List<Club> readClubByArea(Club request){
         if(request.getArea().isEmpty())
-            return ErrorCode.NO_DATA_FOUND;
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         return clubRepository.findAllByAreaLikeOrderByCntDesc(request.getArea());
     }
 

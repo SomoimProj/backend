@@ -19,28 +19,28 @@ public class ClubController {
 
     @ResponseBody
     @PostMapping()
-    public Object addClub(@RequestBody Club request){
+    public Club addClub(@RequestBody Club request){
         return clubService.addClub(request);
     }
 
     @GetMapping("/search")
-    public Object readClubByName(@RequestBody Club request) {
+    public List<Club> readClubByName(@RequestBody Club request) {
         return clubService.readClubByName(request);
     }
 
     @GetMapping("/favorite")
-    public Object readClubByFavorite(@RequestBody Club request){
+    public List<Club> readClubByFavorite(@RequestBody Club request){
         return clubService.readClubByFavorite(request);
     }
 
     @GetMapping("/{clubId}")
-    public Object readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
-                               @CookieValue(value="count", required=false) Cookie countCookie){
+    public Optional<Club> readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
+                                       @CookieValue(value="count", required=false) Cookie countCookie){
         return clubService.readClubById(clubId,response,countCookie);
     }
 
     @GetMapping("/random")
-    public Object readClubByArea(@RequestBody Club request){
+    public List<Club> readClubByArea(@RequestBody Club request){
         return clubService.readClubByArea(request);
     }
 
