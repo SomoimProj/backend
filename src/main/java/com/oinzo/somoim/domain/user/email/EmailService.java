@@ -1,5 +1,6 @@
 package com.oinzo.somoim.domain.user.email;
 
+import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class EmailService {
     public String sendMail(String email) throws MessagingException {
         // 유저테이블에 이메일 존재여부 체크
         if (userRepository.findByEmail(email).isPresent()) {
-            return String.valueOf(ErrorCode.ALREADY_EXISTS_EMAIL);
+            throw new BaseException(ErrorCode.ALREADY_EXISTS_EMAIL, ErrorCode.ALREADY_EXISTS_EMAIL.getMessage());
         }
 
         String verificationCode = createCode();
@@ -102,7 +103,7 @@ public class EmailService {
         Email checkEmail = emailRepository.findById(email).get();
 
         if (!checkEmail.getCode().equals(code)) {
-            return ErrorCode.WRONG_PASSWORD;
+            throw new BaseException(ErrorCode.WRONG_VERIFICATION_CODE, ErrorCode.WRONG_VERIFICATION_CODE.getMessage());
         }
 
         emailRepository.delete(checkEmail);
