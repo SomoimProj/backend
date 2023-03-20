@@ -19,30 +19,29 @@ import java.util.Optional;
 public class ClubController {
     private final ClubService clubService;
 
-    @ResponseBody
     @PostMapping()
     public Club addClub(@RequestBody ClubCreateDto request){
         return clubService.addClub(request);
     }
 
     @GetMapping("/search")
-    public List<Club> readClubByName(@RequestBody ClubRequestDto request) {
-        return clubService.readClubByName(request);
+    public List<Club> readClubListByName(@RequestBody ClubRequestDto request) {
+        return clubService.readClubListByName(request);
     }
 
     @GetMapping("/favorite")
-    public List<Club> readClubByFavorite(@RequestBody ClubRequestDto request){
-        return clubService.readClubByFavorite(request);
+    public List<Club> readClubByListFavorite(@RequestBody ClubRequestDto request){
+        return clubService.readClubListByFavorite(request);
     }
 
     @GetMapping("/{clubId}")
-    public Optional<Club> readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
+    public Club readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
                                        @CookieValue(value="count", required=false) Cookie countCookie){
         return clubService.readClubById(clubId,response,countCookie);
     }
 
     @GetMapping("/random")
-    public List<Club> readClubByArea(@RequestBody ClubRequestDto request){
+    public List<Club> readClubListByArea(@RequestBody ClubRequestDto request){
         return clubService.readClubByArea(request);
     }
 

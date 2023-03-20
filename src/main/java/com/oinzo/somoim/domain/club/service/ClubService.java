@@ -32,7 +32,7 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubByName(ClubRequestDto request){
+    public List<Club> readClubListByName(ClubRequestDto request){
         try{
             String name = request.getName();
             List<Club> result = clubRepository.findAllByNameContaining(name);
@@ -44,7 +44,7 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubByFavorite(ClubRequestDto request){
+    public List<Club> readClubListByFavorite(ClubRequestDto request){
         String favorite = request.getFavorite();
         String area = request.getArea();
         List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
@@ -62,20 +62,20 @@ public class ClubService {
         }
     }
 
-    public Optional<Club> readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
+    public Club readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
         Optional<Club> club = clubRepository.findById(clubId);
         if(club.isPresent())
         {
-            Integer newCnt = updateCookie(response,countCookie,clubId,club.get().getCnt());
+            Integer newCnt = updateCookie(response,countCookie,clubId,club.get().getViewCnt());
             updateCnt(club.get(),newCnt);
-            return club;
+            return club.get();
         } else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
     }
 
     public List<Club> readClubByArea(ClubRequestDto request){
         if(request.getArea().isEmpty())
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByCntDesc(request.getArea());
+        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(request.getArea());
     }
 
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){

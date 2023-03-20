@@ -49,7 +49,7 @@ class ClubControllerTest {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setName("1");
         /* when */
-        List<Club> result = clubService.readClubByName(newClub);
+        List<Club> result = clubService.readClubListByName(newClub);
         /* then */
         assertTrue(result.size()>1);
     }
@@ -60,7 +60,7 @@ class ClubControllerTest {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setFavorite("SPORTS").setArea("서울");
         /* when */;
-        List<Club> result = clubService.readClubByFavorite(newClub);
+        List<Club> result = clubService.readClubListByFavorite(newClub);
         System.out.println(result.size());
         /* then */
         assertTrue(1 < result.size());

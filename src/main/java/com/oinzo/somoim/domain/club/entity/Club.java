@@ -34,11 +34,11 @@ public class Club extends BaseEntity {
     private String favorite;
 
     public Club setCnt(int cnt) {
-        this.cnt = cnt;
+        this.viewCnt = cnt;
         return this;
     }
 
-    private int cnt;
+    private int viewCnt;
 
     public static Club from(ClubCreateDto clubCreateDto){
         return Club.builder()
@@ -49,7 +49,7 @@ public class Club extends BaseEntity {
                 .memberLimit(clubCreateDto.getMemberLimit())
                 .memberCnt(0)
                 .favorite(clubCreateDto.getFavorite())
-                .cnt(0)
+                .viewCnt(0)
                 .build();
     }
 

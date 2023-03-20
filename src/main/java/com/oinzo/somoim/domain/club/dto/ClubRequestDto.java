@@ -30,7 +30,7 @@ public class ClubRequestDto {
     private int memberLimit;
     private int memberCnt;
     private String favorite;
-    private int cnt;
+    private int viewCnt;
 
 
 }
