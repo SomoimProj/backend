@@ -1,13 +1,21 @@
-package com.oinzo.somoim.domain.club.dto;
+package com.oinzo.somoim.controller.dto;
 
 import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 public class ClubRequestDto {
+
     private String name;
+    private String description;
+    private String imageUrl;
+    private String area;
+    private int memberLimit;
+    private int memberCnt;
+    private String favorite;
+    private int viewCnt;
 
     public ClubRequestDto setName(String name) {
         this.name = name;
@@ -23,14 +31,4 @@ public class ClubRequestDto {
         this.favorite = favorite;
         return this;
     }
-
-    private String description;
-    private String imageUrl;
-    private String area;
-    private int memberLimit;
-    private int memberCnt;
-    private String favorite;
-    private int viewCnt;
-
-
 }
