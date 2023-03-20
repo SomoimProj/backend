@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                 .accessDeniedHandler(new JwtAccessDeniedHandler())
 
                 .and()
-                .authorizeRequests().antMatchers("/email/**", "users/signup", "users/signin")
+                .authorizeRequests().antMatchers("/email/**", "/users/signup", "/users/signin")
                 .permitAll()
 
                 .and()

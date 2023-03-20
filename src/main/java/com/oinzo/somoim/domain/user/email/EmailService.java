@@ -82,7 +82,7 @@ public class EmailService {
         mailSender.send(mailForm);
 
         // mapper
-        Email newEmail = new Email(email, verificationCode, 60 * 3);
+        Email newEmail = new Email(email, verificationCode, 60 * 3L);
 
         // 레디스에 3분동안 저장
         try {
@@ -98,18 +98,18 @@ public class EmailService {
     /**
      * 인증코드 검증
      */
-    public Object checkVerificationCode(String email, String code) {
+    public boolean checkVerificationCode(String email, String code) {
 
         Email checkEmail = emailRepository.findById(email).get();
 
         if (!checkEmail.getCode().equals(code)) {
-            throw new BaseException(ErrorCode.WRONG_VERIFICATION_CODE, ErrorCode.WRONG_VERIFICATION_CODE.getMessage());
+            throw new BaseException(ErrorCode.WRONG_VERIFICATION_CODE);
         }
 
         emailRepository.delete(checkEmail);
         // 인증 성공 시 데이터를 3일간 저장
         emailRepository.save(checkEmail);
 
-        return checkEmail;
+        return true;
     }
 }
