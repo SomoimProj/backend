@@ -24,5 +24,4 @@ public class TokenResponse {
 			.refreshTokenExpirationDateTime(tokenDto.getRefreshTokenExpirationDateTime())
 			.build();
 	}
-
 }

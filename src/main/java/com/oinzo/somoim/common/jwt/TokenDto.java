@@ -3,19 +3,23 @@ package com.oinzo.somoim.common.jwt;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenDto {
 
 	private String accessToken;
 	private Date accessTokenExpirationIn;
 	private String refreshToken;
 	private Date refreshTokenExpirationIn;
+
+	public TokenDto(String accessToken) {
+		this.accessToken = accessToken;
+	}
 
 	public LocalDateTime getAccessTokenExpirationDateTime() {
 		return convertToLocalDateTime(accessTokenExpirationIn);

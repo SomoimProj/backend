@@ -1,10 +1,13 @@
 package com.oinzo.somoim.controller.dto;
 
+import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.domain.user.dto.EmailDto;
+import com.oinzo.somoim.domain.user.dto.SignInDto;
 import com.oinzo.somoim.domain.user.dto.SignUpDto;
 import com.oinzo.somoim.domain.user.email.EmailService;
-import com.oinzo.somoim.domain.user.service.UserService;
+import com.oinzo.somoim.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +21,7 @@ import javax.mail.MessagingException;
 public class AuthController {
 
 	private final EmailService emailService;
-	private final UserService userService;
+	private final AuthService authService;
 
 	@PostMapping("/email/send")
 	public String sendMail(@RequestBody EmailDto emailDto) throws MessagingException {
@@ -36,6 +39,13 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public void signUp(@RequestBody SignUpDto signUpDto) {
-		userService.signUp(signUpDto.getEmail(), signUpDto.getPassword(), signUpDto.getPasswordCheck());
+		authService.signUp(signUpDto.getEmail(), signUpDto.getPassword(), signUpDto.getPasswordCheck());
+	}
+
+	@PostMapping("/signin")
+	public String signIn(@RequestBody SignInDto signInDto) {
+		ResponseEntity<TokenDto> tokenDtoResponseEntity = authService.signIn(signInDto);
+
+		return tokenDtoResponseEntity.getBody().getAccessToken();
 	}
 }
