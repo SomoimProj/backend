@@ -41,21 +41,13 @@ public class ClubService {
     }
 
     public List<Club> readClubListByFavorite(ClubRequestDto request){
-        String favorite = request.getFavorite();
+        Favorite favorite = Favorite.valueOfOrHandleException(request.getFavorite());
         String area = request.getArea();
-        List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
-        if (favorite.length() < 1) {
-            throw new BaseException(ErrorCode.NO_SEARCH_NAME, ErrorCode.NO_SEARCH_NAME.getMessage());
-        }
-        try {
-            Favorite.valueOf(favorite);
-            if (result.isEmpty()) {
-                throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-            } else {
-                return result;
-            }
-        } catch (RuntimeException e)  {
-            throw new BaseException(ErrorCode.WRONG_FAVORITE,ErrorCode.WRONG_FAVORITE.getMessage());
+        List<Club> result = clubRepository.findAllByFavoriteAndAreaContaining(favorite, area);
+        if (result.isEmpty()) {
+            throw new BaseException(ErrorCode.NO_DATA_FOUND);
+        } else {
+            return result;
         }
     }
 

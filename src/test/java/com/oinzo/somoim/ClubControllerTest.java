@@ -28,7 +28,7 @@ class ClubControllerTest {
     @DisplayName("클럽 생성 테스트")
     void addClub() {
         /* given */
-        ClubCreateRequest newClub = new ClubCreateRequest("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS");
+        ClubCreateRequest newClub = new ClubCreateRequest("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,"SPORTS");
         /* when */
         Club club = clubRepository.save(Club.from(newClub));
         /* then */
@@ -52,7 +52,7 @@ class ClubControllerTest {
     void readClubByFavorite() {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setFavorite("SPORTS").setArea("서울");
-        /* when */;
+        /* when */
         List<Club> result = clubService.readClubListByFavorite(newClub);
         System.out.println(result.size());
         /* then */
@@ -64,7 +64,7 @@ class ClubControllerTest {
     void readClubByArea() {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setArea("서울").setFavorite("SPORTS");
-        /* when */;
+        /* when */
         List<Club> result = clubService.readClubListByArea(newClub);
         /* then */
         assertTrue(1 < result.size());
