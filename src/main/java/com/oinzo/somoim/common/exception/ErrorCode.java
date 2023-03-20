@@ -7,9 +7,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
+
 	/* 400 Bad Request */
 	INVALID_TOKEN(HttpStatus.BAD_REQUEST, 40002, "잘못된 토큰입니다."),
 	INVALID_KAKAO_CODE(HttpStatus.BAD_REQUEST, 40003, "올바르지 않은 카카오 인가 코드입니다."),
+  NO_SEARCH_NAME(HttpStatus.BAD_REQUEST, 40004, "검색 키워드를 입력해주십시오."),
 
 	/* 401 Unauthorized */
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),
@@ -20,6 +22,9 @@ public enum ErrorCode {
 
 	/* 404 Not Found */
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, 40401, "사용자를 찾을 수 없습니다."),
+  NO_DATA_FOUND(HttpStatus.NOT_FOUND, 40402, "해당하는 데이터를 찾을 수 없습니다."),
+	WRONG_CLUB(HttpStatus.NOT_FOUND, 40403, "해당하는 클럽을 찾을 수 없습니다."),
+	WRONG_FAVORITE(HttpStatus.NOT_FOUND, 40404, "해당하는 관심사를 찾을 수 없습니다."),
 
 	/* 500 Internal Server Error */
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50000, "예상치 못한 오류가 발생했습니다."),
