@@ -1,6 +1,7 @@
 package com.oinzo.somoim.domain.club;
 
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
 import lombok.AllArgsConstructor;
@@ -24,12 +25,12 @@ public class ClubController {
     }
 
     @GetMapping("/search")
-    public List<Club> readClubByName(@RequestBody Club request) {
+    public List<Club> readClubByName(@RequestBody ClubRequestDto request) {
         return clubService.readClubByName(request);
     }
 
     @GetMapping("/favorite")
-    public List<Club> readClubByFavorite(@RequestBody Club request){
+    public List<Club> readClubByFavorite(@RequestBody ClubRequestDto request){
         return clubService.readClubByFavorite(request);
     }
 
@@ -40,7 +41,7 @@ public class ClubController {
     }
 
     @GetMapping("/random")
-    public List<Club> readClubByArea(@RequestBody Club request){
+    public List<Club> readClubByArea(@RequestBody ClubRequestDto request){
         return clubService.readClubByArea(request);
     }
 

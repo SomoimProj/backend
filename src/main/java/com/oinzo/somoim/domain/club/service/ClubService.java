@@ -4,6 +4,7 @@ import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
+import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,7 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubByName(Club request){
+    public List<Club> readClubByName(ClubRequestDto request){
         try{
             String name = request.getName();
             List<Club> result = clubRepository.findAllByNameContaining(name);
@@ -43,7 +44,7 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubByFavorite(Club request){
+    public List<Club> readClubByFavorite(ClubRequestDto request){
         String favorite = request.getFavorite();
         String area = request.getArea();
         List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
@@ -71,7 +72,7 @@ public class ClubService {
         } else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
     }
 
-    public List<Club> readClubByArea(Club request){
+    public List<Club> readClubByArea(ClubRequestDto request){
         if(request.getArea().isEmpty())
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         return clubRepository.findAllByAreaLikeOrderByCntDesc(request.getArea());

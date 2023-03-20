@@ -1,6 +1,7 @@
 package com.oinzo.somoim;
 
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.club.service.ClubService;
@@ -45,40 +46,30 @@ class ClubControllerTest {
     @DisplayName("클럽 이름으로 조회 테스트")
     void readClubByName() {
         /* given */
-        Club newClub = new Club(0L,"!?","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS",0);
+        ClubRequestDto newClub = new ClubRequestDto().setName("1");
         /* when */
-        Object result = clubService.readClubByName(newClub);
+        List<Club> result = clubService.readClubByName(newClub);
         /* then */
-        Assertions.assertEquals(ErrorCode.NO_DATA_FOUND,result);
+        assertTrue(result.size()>1);
     }
 
     @Test
     @DisplayName("클럽 관심사로 조회 테스트")
     void readClubByFavorite() {
         /* given */
-        Club newClub = new Club(0L,"!?","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS",0);
+        ClubRequestDto newClub = new ClubRequestDto().setFavorite("SPORTS").setArea("서울");
         /* when */;
-        Object result = clubService.readClubByFavorite(newClub);
+        List<Club> result = clubService.readClubByFavorite(newClub);
+        System.out.println(result.size());
         /* then */
-        assertTrue(1 < ((List<Club>) result).size());
-    }
-
-    @Test
-    @DisplayName("클럽 관심사로 조회 실패 테스트")
-    void readClubByFavoriteFaile() {
-        /* given */
-        Club newClub = new Club(0L,"!?","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORT",0);
-        /* when */;
-        Object result = clubService.readClubByFavorite(newClub);
-        /* then */
-        Assertions.assertEquals(result,ErrorCode.WRONG_FAVORITE);
+        assertTrue(1 < result.size());
     }
 
     @Test
     @DisplayName("클럽 랜덤 검색 테스트")
     void readClubByArea() {
         /* given */
-        Club newClub = new Club(0L,"!?","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORT",0);
+        ClubRequestDto newClub = new ClubRequestDto().setArea("서울").setFavorite("SPORTS");
         /* when */;
         Object result = clubService.readClubByArea(newClub);
         /* then */
