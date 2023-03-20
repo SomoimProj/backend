@@ -30,7 +30,7 @@ public class ClubController {
 
     @GetMapping("/favorite")
     public Object readClubByFavorite(@RequestBody Club request){
-        return clubService.readClubByFavorite(request.getFavorite(),request.getArea());
+        return clubService.readClubByFavorite(request);
     }
 
     @GetMapping("/{clubId}")

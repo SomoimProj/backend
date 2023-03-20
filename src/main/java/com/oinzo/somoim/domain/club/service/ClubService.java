@@ -42,7 +42,9 @@ public class ClubService {
         }
     }
 
-    public Object readClubByFavorite(String favorite, String area){
+    public Object readClubByFavorite(Club request){
+        String favorite = request.getFavorite();
+        String area = request.getArea();
         List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
         if(favorite.length()<1) { return ErrorCode.NO_SEARCH_NAME; }
         try{
