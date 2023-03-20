@@ -11,7 +11,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ClubCreateDto {
 
-    private Long id;
     private String name;
     private String description;
     private String imageUrl;

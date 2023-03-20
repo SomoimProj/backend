@@ -1,6 +1,7 @@
 package com.oinzo.somoim;
 
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
 import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
@@ -34,7 +35,7 @@ class ClubControllerTest {
     @DisplayName("클럽 생성 테스트")
     void addClub() {
         /* given */
-        Club newClub = new Club(0L,"새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS",0);
+        ClubCreateDto newClub = new ClubCreateDto("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS");
         /* when */
         Club club = clubRepository.save(Club.from(newClub));
         /* then */

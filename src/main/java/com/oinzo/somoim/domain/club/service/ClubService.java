@@ -22,7 +22,7 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
 
-    public Club addClub(Club club){
+    public Club addClub(ClubCreateDto club){
         String favorite = club.getFavorite();
         try{
             Favorite.valueOf(favorite);

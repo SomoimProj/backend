@@ -40,15 +40,15 @@ public class Club extends BaseEntity {
 
     private int cnt;
 
-    public static Club from(Club club){
+    public static Club from(ClubCreateDto clubCreateDto){
         return Club.builder()
-                .name(club.getName())
-                .description(club.getDescription())
-                .imageUrl(club.getImageUrl())
-                .area(club.getArea())
-                .memberLimit(club.getMemberLimit())
+                .name(clubCreateDto.getName())
+                .description(clubCreateDto.getDescription())
+                .imageUrl(clubCreateDto.getImageUrl())
+                .area(clubCreateDto.getArea())
+                .memberLimit(clubCreateDto.getMemberLimit())
                 .memberCnt(0)
-                .favorite(club.getFavorite())
+                .favorite(clubCreateDto.getFavorite())
                 .cnt(0)
                 .build();
     }

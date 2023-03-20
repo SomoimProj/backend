@@ -1,6 +1,7 @@
 package com.oinzo.somoim.domain.club;
 
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
 import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
@@ -20,7 +21,7 @@ public class ClubController {
 
     @ResponseBody
     @PostMapping()
-    public Club addClub(@RequestBody Club request){
+    public Club addClub(@RequestBody ClubCreateDto request){
         return clubService.addClub(request);
     }
 
