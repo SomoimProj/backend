@@ -101,7 +101,7 @@ public class ClubService {
                 }
             }
             countCookie.setValue(newValue);
-            countCookie.setMaxAge(60*60*24);
+            countCookie.setMaxAge(countCookie.getMaxAge());
             countCookie.setPath("/");
             response.addCookie(countCookie);
             return clubCnt;
