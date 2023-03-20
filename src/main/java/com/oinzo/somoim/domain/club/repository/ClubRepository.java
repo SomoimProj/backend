@@ -16,6 +16,5 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     List<Club> findAllByAreaLikeOrderByCntDesc(String area);
 
-    Optional<Club> findByName(String name);
 
 }
