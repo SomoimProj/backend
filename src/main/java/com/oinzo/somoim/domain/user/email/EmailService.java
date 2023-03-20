@@ -1,5 +1,6 @@
 package com.oinzo.somoim.domain.user.email;
 
+import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,7 +73,7 @@ public class EmailService {
     public String sendMail(String email) throws MessagingException {
         // 유저테이블에 이메일 존재여부 체크
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new RuntimeException("이미 가입된 이메일 입니다.");
+            return String.valueOf(ErrorCode.ALREADY_EXISTS_EMAIL);
         }
 
         String verificationCode = createCode();
@@ -96,16 +97,18 @@ public class EmailService {
     /**
      * 인증코드 검증
      */
-    public void checkVerificationCode(String email, String code) {
+    public Object checkVerificationCode(String email, String code) {
 
         Email checkEmail = emailRepository.findById(email).get();
 
         if (!checkEmail.getCode().equals(code)) {
-            throw new RuntimeException("인증번호가 일치하지 않습니다.");
+            return ErrorCode.WRONG_PASSWORD;
         }
 
         emailRepository.delete(checkEmail);
         // 인증 성공 시 데이터를 3일간 저장
         emailRepository.save(checkEmail);
+
+        return checkEmail;
     }
 }

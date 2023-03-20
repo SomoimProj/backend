@@ -17,14 +17,14 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping("/send")
-    public ResponseEntity<?> sendMail(@RequestParam String email) throws MessagingException {
+    public ResponseEntity<String> sendMail(@RequestParam String email) throws MessagingException {
         String code = emailService.sendMail(email);
 
         return ResponseEntity.ok(code);
     }
 
     @PostMapping("/check")
-    public ResponseEntity<?> checkCode(@RequestParam String email, @RequestParam String code) {
+    public ResponseEntity<String> checkCode(@RequestParam String email, @RequestParam String code) {
         emailService.checkVerificationCode(email, code);
 
         return ResponseEntity.ok().build();
