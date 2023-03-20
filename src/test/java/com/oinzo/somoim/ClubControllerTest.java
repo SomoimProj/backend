@@ -1,8 +1,7 @@
 package com.oinzo.somoim;
 
-import com.oinzo.somoim.common.exception.ErrorCode;
-import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
-import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
+import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.club.service.ClubService;
@@ -11,16 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.CookieValue;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.description;
 
 @SpringBootTest
 class ClubControllerTest {
@@ -35,7 +28,7 @@ class ClubControllerTest {
     @DisplayName("클럽 생성 테스트")
     void addClub() {
         /* given */
-        ClubCreateDto newClub = new ClubCreateDto("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS");
+        ClubCreateRequest newClub = new ClubCreateRequest("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,0,"SPORTS");
         /* when */
         Club club = clubRepository.save(Club.from(newClub));
         /* then */
@@ -72,8 +65,8 @@ class ClubControllerTest {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setArea("서울").setFavorite("SPORTS");
         /* when */;
-        Object result = clubService.readClubByArea(newClub);
+        List<Club> result = clubService.readClubListByArea(newClub);
         /* then */
-        assertTrue(1 < ((List<Club>) result).size());
+        assertTrue(1 < result.size());
     }
 }
