@@ -50,9 +50,8 @@ class ClubControllerTest {
     @DisplayName("클럽 이름으로 조회 테스트")
     void readClubByName() {
         /* given */
-        ClubRequestDto newClub = new ClubRequestDto().setName("1");
         /* when */
-        List<Club> result = clubService.readClubListByName(newClub);
+        List<Club> result = clubService.readClubListByName("1");
         /* then */
         assertTrue(result.size()>1);
     }
@@ -61,10 +60,8 @@ class ClubControllerTest {
     @DisplayName("클럽 관심사로 조회 테스트")
     void readClubByFavorite() {
         /* given */
-        ClubRequestDto newClub = new ClubRequestDto().setFavorite("SPORTS").setArea("서울");
         /* when */;
-        Pageable pageable = PageRequest.of(0,10);
-        List<Club> result = clubService.readClubListByFavorite(newClub);
+        List<Club> result = clubService.readClubListByFavorite("SPORTS","서울");
         /* then */
         assertTrue(1 < result.size());
     }
@@ -73,10 +70,9 @@ class ClubControllerTest {
     @DisplayName("클럽 랜덤 검색 테스트")
     void readClubByArea() {
         /* given */
-        ClubRequestDto newClub = new ClubRequestDto().setArea("서울").setFavorite("SPORTS");
-        /* when */;
+        /* when */
         Pageable pageable = PageRequest.of(0,10);
-        Page<Club> result = clubService.readClubByArea(newClub,pageable);
+        Page<Club> result = clubService.readClubByArea("서울",pageable);
         /* then */
         assertTrue(result.getTotalElements() > 1);
     }

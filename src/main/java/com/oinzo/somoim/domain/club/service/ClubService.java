@@ -34,9 +34,8 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubListByName(ClubRequestDto request){
+    public List<Club> readClubListByName(String name){
         try{
-            String name = request.getName();
             List<Club> result = clubRepository.findAllByNameContaining(name);
             if(name.length()<1) throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
             else if (result.isEmpty()) throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
@@ -46,9 +45,7 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubListByFavorite(ClubRequestDto request){
-        String favorite = request.getFavorite();
-        String area = request.getArea();
+    public List<Club> readClubListByFavorite(String favorite,String area){
         List<Club> result = clubRepository.findAllByFavoriteContainingAndAreaContaining(favorite,area);
         if (favorite.length()<1)
             throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
@@ -60,7 +57,7 @@ public class ClubService {
                 return result;
             }
         } catch (RuntimeException e)  {
-            throw new BaseException(ErrorCode.WRONG_FAVORITE,ErrorCode.WRONG_FAVORITE.getMessage());
+            throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         }
     }
 
@@ -74,10 +71,10 @@ public class ClubService {
         } else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
     }
 
-    public Page<Club> readClubByArea(ClubRequestDto request,Pageable pageable){
-        if(request.getArea().isEmpty())
+    public Page<Club> readClubByArea(String area,Pageable pageable){
+        if(area.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(request.getArea(),pageable);
+        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
     }
 
     public Page<Club> readClubByCreateAt(String request, Pageable pageable){

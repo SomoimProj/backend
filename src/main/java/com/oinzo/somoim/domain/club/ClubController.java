@@ -1,6 +1,7 @@
 package com.oinzo.somoim.domain.club;
 
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
 import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
@@ -29,13 +30,13 @@ public class ClubController {
     }
 
     @GetMapping("/search")
-    public List<Club> readClubListByName(@RequestBody ClubRequestDto request) {
-        return clubService.readClubListByName(request);
+    public List<Club> readClubListByName(@RequestParam String name) {
+        return clubService.readClubListByName(name);
     }
 
     @GetMapping("/favorite")
-    public List<Club> readClubByListFavorite(@RequestBody ClubRequestDto request){
-        return clubService.readClubListByFavorite(request);
+    public List<Club> readClubByListFavorite(@RequestParam String favorite, String area){
+        return clubService.readClubListByFavorite(favorite,area);
     }
 
     @GetMapping("/{clubId}")
@@ -45,8 +46,8 @@ public class ClubController {
     }
 
     @GetMapping("/random")
-    public Page<Club> readClubListByArea(@RequestBody ClubRequestDto request, @PageableDefault(size = 10) Pageable pageable){
-        return clubService.readClubByArea(request,pageable);
+    public Page<Club> readClubListByArea(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
+        return clubService.readClubByArea(area,pageable);
     }
 
     @GetMapping("/newclub")
