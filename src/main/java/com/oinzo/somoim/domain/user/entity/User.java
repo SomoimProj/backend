@@ -1,6 +1,7 @@
 package com.oinzo.somoim.domain.user.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
+import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.common.type.SocialType;
 import com.oinzo.somoim.domain.user.dto.GoogleUserInfoDto;
@@ -34,7 +35,8 @@ public class User extends BaseEntity {
 	private String area;
 	private String introduction;
 	private String profileUrl;
-	private String favorite;
+	@Enumerated(value = EnumType.STRING)
+	private Favorite favorite;
 
 	private String email;
 	private String password;

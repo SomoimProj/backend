@@ -1,5 +1,6 @@
 package com.oinzo.somoim.controller.dto;
 
+import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class UserInfoResponse {
 	private String area;
 	private String introduction;
 	private String profileUrl;
-	private String favorite;
+	private Favorite favorite;
 
 	public static UserInfoResponse from(User user) {
 		return UserInfoResponse.builder()
