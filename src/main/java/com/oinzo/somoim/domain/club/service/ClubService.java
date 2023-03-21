@@ -77,9 +77,25 @@ public class ClubService {
         return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
     }
 
+    public Page<Club> readAllClubByArea(String area){
+        if(area.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        List<Club> clubList = clubRepository.findAllByAreaLike(area);
+        Pageable pageable = Pageable.ofSize(clubList.size());
+        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
+    }
+
     public Page<Club> readClubByCreateAt(String request, Pageable pageable){
         if(request.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
+    }
+
+    public Page<Club> readAllClubByCreateAt(String request){
+        if(request.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        List<Club> clubList = clubRepository.findAllByAreaLike(request);
+        Pageable pageable = Pageable.ofSize(clubList.size());
         return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
     }
 

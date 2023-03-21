@@ -47,11 +47,13 @@ public class ClubController {
 
     @GetMapping("/random")
     public Page<Club> readClubListByArea(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
+        if(pageable.getPageSize()==1) return clubService.readAllClubByArea(area);
         return clubService.readClubByArea(area,pageable);
     }
 
     @GetMapping("/newclub")
     public Page<Club> readClubListByCreateAt(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
+        if(pageable.getPageSize()==1) return clubService.readAllClubByCreateAt(area);
         return clubService.readClubByCreateAt(area,pageable);
     }
 

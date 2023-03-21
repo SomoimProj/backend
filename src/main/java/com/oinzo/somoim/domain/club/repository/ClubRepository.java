@@ -19,5 +19,5 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     Page<Club> findAllByAreaLikeOrderByCreatedAtDesc(String area,Pageable pageable);
 
-
+    List<Club> findAllByAreaLike(String area);
 }
