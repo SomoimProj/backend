@@ -75,4 +75,8 @@ public class User extends BaseEntity {
 		this.introduction = request.getIntroduction();
 		this.profileUrl = request.getProfileUrl();
 	}
+
+	public void updateFavorite(Favorite favorite) {
+		this.favorite = favorite;
+	}
 }

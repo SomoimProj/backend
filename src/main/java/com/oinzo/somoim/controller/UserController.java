@@ -1,5 +1,6 @@
 package com.oinzo.somoim.controller;
 
+import com.oinzo.somoim.controller.dto.FavoriteUpdateRequest;
 import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.controller.dto.UserInfoResponse;
 import com.oinzo.somoim.domain.user.service.UserService;
@@ -31,4 +32,10 @@ public class UserController {
 		return userService.updateUserInfo(userId, request);
 	}
 
+	@PostMapping("/favorite")
+	public void updateFavorite(
+		@AuthenticationPrincipal Long userId,
+		@RequestBody @Valid FavoriteUpdateRequest request) {
+		userService.updateFavorite(userId, request.getFavorite());
+	}
 }
