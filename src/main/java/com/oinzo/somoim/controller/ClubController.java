@@ -7,6 +7,7 @@ import com.oinzo.somoim.domain.club.service.ClubService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -32,25 +33,35 @@ public class ClubController {
 
     @GetMapping("/favorite")
     public List<Club> readClubByListFavorite(@RequestParam String favorite, String area){
-        return clubService.readClubListByFavorite(favorite,area);
+        return clubService.readClubListByFavorite(favorite, area);
     }
 
     @GetMapping("/{clubId}")
-    public Club readClubById(@PathVariable("clubId") Long clubId, HttpServletResponse response,
-                                       @CookieValue(value="count", required=false) Cookie countCookie){
-        return clubService.readClubById(clubId,response,countCookie);
+    public Club readClubById(
+        @PathVariable("clubId") Long clubId,
+        HttpServletResponse response,
+        @CookieValue(value="count", required=false) Cookie countCookie){
+        return clubService.readClubById(clubId, response, countCookie);
     }
 
     @GetMapping("/random")
-    public List<Club> readClubListByArea(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
-        if(pageable.getPageSize()==1) return clubService.readAllClubByArea(area).getContent();
-        return clubService.readClubByArea(area,pageable).getContent();
+    public List<Club> readClubListByArea(
+        @AuthenticationPrincipal Long userId,
+        @PageableDefault(size = 10) Pageable pageable){
+        if (pageable.getPageSize() == 1) {
+            return clubService.readAllClubListByArea(userId).getContent();
+        }
+        return clubService.readClubListByArea(userId, pageable).getContent();
     }
 
     @GetMapping("/newclub")
-    public List<Club> readClubListByCreateAt(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
-        if(pageable.getPageSize()==1) return clubService.readAllClubByCreateAt(area).getContent();
-        return clubService.readClubByCreateAt(area,pageable).getContent();
+    public List<Club> readClubListByCreateAt(
+        @AuthenticationPrincipal Long userId,
+        @PageableDefault(size = 10) Pageable pageable){
+        if (pageable.getPageSize() == 1) {
+            return clubService.readAllClubListByCreateAt(userId).getContent();
+        }
+        return clubService.readClubListByCreateAt(userId, pageable).getContent();
     }
 
 }
