@@ -2,13 +2,10 @@ package com.oinzo.somoim.controller;
 
 
 import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
-import com.oinzo.somoim.controller.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,15 +42,15 @@ public class ClubController {
     }
 
     @GetMapping("/random")
-    public Page<Club> readClubListByArea(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
-        if(pageable.getPageSize()==1) return clubService.readAllClubByArea(area);
-        return clubService.readClubByArea(area,pageable);
+    public List<Club> readClubListByArea(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
+        if(pageable.getPageSize()==1) return clubService.readAllClubByArea(area).getContent();
+        return clubService.readClubByArea(area,pageable).getContent();
     }
 
     @GetMapping("/newclub")
-    public Page<Club> readClubListByCreateAt(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
-        if(pageable.getPageSize()==1) return clubService.readAllClubByCreateAt(area);
-        return clubService.readClubByCreateAt(area,pageable);
+    public List<Club> readClubListByCreateAt(@RequestParam String area, @PageableDefault(size = 10) Pageable pageable){
+        if(pageable.getPageSize()==1) return clubService.readAllClubByCreateAt(area).getContent();
+        return clubService.readClubByCreateAt(area,pageable).getContent();
     }
 
 }
