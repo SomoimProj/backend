@@ -7,8 +7,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardRequest {
 
-    private int clubId;
-    private int userId;
+    private Long clubId;
+    private Long userId;
     private String category;
     private String title;
     private String content;

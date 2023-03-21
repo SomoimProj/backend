@@ -1,6 +1,7 @@
 package com.oinzo.somoim.domain.board.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
+import com.oinzo.somoim.controller.dto.BoardRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,4 +32,15 @@ public class Board extends BaseEntity {
     @NotNull
     private String content;
     private String imageUrl;
+
+    public static Board from(BoardRequest boardRequest){
+        return Board.builder()
+                .clubId(boardRequest.getClubId())
+                .userId(boardRequest.getUserId())
+                .category(boardRequest.getCategory())
+                .title(boardRequest.getTitle())
+                .content(boardRequest.getContent())
+                .imageUrl(boardRequest.getImageUrl())
+                .build();
+    }
 }
