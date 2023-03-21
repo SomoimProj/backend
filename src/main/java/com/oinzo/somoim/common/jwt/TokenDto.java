@@ -3,13 +3,13 @@ package com.oinzo.somoim.common.jwt;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenDto {
 
 	private String accessToken;
