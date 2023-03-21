@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +30,7 @@ class ClubControllerTest {
     @DisplayName("클럽 생성 테스트")
     void addClub() {
         /* given */
-        ClubCreateRequest newClub = new ClubCreateRequest("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,"SPORTS");
+        ClubCreateRequest newClub = new ClubCreateRequest("새로운 클럽","테스트용 클럽","클럽대표사진1","서울",3,"GAME");
         /* when */
         Club club = clubRepository.save(Club.from(newClub));
         /* then */
@@ -40,9 +42,8 @@ class ClubControllerTest {
     @DisplayName("클럽 이름으로 조회 테스트")
     void readClubByName() {
         /* given */
-        ClubRequestDto newClub = new ClubRequestDto().setName("1");
         /* when */
-        List<Club> result = clubService.readClubListByName(newClub);
+        List<Club> result = clubService.readClubListByName("1");
         /* then */
         assertTrue(result.size()>1);
     }
@@ -51,10 +52,8 @@ class ClubControllerTest {
     @DisplayName("클럽 관심사로 조회 테스트")
     void readClubByFavorite() {
         /* given */
-        ClubRequestDto newClub = new ClubRequestDto().setFavorite("SPORTS").setArea("서울");
-        /* when */
-        List<Club> result = clubService.readClubListByFavorite(newClub);
-        System.out.println(result.size());
+        /* when */;
+        List<Club> result = clubService.readClubListByFavorite("GAME","서울");
         /* then */
         assertTrue(1 < result.size());
     }
@@ -63,10 +62,10 @@ class ClubControllerTest {
     @DisplayName("클럽 랜덤 검색 테스트")
     void readClubByArea() {
         /* given */
-        ClubRequestDto newClub = new ClubRequestDto().setArea("서울").setFavorite("SPORTS");
         /* when */
-        List<Club> result = clubService.readClubListByArea(newClub);
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Club> result = clubService.readClubByArea("서울",pageable);
         /* then */
-        assertTrue(1 < result.size());
+        assertTrue(result.getTotalElements() > 1);
     }
 }
