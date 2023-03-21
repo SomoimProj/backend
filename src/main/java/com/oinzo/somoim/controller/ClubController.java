@@ -1,11 +1,11 @@
-package com.oinzo.somoim.domain.club;
+package com.oinzo.somoim.controller;
 
-import com.oinzo.somoim.common.exception.ErrorCode;
-import com.oinzo.somoim.common.type.Favorite;
-import com.oinzo.somoim.domain.club.dto.ClubCreateDto;
-import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
+
+import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -25,7 +24,7 @@ public class ClubController {
     private final ClubService clubService;
 
     @PostMapping()
-    public Club addClub(@RequestBody ClubCreateDto request){
+    public Club addClub(@RequestBody @Valid ClubCreateRequest request){
         return clubService.addClub(request);
     }
 
@@ -56,6 +55,5 @@ public class ClubController {
         if(pageable.getPageSize()==1) return clubService.readAllClubByCreateAt(area);
         return clubService.readClubByCreateAt(area,pageable);
     }
-
 
 }

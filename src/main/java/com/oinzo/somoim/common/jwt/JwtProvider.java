@@ -1,38 +1,45 @@
 package com.oinzo.somoim.common.jwt;
 
-import static com.oinzo.somoim.common.jwt.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
-import static com.oinzo.somoim.common.jwt.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
-
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import static com.oinzo.somoim.common.jwt.JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME;
+import static com.oinzo.somoim.common.jwt.JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME;
+
 @Slf4j
 @Component
 public class JwtProvider {
 
 	private final UserDetailsService userDetailsService;
+	@Autowired
+	private final RedisTemplate<String, String> redisTemplate;
+
 
 	private final Key secretKey;
+	private final String TOKEN_PREFIX = "RTK:";
+
 
 	public JwtProvider(
 		UserDetailsService userDetailsService,
+		RedisTemplate<String, String> redisTemplate,
 		@Value("${jwt.secret}") String secretKey
 	) {
 		this.userDetailsService = userDetailsService;
+		this.redisTemplate = redisTemplate;
 
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
@@ -58,7 +65,12 @@ public class JwtProvider {
 			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 
-		// TODO: Redis 서버에 저장
+		redisTemplate.opsForValue().set(
+			TOKEN_PREFIX + userId,
+			refreshToken,
+			JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME,
+			TimeUnit.MILLISECONDS
+		);
 
 		return TokenDto.builder()
 			.accessToken(accessToken)

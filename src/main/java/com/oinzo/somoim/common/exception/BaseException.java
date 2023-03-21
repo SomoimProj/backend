@@ -1,11 +1,9 @@
 package com.oinzo.somoim.common.exception;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@RequiredArgsConstructor
 public class BaseException extends RuntimeException {
 
 	private final ErrorCode errorCode;
@@ -13,5 +11,15 @@ public class BaseException extends RuntimeException {
 
 	public HttpStatus getHttpStatus() {
 		return errorCode.getHttpStatus();
+	}
+
+	public BaseException(ErrorCode errorCode, String detail) {
+		this.errorCode = errorCode;
+		this.detail = detail;
+	}
+
+	public BaseException(ErrorCode errorCode) {
+		this.errorCode = errorCode;
+		this.detail = "";
 	}
 }
