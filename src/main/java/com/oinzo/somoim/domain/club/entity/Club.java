@@ -54,4 +54,12 @@ public class Club extends BaseEntity {
                 .build();
     }
 
+    public void plusMemberCnt() {
+        memberCnt++;
+    }
+
+    public void minusMemberCnt() {
+        memberCnt--;
+    }
+
 }

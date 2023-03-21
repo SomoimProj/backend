@@ -38,4 +38,14 @@ public class Member extends BaseEntity {
 	@JoinColumn
 	private Club club;
 
+	public static Member createMember(User user, Club club, String introduction) {
+		club.plusMemberCnt();
+
+		return Member.builder()
+			.introduction(introduction)
+			.level(MemberLevel.MEMBER)
+			.user(user)
+			.club(club)
+			.build();
+	}
 }
