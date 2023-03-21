@@ -8,10 +8,12 @@ import com.oinzo.somoim.controller.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,9 +27,8 @@ public class ClubService {
         return clubRepository.save(Club.from(request));
     }
 
-    public List<Club> readClubListByName(ClubRequestDto request){
-        try {
-            String name = request.getName();
+    public List<Club> readClubListByName(String name){
+        try{
             List<Club> result = clubRepository.findAllByNameContaining(name);
             if (name.length() < 1) {
                 throw new BaseException(ErrorCode.NO_SEARCH_NAME);
@@ -40,14 +41,19 @@ public class ClubService {
         }
     }
 
-    public List<Club> readClubListByFavorite(ClubRequestDto request){
-        Favorite favorite = Favorite.valueOfOrHandleException(request.getFavorite());
-        String area = request.getArea();
-        List<Club> result = clubRepository.findAllByFavoriteAndAreaContaining(favorite, area);
-        if (result.isEmpty()) {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND);
-        } else {
-            return result;
+    public List<Club> readClubListByFavorite(String favorite,String area){
+        Favorite newFavorite = Favorite.valueOfOrHandleException(favorite);
+        List<Club> result = clubRepository.findAllByFavoriteAndAreaContaining(newFavorite,area);
+        if (favorite.length()<1)
+            throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
+        try{
+            if (result.isEmpty()) {
+                throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+            } else {
+                return result;
+            }
+        } catch (RuntimeException e)  {
+            throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         }
     }
 
@@ -60,11 +66,32 @@ public class ClubService {
         return club;
     }
 
-    public List<Club> readClubListByArea(ClubRequestDto request){
-        if (request.getArea().isEmpty()) {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
-        }
-        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(request.getArea());
+    public Page<Club> readClubByArea(String area,Pageable pageable){
+        if(area.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
+    }
+
+    public Page<Club> readAllClubByArea(String area){
+        if(area.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        List<Club> clubList = clubRepository.findAllByAreaLike(area);
+        Pageable pageable = Pageable.ofSize(clubList.size());
+        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
+    }
+
+    public Page<Club> readClubByCreateAt(String request, Pageable pageable){
+        if(request.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
+    }
+
+    public Page<Club> readAllClubByCreateAt(String request){
+        if(request.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        List<Club> clubList = clubRepository.findAllByAreaLike(request);
+        Pageable pageable = Pageable.ofSize(clubList.size());
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
     }
 
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){
