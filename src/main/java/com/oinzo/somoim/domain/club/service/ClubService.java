@@ -102,7 +102,7 @@ public class ClubService {
     }
 
     public void updateCnt(Club club, Integer newCnt){
-        clubRepository.save(club.setCnt(newCnt));
+        clubRepository.save(club.setViewCnt(newCnt));
     }
 
 }

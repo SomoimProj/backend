@@ -36,8 +36,8 @@ public class Club extends BaseEntity {
 
     private int viewCnt;
 
-    public Club setCnt(int cnt) {
-        this.viewCnt = cnt;
+    public Club setViewCnt(int viewCnt) {
+        this.viewCnt = viewCnt;
         return this;
     }
 
