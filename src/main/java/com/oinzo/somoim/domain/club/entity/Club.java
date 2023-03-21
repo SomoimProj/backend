@@ -23,7 +23,6 @@ public class Club extends BaseEntity {
     private String name;
     @NotNull
     private String description;
-    @NotNull
     private String imageUrl;
     @NotNull
     private String area;
