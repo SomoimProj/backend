@@ -1,7 +1,6 @@
 package com.oinzo.somoim.common.exception;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
