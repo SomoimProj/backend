@@ -8,6 +8,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.oinzo.somoim.common.exception.BaseException;
+import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.controller.dto.UserInfoRequest;
@@ -97,5 +99,41 @@ class UserServiceTest {
 		assertEquals(Gender.FEMALE, capturedUser.getGender());
 		assertEquals("인천", capturedUser.getArea());
 		assertEquals("레몬사탕", capturedUser.getIntroduction());
+	}
+
+	@Test
+	public void testUpdateFavorite() {
+		// given
+		User mockUser = User.builder()
+			.id(1L)
+			.build();
+		given(userRepository.findById(anyLong()))
+			.willReturn(Optional.of(mockUser));
+
+		ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
+
+		// when
+		userService.updateFavorite(1L, "GAME");
+
+		// then
+		verify(userRepository, times(1)).save(captor.capture());
+		assertEquals("GAME", captor.getValue().getFavorite().toString());
+	}
+
+	@Test
+	public void testUpdateFavorite_wrongFavorite() {
+		// given
+		User mockUser = User.builder()
+			.id(1L)
+			.build();
+		given(userRepository.findById(anyLong()))
+			.willReturn(Optional.of(mockUser));
+
+		// when
+		BaseException exception = assertThrows(BaseException.class,
+			() -> userService.updateFavorite(1L, "WRONG_FAVORITE"));
+
+		// then
+		assertEquals(ErrorCode.WRONG_FAVORITE, exception.getErrorCode());
 	}
 }
