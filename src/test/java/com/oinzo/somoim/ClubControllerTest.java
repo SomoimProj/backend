@@ -11,6 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CookieValue;
 
@@ -60,8 +63,8 @@ class ClubControllerTest {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setFavorite("SPORTS").setArea("서울");
         /* when */;
+        Pageable pageable = PageRequest.of(0,10);
         List<Club> result = clubService.readClubListByFavorite(newClub);
-        System.out.println(result.size());
         /* then */
         assertTrue(1 < result.size());
     }
@@ -72,8 +75,9 @@ class ClubControllerTest {
         /* given */
         ClubRequestDto newClub = new ClubRequestDto().setArea("서울").setFavorite("SPORTS");
         /* when */;
-        Object result = clubService.readClubByArea(newClub);
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Club> result = clubService.readClubByArea(newClub,pageable);
         /* then */
-        assertTrue(1 < ((List<Club>) result).size());
+        assertTrue(result.getTotalElements() > 1);
     }
 }

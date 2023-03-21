@@ -1,11 +1,12 @@
 package com.oinzo.somoim.domain.club.repository;
 
 import com.oinzo.somoim.domain.club.entity.Club;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
@@ -14,9 +15,9 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     List<Club> findAllByFavoriteContainingAndAreaContaining(String favorite,String area);
 
-    List<Club> findAllByAreaLikeOrderByViewCntDesc(String area);
+    Page<Club> findAllByAreaLikeOrderByViewCntDesc(String area,Pageable pageable);
 
-    List<Club> findAllByAreaLikeOrderByCreatedAtDesc(String area);
+    Page<Club> findAllByAreaLikeOrderByCreatedAtDesc(String area,Pageable pageable);
 
 
 }

@@ -8,10 +8,12 @@ import com.oinzo.somoim.domain.club.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Objects;
@@ -72,16 +74,16 @@ public class ClubService {
         } else throw new BaseException(ErrorCode.WRONG_CLUB,ErrorCode.WRONG_CLUB.getMessage());
     }
 
-    public List<Club> readClubByArea(ClubRequestDto request){
+    public Page<Club> readClubByArea(ClubRequestDto request,Pageable pageable){
         if(request.getArea().isEmpty())
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(request.getArea());
+        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(request.getArea(),pageable);
     }
 
-    public List<Club> readClubByCreateAt(String request){
+    public Page<Club> readClubByCreateAt(String request, Pageable pageable){
         if(request.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request);
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
     }
 
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){
