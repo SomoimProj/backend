@@ -4,6 +4,7 @@ import com.oinzo.somoim.common.entity.BaseEntity;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.common.type.SocialType;
+import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.domain.user.dto.GoogleUserInfoDto;
 import com.oinzo.somoim.domain.user.dto.KakaoUserInfoDto;
 import javax.persistence.Entity;
@@ -62,5 +63,15 @@ public class User extends BaseEntity {
 			.name(googleUserInfoDto.getName())
 			.profileUrl(googleUserInfoDto.getProfileUrl())
 			.build();
+	}
+
+	public void updateUserInfo(UserInfoRequest request) {
+		this.name = request.getName();
+		this.area = request.getArea();
+		this.birth = request.getBirth();
+		this.gender = request.getGender();
+		this.area = request.getArea();
+		this.introduction = request.getIntroduction();
+		this.profileUrl = request.getProfileUrl();
 	}
 }
