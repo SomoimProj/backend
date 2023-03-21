@@ -45,5 +45,10 @@ public class ClubController {
         return clubService.readClubByArea(request);
     }
 
+    @GetMapping("/newclub")
+    public List<Club> readClubListByCreateAt(@RequestParam String area){
+        return clubService.readClubByCreateAt(area);
+    }
+
 
 }

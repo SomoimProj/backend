@@ -78,6 +78,12 @@ public class ClubService {
         return clubRepository.findAllByAreaLikeOrderByViewCntDesc(request.getArea());
     }
 
+    public List<Club> readClubByCreateAt(String request){
+        if(request.length()<1)
+            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request);
+    }
+
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){
         clubCnt += 1;
         if(countCookie!=null){
