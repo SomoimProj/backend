@@ -7,6 +7,7 @@ import com.oinzo.somoim.common.type.SocialType;
 import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.domain.user.dto.GoogleUserInfoDto;
 import com.oinzo.somoim.domain.user.dto.KakaoUserInfoDto;
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,7 +31,7 @@ public class User extends BaseEntity {
 	private Long id;
 
 	private String name;
-	private String birth;
+	private LocalDate birth;
 	@Enumerated(value = EnumType.STRING)
 	private Gender gender;
 	private String area;
@@ -68,7 +69,7 @@ public class User extends BaseEntity {
 	public void updateUserInfo(UserInfoRequest request) {
 		this.name = request.getName();
 		this.area = request.getArea();
-		this.birth = request.getBirth();
+		this.birth = LocalDate.parse(request.getBirth());
 		this.gender = request.getGender();
 		this.area = request.getArea();
 		this.introduction = request.getIntroduction();

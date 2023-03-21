@@ -3,6 +3,7 @@ package com.oinzo.somoim.controller.dto;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.domain.user.entity.User;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import lombok.Getter;
 public class UserInfoResponse {
 
 	private String name;
-	private String birth;
+	private LocalDate birth;
 	private Gender gender;
 	private String area;
 	private String introduction;

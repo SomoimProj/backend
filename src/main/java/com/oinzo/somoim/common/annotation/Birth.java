@@ -11,7 +11,7 @@ import javax.validation.Constraint;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = BirthValidator.class)
 public @interface Birth {
-	String message() default "생년월일을 8자리 숫자로 입력해주세요.";
+	String message() default "생년월일을 yyyy-mm-dd 형식으로 입력해주세요.";
 	Class[] groups() default {};
 	Class[] payload() default {};
 }
