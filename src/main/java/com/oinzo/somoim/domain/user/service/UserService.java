@@ -35,10 +35,11 @@ public class UserService {
 	}
 
 	public void updateFavorite(Long userId, String favorteString) {
+		Favorite favorite = Favorite.valueOfOrHandleException(favorteString);
+
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
 
-		Favorite favorite = Favorite.valueOfOrHandleException(favorteString);
 		user.updateFavorite(favorite);
 		userRepository.save(user);
 	}
