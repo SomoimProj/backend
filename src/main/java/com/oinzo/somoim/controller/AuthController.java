@@ -1,6 +1,9 @@
-package com.oinzo.somoim.controller.dto;
+package com.oinzo.somoim.controller;
 
+import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
+import com.oinzo.somoim.common.jwt.TokenService;
+import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.domain.user.dto.EmailDto;
 import com.oinzo.somoim.domain.user.dto.SignInDto;
 import com.oinzo.somoim.domain.user.dto.SignUpDto;
@@ -12,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RequestMapping("/users/auth")
 @RequiredArgsConstructor
@@ -20,19 +25,19 @@ public class AuthController {
 
 	private final EmailService emailService;
 	private final AuthService authService;
+	private final JwtProvider jwtProvider;
+	private final TokenService tokenService;
 
 	@PostMapping("/email/send")
 	public String sendMail(@RequestBody EmailDto emailDto) throws MessagingException {
-		String code = emailService.sendMail(emailDto.getEmail());
 
-		return code;
+		return emailService.sendMail(emailDto.getEmail());
 	}
 
 	@PostMapping("/email/check")
 	public boolean checkCode(@RequestBody EmailDto emailDto) {
-		boolean result = emailService.checkVerificationCode(emailDto);
 
-		return result;
+		return emailService.checkVerificationCode(emailDto);
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -42,10 +47,13 @@ public class AuthController {
 	}
 
 	@PostMapping("/signin")
-	public String signIn(@RequestBody SignInDto signInDto) {
-		ResponseEntity<TokenDto> tokenDtoResponseEntity = authService.signIn(signInDto);
-
-		return tokenDtoResponseEntity.getBody().getAccessToken();
+	public TokenResponse signIn(@RequestBody @Valid SignInDto signInDto,
+								HttpServletResponse response) {
+		Long userId = authService.signIn(signInDto);
+		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+		String refreshToken = tokenDto.getRefreshToken();
+		tokenService.setRefreshTokenCookie(refreshToken, response);
+		return TokenResponse.from(tokenDto);
 	}
 
 

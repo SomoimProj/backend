@@ -52,7 +52,7 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	public ResponseEntity<TokenDto> signIn(SignInDto signInDto) {
+	public Long signIn(SignInDto signInDto) {
 
 		if (!userRepository.existsByEmail(signInDto.getEmail())) {
 			throw new BaseException(ErrorCode.USER_NOT_FOUND);
@@ -65,30 +65,17 @@ public class AuthService {
 			throw new BaseException(ErrorCode.WRONG_PASSWORD);
 		}
 
-		Long userId = userRepository.findByEmail(signInDto.getEmail()).get().getId();
+		Long userId = userRepository.findByEmail(signInDto.getEmail())
+			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND)).getId();
 
-		String accessToken = jwtProvider.generateAccessTokenAndRefreshToken(userId).getAccessToken();
-		String refreshToken = jwtProvider.generateAccessTokenAndRefreshToken(userId).getRefreshToken();
+		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 
-		System.out.println("refreshToken = " + refreshToken);
-		System.out.println("accessToken = " + accessToken);
-
-		TokenDto tokenDto = TokenDto.builder()
-			.accessToken(accessToken)
-			.refreshToken(refreshToken)
-			.build();
-
-		redisTemplate.opsForValue().set(
-			TOKEN_PREFIX + userId,
-			refreshToken,
-			JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME,
-			TimeUnit.MILLISECONDS
-		);
+		String accessToken = tokenDto.getAccessToken();
 
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add(JwtProperties.AUTHORIZATION_HEADER, JwtProperties.TOKEN_PREFIX + accessToken);
 
-		return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
+		return user.get().getId();
 	}
 
 	public void singOut(TokenDto tokenDto) {
