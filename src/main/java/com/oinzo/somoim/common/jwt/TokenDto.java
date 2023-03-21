@@ -17,10 +17,6 @@ public class TokenDto {
 	private String refreshToken;
 	private Date refreshTokenExpirationIn;
 
-	public TokenDto(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
 	public LocalDateTime getAccessTokenExpirationDateTime() {
 		return convertToLocalDateTime(accessTokenExpirationIn);
 	}

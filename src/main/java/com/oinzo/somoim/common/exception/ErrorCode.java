@@ -17,7 +17,7 @@ public enum ErrorCode {
 	EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 40103, "만료된 액세스 토큰입니다."),
 	EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40161, "만료된 리프레쉬 토큰입니다."),
 	LOGOUT_USER(HttpStatus.UNAUTHORIZED, 40162, "로그아웃된 사용자입니다."),
-	WRONG_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40163, "리프레쉬 토큰 정보가 일치하지 않습니다."),
+	WRONG_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40163, "리프레쉬 토큰 정보가 유효하지 않습니다."),
 	/* 403 Forbidden */
 	FORBIDDEN_REQUEST(HttpStatus.FORBIDDEN, 40300, "해당 요청에 대한 권한이 없습니다."),
 

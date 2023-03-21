@@ -7,11 +7,9 @@ import com.oinzo.somoim.domain.user.dto.SignUpDto;
 import com.oinzo.somoim.domain.user.email.EmailService;
 import com.oinzo.somoim.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
@@ -32,11 +30,12 @@ public class AuthController {
 
 	@PostMapping("/email/check")
 	public boolean checkCode(@RequestBody EmailDto emailDto) {
-		boolean result = emailService.checkVerificationCode(emailDto.getEmail(), emailDto.getCode());
+		boolean result = emailService.checkVerificationCode(emailDto);
 
 		return result;
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/signup")
 	public void signUp(@RequestBody SignUpDto signUpDto) {
 		authService.signUp(signUpDto.getEmail(), signUpDto.getPassword(), signUpDto.getPasswordCheck());
@@ -48,4 +47,20 @@ public class AuthController {
 
 		return tokenDtoResponseEntity.getBody().getAccessToken();
 	}
+
+
+	@PostMapping("/signout")
+	public void signout(@RequestBody TokenDto tokenDto) {
+		authService.singOut(tokenDto);
+	}
+
+	/**
+	 * TODO: 토큰재발급
+	 */
+//	@PostMapping("/reissue")
+//	public ResponseEntity<String> regenerateToken(@RequestBody RegenerateTokenDto regenerateTokenDto) {
+//
+//		return authService.regenerateToken(regenerateTokenDto);
+//	}
+
 }

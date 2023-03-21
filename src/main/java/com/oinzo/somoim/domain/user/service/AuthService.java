@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +28,7 @@ public class AuthService {
 	private final RedisTemplate<String, String> redisTemplate;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
+	private final String TOKEN_PREFIX = "RTK:";
 
 	private String passwordEncode(String password) {
 		return passwordEncoder.encode(password);
@@ -64,13 +65,13 @@ public class AuthService {
 			throw new BaseException(ErrorCode.WRONG_PASSWORD);
 		}
 
-		UsernamePasswordAuthenticationToken authenticationToken
-			= new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword());
-
 		Long userId = userRepository.findByEmail(signInDto.getEmail()).get().getId();
 
 		String accessToken = jwtProvider.generateAccessTokenAndRefreshToken(userId).getAccessToken();
 		String refreshToken = jwtProvider.generateAccessTokenAndRefreshToken(userId).getRefreshToken();
+
+		System.out.println("refreshToken = " + refreshToken);
+		System.out.println("accessToken = " + accessToken);
 
 		TokenDto tokenDto = TokenDto.builder()
 			.accessToken(accessToken)
@@ -78,7 +79,7 @@ public class AuthService {
 			.build();
 
 		redisTemplate.opsForValue().set(
-			authenticationToken.getName(),
+			TOKEN_PREFIX + userId,
 			refreshToken,
 			JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME,
 			TimeUnit.MILLISECONDS
@@ -89,4 +90,52 @@ public class AuthService {
 
 		return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
 	}
+
+	public void singOut(TokenDto tokenDto) {
+		if (!jwtProvider.isValidateToken(tokenDto.getAccessToken())) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN);
+		}
+
+		Authentication authentication = jwtProvider.getAuthentication(tokenDto.getAccessToken());
+
+		String key = TOKEN_PREFIX + authentication.getName();
+
+		if (redisTemplate.opsForValue().get(key) != null) {
+			redisTemplate.delete(key);
+		}
+
+		// todo : AT 유효시간을 가져와서 블랙리스트로 저장하기
+	}
+
+	/**
+	 * TODO : 토큰 재발급
+	 */
+//	public ResponseEntity<String> regenerateToken(RegenerateTokenDto regenerateTokenDto) {
+//		Authentication authentication = jwtProvider.getAuthentication(regenerateTokenDto.getRefreshToken());
+//
+//		if (!jwtProvider.isValidateToken(redisTemplate.opsForValue().get(PREFIX+authentication.getName()))) {
+//			throw new BaseException(ErrorCode.WRONG_REFRESH_TOKEN);
+//		}
+//
+//		String refreshToken = redisTemplate.opsForValue().get(PREFIX + authentication.getName());
+//
+//		if (ObjectUtils.isEmpty(refreshToken)) {
+//			throw new BaseException(ErrorCode.INVALID_TOKEN);
+//		}
+//
+//		if (!refreshToken.equals(regenerateTokenDto.getRefreshToken())) {
+//			throw new BaseException(ErrorCode.WRONG_REFRESH_TOKEN);
+//		}
+//
+//		Optional<User> user = userRepository.findByEmail(authentication.getName());
+//		Long userId = user.get().getId();
+//		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+//
+//		redisTemplate.opsForValue()
+//			.set(PREFIX + authentication.getName(), newToken.getRefreshToken(), JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
+//
+//		return ResponseEntity.ok(newToken.getRefreshToken());
+//	}
+
+
 }
