@@ -10,6 +10,8 @@ import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class ClubBoardService {
@@ -19,14 +21,31 @@ public class ClubBoardService {
 
     private final UserRepository userRepository;
 
-    public ClubBoard addBoard(BoardCreateRequest request, Long userId){
+    public ClubBoard addBoard(BoardCreateRequest request, Long clubId,Long userId){
         try{
             userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-            clubRepository.findById(request.getClubId()).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-            System.out.println("user"+userId+"club" +request.getClubId());
-            return clubBoardRepository.save(ClubBoard.from(request,userId));
+            clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+            return clubBoardRepository.save(ClubBoard.from(request,clubId,userId));
         }catch (IllegalArgumentException e){
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-    };
+    }
+
+    public List<ClubBoard> clubBoardList(Long clubId){
+        try{
+            clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+            return clubBoardRepository.findAllByClubIdIs(clubId);
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ClubBoard readBoard(Long boardId){
+        try {
+            return clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_CLUB));
+
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -5,12 +5,10 @@ import com.oinzo.somoim.domain.board.entity.ClubBoard;
 import com.oinzo.somoim.domain.board.service.ClubBoardService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -19,8 +17,19 @@ public class BoardController {
 
     private final ClubBoardService boardService;
 
-    @PostMapping()
-    public ClubBoard addBoard(@RequestBody @Valid BoardCreateRequest request, @AuthenticationPrincipal Long userId){
-        return boardService.addBoard(request,userId);
+    @PostMapping("/{clubId}")
+    public ClubBoard addBoard(@RequestBody @Valid BoardCreateRequest request,
+                              @PathVariable Long clubId, @AuthenticationPrincipal Long userId){
+        return boardService.addBoard(request,clubId,userId);
+    }
+
+    @GetMapping("/club/{clubId}")
+    public List<ClubBoard> clubBoardList(@PathVariable Long clubId){
+        return boardService.clubBoardList(clubId);
+    }
+
+    @GetMapping("/{boardId}")
+    public ClubBoard readBoard(@PathVariable Long boardId){
+        return boardService.readBoard(boardId);
     }
 }
