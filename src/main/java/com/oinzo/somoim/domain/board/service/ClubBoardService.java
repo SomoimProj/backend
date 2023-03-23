@@ -42,7 +42,31 @@ public class ClubBoardService {
 
     public ClubBoard readBoard(Long boardId){
         try {
-            return clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_CLUB));
+            return clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public ClubBoard updateBoard(Long boardId,BoardCreateRequest request,Long userId){
+        try {
+            ClubBoard board = clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+            userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
+            if(!userId.equals(board.getUserId())) throw new BaseException(ErrorCode.FORBIDDEN_REQUEST);
+            board.updateClubBoard(request);
+            return clubBoardRepository.save(board);
+
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public void deleteBoard(Long boardId,Long userId){
+        try {
+            ClubBoard board = clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+            userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
+            if(!userId.equals(board.getUserId())) throw new BaseException(ErrorCode.FORBIDDEN_REQUEST);
 
         }catch (IllegalArgumentException e){
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);

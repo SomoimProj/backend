@@ -44,4 +44,11 @@ public class ClubBoard extends BaseEntity {
                 .imageUrl(boardRequest.getImageUrl())
                 .build();
     }
+
+    public void updateClubBoard(BoardCreateRequest boardCreateRequest){
+        this.category = boardCreateRequest.getCategory();
+        this.title = boardCreateRequest.getTitle();
+        this.content = boardCreateRequest.getContent();
+        this.imageUrl = boardCreateRequest.getImageUrl();
+    }
 }

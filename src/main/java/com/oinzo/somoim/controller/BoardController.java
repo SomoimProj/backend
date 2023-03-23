@@ -32,4 +32,16 @@ public class BoardController {
     public ClubBoard readBoard(@PathVariable Long boardId){
         return boardService.readBoard(boardId);
     }
+
+    @PatchMapping("/{boardId}")
+    public ClubBoard updateBoard(@PathVariable Long boardId,BoardCreateRequest request
+            ,@AuthenticationPrincipal Long userId){
+        return boardService.updateBoard(boardId,request,userId);
+    }
+
+    @DeleteMapping("/{boardId}")
+    public void deleteBoard(@PathVariable Long boardId,@AuthenticationPrincipal Long userId){
+        boardService.deleteBoard(boardId,userId);
+    }
+
 }
