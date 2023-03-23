@@ -2,6 +2,7 @@ package com.oinzo.somoim.domain.board.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
 import com.oinzo.somoim.controller.dto.BoardRequest;
+import com.oinzo.somoim.domain.board.dto.BoardCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Entity
 @Builder
-public class Board extends BaseEntity {
+public class ClubBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,10 +34,10 @@ public class Board extends BaseEntity {
     private String content;
     private String imageUrl;
 
-    public static Board from(BoardRequest boardRequest){
-        return Board.builder()
+    public static ClubBoard from(BoardCreateRequest boardRequest,Long userId){
+        return ClubBoard.builder()
                 .clubId(boardRequest.getClubId())
-                .userId(boardRequest.getUserId())
+                .userId(userId)
                 .category(boardRequest.getCategory())
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContent())

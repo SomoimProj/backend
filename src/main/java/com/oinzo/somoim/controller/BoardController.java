@@ -1,10 +1,10 @@
 package com.oinzo.somoim.controller;
 
-import com.oinzo.somoim.controller.dto.BoardRequest;
-import com.oinzo.somoim.domain.board.entity.Board;
-import com.oinzo.somoim.domain.board.repository.BoardRepository;
-import com.oinzo.somoim.domain.board.service.BoardService;
+import com.oinzo.somoim.domain.board.dto.BoardCreateRequest;
+import com.oinzo.somoim.domain.board.entity.ClubBoard;
+import com.oinzo.somoim.domain.board.service.ClubBoardService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,10 +17,10 @@ import javax.validation.Valid;
 @RequestMapping("/board")
 public class BoardController {
 
-    private final BoardService boardService;
+    private final ClubBoardService boardService;
 
     @PostMapping()
-    public Board addBoard(@RequestBody @Valid BoardRequest request){
-        return boardService.addBoard(request);
+    public ClubBoard addBoard(@RequestBody @Valid BoardCreateRequest request, @AuthenticationPrincipal Long userId){
+        return boardService.addBoard(request,userId);
     }
 }
