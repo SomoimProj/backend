@@ -1,4 +1,4 @@
-package com.oinzo.somoim.domain.user.email;
+package com.oinzo.somoim.domain.user.service;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;

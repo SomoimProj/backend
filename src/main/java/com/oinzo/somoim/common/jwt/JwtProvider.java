@@ -1,10 +1,10 @@
 package com.oinzo.somoim.common.jwt;
 
+import com.oinzo.somoim.common.util.RedisUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,9 +25,8 @@ import static com.oinzo.somoim.common.jwt.JwtProperties.REFRESH_TOKEN_EXPIRATION
 public class JwtProvider {
 
 	private final UserDetailsService userDetailsService;
-	@Autowired
 	private final RedisTemplate<String, String> redisTemplate;
-
+	private final RedisUtil redisUtil;
 
 	private final Key secretKey;
 	private final String TOKEN_PREFIX = "RTK:";
@@ -36,10 +35,11 @@ public class JwtProvider {
 	public JwtProvider(
 		UserDetailsService userDetailsService,
 		RedisTemplate<String, String> redisTemplate,
-		@Value("${jwt.secret}") String secretKey
-	) {
+		@Value("${jwt.secret}") String secretKey,
+		RedisUtil redisUtil) {
 		this.userDetailsService = userDetailsService;
 		this.redisTemplate = redisTemplate;
+		this.redisUtil = redisUtil;
 
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
@@ -100,6 +100,9 @@ public class JwtProvider {
 	public boolean isValidateToken(String token) {
 		try {
 			Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+			if (redisUtil.hasKeyBlackList(token)) {
+				return false;
+			}
 			return true;
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 			log.error("잘못된 JWT 토큰입니다.", e);

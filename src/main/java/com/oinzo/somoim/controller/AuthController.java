@@ -3,15 +3,15 @@ package com.oinzo.somoim.controller;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.jwt.TokenService;
+import com.oinzo.somoim.controller.dto.EmailResponse;
 import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.domain.user.dto.EmailDto;
 import com.oinzo.somoim.domain.user.dto.SignInDto;
 import com.oinzo.somoim.domain.user.dto.SignUpDto;
-import com.oinzo.somoim.domain.user.email.EmailService;
 import com.oinzo.somoim.domain.user.service.AuthService;
+import com.oinzo.somoim.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -29,9 +29,13 @@ public class AuthController {
 	private final TokenService tokenService;
 
 	@PostMapping("/email/send")
-	public String sendMail(@RequestBody EmailDto emailDto) throws MessagingException {
+	public EmailResponse sendMail(@RequestBody EmailDto emailDto) throws MessagingException {
+		String code = emailService.sendMail(emailDto.getEmail());
 
-		return emailService.sendMail(emailDto.getEmail());
+		return EmailResponse.builder()
+			.inputCode(emailDto.getCode())
+			.verificationCode(code)
+			.build();
 	}
 
 	@PostMapping("/email/check")
@@ -42,8 +46,14 @@ public class AuthController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/signup")
-	public void signUp(@RequestBody SignUpDto signUpDto) {
-		authService.signUp(signUpDto.getEmail(), signUpDto.getPassword(), signUpDto.getPasswordCheck());
+	public TokenResponse signUp(@RequestBody SignUpDto signUpDto, HttpServletResponse response) {
+		Long userId = authService.signUp(signUpDto.getEmail(),
+			signUpDto.getPassword(), signUpDto.getPasswordCheck());
+
+		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+		String refreshToken = tokenDto.getRefreshToken();
+		tokenService.setRefreshTokenCookie(refreshToken, response);
+		return TokenResponse.from(tokenDto);
 	}
 
 	@PostMapping("/signin")

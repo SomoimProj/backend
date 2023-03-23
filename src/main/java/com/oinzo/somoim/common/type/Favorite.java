@@ -4,9 +4,25 @@ import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 
 public enum Favorite {
-    SPORTS,
     GAME,
-    TRIP;
+    OUTDOOR,
+    EXERCISE,
+    HUMANITIES,
+    BUSINESS,
+    FOREIGN,
+    CULTURE,
+    MUSIC,
+    CRAFTS,
+    DANCE,
+    VOLUNTEER,
+    SOCIETY,
+    CAR,
+    PICTURE,
+    BASEBALL,
+    COOK,
+    PET,
+    FAMILY,
+    FREE;
 
     public static Favorite valueOfOrHandleException(String string) {
         try {
@@ -17,3 +33,4 @@ public enum Favorite {
     }
 
 }
+
