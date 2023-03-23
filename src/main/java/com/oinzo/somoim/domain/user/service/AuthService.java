@@ -5,20 +5,19 @@ import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.jwt.JwtProperties;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
+import com.oinzo.somoim.common.util.RedisUtil;
 import com.oinzo.somoim.domain.user.dto.SignInDto;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +25,7 @@ public class AuthService {
 
 	private final UserRepository userRepository;
 	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisUtil redisUtil;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 	private final String TOKEN_PREFIX = "RTK:";
@@ -34,7 +34,7 @@ public class AuthService {
 		return passwordEncoder.encode(password);
 	}
 
-	public void signUp(String email, String password, String passwordCheck) {
+	public Long signUp(String email, String password, String passwordCheck) {
 
 		if (userRepository.existsByEmail(email)) {
 			throw new BaseException(ErrorCode.ALREADY_EXISTS_EMAIL);
@@ -50,6 +50,8 @@ public class AuthService {
 			.build();
 
 		userRepository.save(user);
+
+		return user.getId();
 	}
 
 	public Long signIn(SignInDto signInDto) {
@@ -79,19 +81,21 @@ public class AuthService {
 	}
 
 	public void singOut(TokenDto tokenDto) {
-		if (!jwtProvider.isValidateToken(tokenDto.getAccessToken())) {
+		String accessToken = tokenDto.getAccessToken();
+
+		if (!jwtProvider.isValidateToken(accessToken)) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN);
 		}
 
-		Authentication authentication = jwtProvider.getAuthentication(tokenDto.getAccessToken());
+		Authentication authentication = jwtProvider.getAuthentication(accessToken);
 
 		String key = TOKEN_PREFIX + authentication.getName();
-
 		if (redisTemplate.opsForValue().get(key) != null) {
 			redisTemplate.delete(key);
 		}
 
-		// todo : AT 유효시간을 가져와서 블랙리스트로 저장하기
+		// 블랙리스트에 accessToken 등록
+		redisUtil.setBlackList(accessToken, "accessToken", 5);
 	}
 
 	/**
