@@ -4,9 +4,10 @@ import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
-import com.oinzo.somoim.controller.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
+import com.oinzo.somoim.domain.user.entity.User;
+import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Objects;
 public class ClubService {
 
     private final ClubRepository clubRepository;
+    private final UserRepository userRepository;
 
     public Club addClub(ClubCreateRequest request) {
         return clubRepository.save(Club.from(request));
@@ -66,32 +68,46 @@ public class ClubService {
         return club;
     }
 
-    public Page<Club> readClubByArea(String area,Pageable pageable){
-        if(area.length()<1)
-            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+    public Page<Club> readClubListByArea(Long userId, Pageable pageable){
+        String area = getAreaBy(userId);
+        if (area.isBlank()) {
+            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
+        }
         return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
     }
 
-    public Page<Club> readAllClubByArea(String area){
-        if(area.length()<1)
-            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+    public Page<Club> readAllClubListByArea(Long userId){
+        String area = getAreaBy(userId);
+        if (area.isBlank()) {
+            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
+        }
         List<Club> clubList = clubRepository.findAllByAreaLike(area);
         Pageable pageable = Pageable.ofSize(clubList.size());
         return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
     }
 
-    public Page<Club> readClubByCreateAt(String request, Pageable pageable){
-        if(request.length()<1)
-            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
+    public Page<Club> readClubListByCreateAt(Long userId, Pageable pageable){
+        String area = getAreaBy(userId);
+        if (area.isBlank()) {
+            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
+        }
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(area, pageable);
     }
 
-    public Page<Club> readAllClubByCreateAt(String request){
-        if(request.length()<1)
-            throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        List<Club> clubList = clubRepository.findAllByAreaLike(request);
+    public Page<Club> readAllClubListByCreateAt(Long userId){
+        String area = getAreaBy(userId);
+        if (area.isBlank()) {
+            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
+        }
+        List<Club> clubList = clubRepository.findAllByAreaLike(area);
         Pageable pageable = Pageable.ofSize(clubList.size());
-        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
+        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(area, pageable);
+    }
+
+    private String getAreaBy(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
+        return user.getArea();
     }
 
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){

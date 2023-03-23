@@ -1,7 +1,6 @@
 package com.oinzo.somoim;
 
 import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
-import com.oinzo.somoim.controller.dto.ClubRequestDto;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.club.service.ClubService;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,20 +52,9 @@ class ClubControllerTest {
     @DisplayName("클럽 관심사로 조회 테스트")
     void readClubByFavorite() {
         /* given */
-        /* when */;
+        /* when */
         List<Club> result = clubService.readClubListByFavorite("GAME","서울");
         /* then */
         assertTrue(1 < result.size());
-    }
-
-    @Test
-    @DisplayName("클럽 랜덤 검색 테스트")
-    void readClubByArea() {
-        /* given */
-        /* when */
-        Pageable pageable = PageRequest.of(0,10);
-        Page<Club> result = clubService.readClubByArea("서울",pageable);
-        /* then */
-        assertTrue(result.getTotalElements() > 1);
     }
 }
