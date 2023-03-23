@@ -1,5 +1,6 @@
 package com.oinzo.somoim.domain.board.dto;
 
+import com.oinzo.somoim.common.type.Category;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -12,12 +13,17 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardCreateRequest {
 
-    private Long clubId;
-    private String category;
     @NotBlank
     private String title;
     @NotBlank
     private String content;
     @URL
     private String imageUrl;
+
+    @NotNull
+    private String category;
+
+    public Category getCategoryType() {
+        return Category.valueOfOrHandleException(category);
+    }
 }

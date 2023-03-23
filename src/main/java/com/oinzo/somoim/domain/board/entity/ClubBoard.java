@@ -1,17 +1,15 @@
 package com.oinzo.somoim.domain.board.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
-import com.oinzo.somoim.controller.dto.BoardRequest;
+import com.oinzo.somoim.common.type.Category;
 import com.oinzo.somoim.domain.board.dto.BoardCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -27,10 +25,12 @@ public class ClubBoard extends BaseEntity {
     private Long clubId;
     @NotNull
     private Long userId;
-    private String category;
     @NotNull
+    @Enumerated(value = EnumType.STRING)
+    private Category category;
+    @NotBlank
     private String title;
-    @NotNull
+    @NotBlank
     private String content;
     private String imageUrl;
 
@@ -38,7 +38,7 @@ public class ClubBoard extends BaseEntity {
         return ClubBoard.builder()
                 .clubId(clubId)
                 .userId(userId)
-                .category(boardRequest.getCategory())
+                .category(boardRequest.getCategoryType())
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContent())
                 .imageUrl(boardRequest.getImageUrl())
@@ -46,7 +46,7 @@ public class ClubBoard extends BaseEntity {
     }
 
     public void updateClubBoard(BoardCreateRequest boardCreateRequest){
-        this.category = boardCreateRequest.getCategory();
+        this.category = boardCreateRequest.getCategoryType();
         this.title = boardCreateRequest.getTitle();
         this.content = boardCreateRequest.getContent();
         this.imageUrl = boardCreateRequest.getImageUrl();

@@ -2,14 +2,17 @@ package com.oinzo.somoim.domain.board.service;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.common.type.Category;
 import com.oinzo.somoim.domain.board.dto.BoardCreateRequest;
 import com.oinzo.somoim.domain.board.entity.ClubBoard;
 import com.oinzo.somoim.domain.board.repository.ClubBoardRepository;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 @Service
@@ -31,10 +34,41 @@ public class ClubBoardService {
         }
     }
 
-    public List<ClubBoard> clubBoardList(Long clubId){
+    public List<ClubBoard> clubBoardList(Long clubId,Pageable pageable){
         try{
             clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-            return clubBoardRepository.findAllByClubIdIs(clubId);
+            return clubBoardRepository.findAllByClubIdIs(clubId,pageable).getContent();
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public List<ClubBoard> allClubBoardList(Long clubId){
+        try{
+            clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+            Pageable pageable = Pageable.ofSize(clubBoardRepository.findAll().size());
+            return clubBoardRepository.findAllByClubIdIs(clubId,pageable).getContent();
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public List<ClubBoard> clubBoardListByCategory(Long clubId,String category,Pageable pageable){
+        try{
+            Category newCategory = Category.valueOfOrHandleException(category);
+            clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+            return clubBoardRepository.findAllByClubIdIsAndCategory(clubId,newCategory,pageable).getContent();
+        }catch (IllegalArgumentException e){
+            throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public List<ClubBoard> allClubBoardListByCategory(Long clubId,String category){
+        try{
+            Category newCategory = Category.valueOfOrHandleException(category);
+            clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+            Pageable pageable = Pageable.ofSize(clubBoardRepository.findAll().size());
+            return clubBoardRepository.findAllByClubIdIsAndCategory(clubId,newCategory,pageable).getContent();
         }catch (IllegalArgumentException e){
             throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
