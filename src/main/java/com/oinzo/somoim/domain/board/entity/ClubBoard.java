@@ -2,7 +2,9 @@ package com.oinzo.somoim.domain.board.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
 import com.oinzo.somoim.common.type.Category;
-import com.oinzo.somoim.domain.board.dto.BoardCreateRequest;
+import com.oinzo.somoim.controller.dto.BoardCreateRequest;
+import com.oinzo.somoim.domain.club.entity.Club;
+import com.oinzo.somoim.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,10 +23,14 @@ public class ClubBoard extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private Long clubId;
-    @NotNull
-    private Long userId;
+
+    @ManyToOne
+    @JoinColumn
+    private Club club;
+
+    @ManyToOne
+    @JoinColumn
+    private User user;
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private Category category;
@@ -34,10 +40,10 @@ public class ClubBoard extends BaseEntity {
     private String content;
     private String imageUrl;
 
-    public static ClubBoard from(BoardCreateRequest boardRequest,Long clubId, Long userId){
+    public static ClubBoard from(BoardCreateRequest boardRequest,Club club, User user){
         return ClubBoard.builder()
-                .clubId(clubId)
-                .userId(userId)
+                .club(club)
+                .user(user)
                 .category(boardRequest.getCategoryType())
                 .title(boardRequest.getTitle())
                 .content(boardRequest.getContent())

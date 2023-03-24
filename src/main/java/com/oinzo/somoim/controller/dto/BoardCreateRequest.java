@@ -1,4 +1,4 @@
-package com.oinzo.somoim.domain.board.dto;
+package com.oinzo.somoim.controller.dto;
 
 import com.oinzo.somoim.common.type.Category;
 import lombok.*;

@@ -25,8 +25,8 @@ public enum ErrorCode {
   	NO_DATA_FOUND(HttpStatus.NOT_FOUND, 40402, "해당하는 데이터를 찾을 수 없습니다."),
 	WRONG_CLUB(HttpStatus.NOT_FOUND, 40403, "해당하는 클럽을 찾을 수 없습니다."),
 	WRONG_FAVORITE(HttpStatus.NOT_FOUND, 40404, "해당하는 관심사를 찾을 수 없습니다."),
-	WRONG_BOARD(HttpStatus.NOT_FOUND, 40405, "해당하는 게시글을 찾을 수 없습니다."),
-	WRONG_CATEGORY(HttpStatus.NOT_FOUND, 40406, "해당하는 카테고리를 찾을 수 없습니다."),
+	WRONG_BOARD(HttpStatus.NOT_FOUND, 40430, "해당하는 게시글을 찾을 수 없습니다."),
+	WRONG_CATEGORY(HttpStatus.NOT_FOUND, 40431, "해당하는 카테고리를 찾을 수 없습니다."),
 
 	/* 500 Internal Server Error */
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50000, "예상치 못한 오류가 발생했습니다."),
