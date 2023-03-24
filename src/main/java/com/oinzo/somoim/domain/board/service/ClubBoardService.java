@@ -28,7 +28,7 @@ public class ClubBoardService {
     private final UserRepository userRepository;
 
     @Transactional
-    public BoardResponse addBoard(@RequestBody BoardCreateRequest request, Long clubId, Long userId){
+    public BoardResponse addBoard(BoardCreateRequest request, Long clubId, Long userId){
         User user = userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
         Club club = clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
         return BoardResponse.from(clubBoardRepository.save(ClubBoard.from(request,club,user)));
