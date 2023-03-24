@@ -5,7 +5,7 @@ import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.jwt.TokenService;
 import com.oinzo.somoim.controller.dto.GoogleLoginRequest;
 import com.oinzo.somoim.controller.dto.TokenResponse;
-import com.oinzo.somoim.controller.dto.kakaoLoginRequest;
+import com.oinzo.somoim.controller.dto.KakaoLoginRequest;
 import com.oinzo.somoim.domain.user.service.OAuth2Service;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -26,7 +26,7 @@ public class OAuth2Controller {
 
 	@PostMapping("/kakao")
 	public TokenResponse kakaoLogin(
-		@RequestBody @Valid kakaoLoginRequest request,
+		@RequestBody @Valid KakaoLoginRequest request,
 		HttpServletResponse response) {
 		Long userId = oAuth2Service.kakaoLogin(request.getCode());
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
