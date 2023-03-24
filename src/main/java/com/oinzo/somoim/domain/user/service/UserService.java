@@ -34,8 +34,8 @@ public class UserService {
 		return UserInfoResponse.from(savedUser);
 	}
 
-	public void updateFavorite(Long userId, String favorteString) {
-		Favorite favorite = Favorite.valueOfOrHandleException(favorteString);
+	public void updateFavorite(Long userId, String favoriteString) {
+		Favorite favorite = Favorite.valueOfOrHandleException(favoriteString);
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));

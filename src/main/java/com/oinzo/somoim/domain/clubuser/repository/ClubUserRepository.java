@@ -1,14 +1,13 @@
-package com.oinzo.somoim.domain.member.repository;
+package com.oinzo.somoim.domain.clubuser.repository;
 
 import com.oinzo.somoim.domain.club.entity.Club;
-import com.oinzo.somoim.domain.member.entity.Member;
+import com.oinzo.somoim.domain.clubuser.entity.ClubUser;
 import com.oinzo.somoim.domain.user.entity.User;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface ClubUserRepository extends JpaRepository<ClubUser, Long> {
 
 	Boolean existsByUserAndClub(User user, Club club);
 

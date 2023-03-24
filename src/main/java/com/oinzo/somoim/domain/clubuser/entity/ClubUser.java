@@ -1,7 +1,7 @@
-package com.oinzo.somoim.domain.member.entity;
+package com.oinzo.somoim.domain.clubuser.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
-import com.oinzo.somoim.common.type.MemberLevel;
+import com.oinzo.somoim.common.type.ClubUserLevel;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.user.entity.User;
 import javax.persistence.Entity;
@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Entity
-public class Member extends BaseEntity {
+public class ClubUser extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private MemberLevel level;
+	private ClubUserLevel level;
 	private String introduction;
 
 	@ManyToOne
@@ -38,12 +38,12 @@ public class Member extends BaseEntity {
 	@JoinColumn
 	private Club club;
 
-	public static Member createMember(User user, Club club, String introduction) {
+	public static ClubUser createClubUser(User user, Club club, String introduction) {
 		club.plusMemberCnt();
 
-		return Member.builder()
+		return ClubUser.builder()
 			.introduction(introduction)
-			.level(MemberLevel.MEMBER)
+			.level(ClubUserLevel.MEMBER)
 			.user(user)
 			.club(club)
 			.build();

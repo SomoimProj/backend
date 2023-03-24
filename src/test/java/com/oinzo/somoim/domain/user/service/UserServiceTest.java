@@ -123,12 +123,6 @@ class UserServiceTest {
 	@Test
 	public void testUpdateFavorite_wrongFavorite() {
 		// given
-		User mockUser = User.builder()
-			.id(1L)
-			.build();
-		given(userRepository.findById(anyLong()))
-			.willReturn(Optional.of(mockUser));
-
 		// when
 		BaseException exception = assertThrows(BaseException.class,
 			() -> userService.updateFavorite(1L, "WRONG_FAVORITE"));

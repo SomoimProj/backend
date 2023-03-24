@@ -1,6 +1,6 @@
 package com.oinzo.somoim.common.type;
 
-public enum MemberLevel {
+public enum ClubUserLevel {
 	MANAGER,
 	MEMBER
 }
