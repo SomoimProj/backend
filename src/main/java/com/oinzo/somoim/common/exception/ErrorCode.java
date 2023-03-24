@@ -11,7 +11,9 @@ public enum ErrorCode {
 	/* 400 Bad Request */
 	INVALID_TOKEN(HttpStatus.BAD_REQUEST, 40002, "잘못된 토큰입니다."),
 	INVALID_KAKAO_CODE(HttpStatus.BAD_REQUEST, 40003, "올바르지 않은 카카오 인가 코드입니다."),
-  	NO_SEARCH_NAME(HttpStatus.BAD_REQUEST, 40004, "검색 키워드를 입력해주십시오."),
+  NO_SEARCH_NAME(HttpStatus.BAD_REQUEST, 40004, "검색 키워드를 입력해주십시오."),
+	CLUB_LIMIT_OVER(HttpStatus.BAD_REQUEST, 40005, "해당 클럽의 멤버 정원이 다 찼습니다."),
+	ALREADY_CLUB_MEMBER(HttpStatus.BAD_REQUEST, 40006, "이미 해당 클럽의 멤버입니다."),
 	WRONG_VERIFICATION_CODE(HttpStatus.BAD_REQUEST, 40007, "입력한 인증번호가 일치하지 않습니다."),
 	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40008, "비밀번호 확인이 일치하지 않습니다."),
 	VALIDATION_FAILED(HttpStatus.BAD_REQUEST, 40009, "입력값 유효성 검사에 실패하였습니다."),
