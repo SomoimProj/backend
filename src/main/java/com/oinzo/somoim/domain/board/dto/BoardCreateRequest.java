@@ -19,7 +19,6 @@ public class BoardCreateRequest {
     private String content;
     @URL
     private String imageUrl;
-
     @NotNull
     private String category;
 
