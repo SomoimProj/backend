@@ -16,6 +16,7 @@ public enum ErrorCode {
 	ALREADY_CLUB_MEMBER(HttpStatus.BAD_REQUEST, 40006, "이미 해당 클럽의 멤버입니다."),
 	WRONG_VERIFICATION_CODE(HttpStatus.BAD_REQUEST, 40007, "입력한 인증번호가 일치하지 않습니다."),
 	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40008, "비밀번호 확인이 일치하지 않습니다."),
+	VALIDATION_FAILED(HttpStatus.BAD_REQUEST, 40009, "입력값 유효성 검사에 실패하였습니다."),
 
 	/* 401 Unauthorized */
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),
@@ -23,6 +24,7 @@ public enum ErrorCode {
 	EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40161, "만료된 리프레쉬 토큰입니다."),
 	LOGOUT_USER(HttpStatus.UNAUTHORIZED, 40162, "로그아웃된 사용자입니다."),
 	WRONG_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40163, "리프레쉬 토큰 정보가 유효하지 않습니다."),
+
 	/* 403 Forbidden */
 	FORBIDDEN_REQUEST(HttpStatus.FORBIDDEN, 40300, "해당 요청에 대한 권한이 없습니다."),
 

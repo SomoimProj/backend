@@ -1,12 +1,18 @@
 package com.oinzo.somoim.common.exception;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -15,10 +21,25 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(BaseException.class)
 	protected ResponseEntity<ErrorResponse> handleBaseException(BaseException e) {
-		log.warn("message: {}, detail: {}", e.getMessage(), e.getDetail(), e);
+		log.warn("message: {}, detail: {}", e.getErrorCode().getMessage(), e.getDetail(), e);
 		return ResponseEntity
 			.status(e.getHttpStatus())
 			.body(new ErrorResponse(e.getErrorCode(), e.getDetail()));
+	}
+
+	// @Valid에서 binding error 발생
+	@Override
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
+		HttpHeaders headers, HttpStatus status, WebRequest request) {
+		List<String> params = new ArrayList<>();
+		for (FieldError error : e.getBindingResult().getFieldErrors()) {
+			params.add(error.getField() + ": " + error.getDefaultMessage());
+		}
+		String errorMessage = String.join(", ", params);
+
+		return ResponseEntity
+			.status(HttpStatus.BAD_REQUEST)
+			.body(new ErrorResponse(ErrorCode.VALIDATION_FAILED, errorMessage));
 	}
 
 	// 디버깅을 위해 주석 처리
