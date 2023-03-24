@@ -28,4 +28,15 @@ public class ClubAlbumController {
         if(pageable.getPageSize()==1) return clubAlbumService.readAllAlbum(clubId);
         return clubAlbumService.readAllAlbumPaging(clubId,pageable);
     }
+
+    @GetMapping("/{albumId}")
+    public ClubAlbum readAlbum(@PathVariable Long albumId){
+        return clubAlbumService.readOneAlbum(albumId);
+    }
+
+    @DeleteMapping("/{albumId}")
+    public void deleteAlbum(@PathVariable Long albumId,
+                            @AuthenticationPrincipal Long userId){
+        clubAlbumService.deleteAlbum(albumId,userId);
+    }
 }

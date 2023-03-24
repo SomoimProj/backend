@@ -30,6 +30,9 @@ public enum ErrorCode {
 	WRONG_CLUB(HttpStatus.NOT_FOUND, 40403, "해당하는 클럽을 찾을 수 없습니다."),
 	WRONG_FAVORITE(HttpStatus.NOT_FOUND, 40404, "해당하는 관심사를 찾을 수 없습니다."),
 
+
+	WRONG_ALBUM(HttpStatus.NOT_FOUND, 40407, "해당하는 사진을 찾을 수 없습니다."),
+
 	/* 409 Conflict */
 	ALREADY_EXISTS_EMAIL(HttpStatus.CONFLICT, 40901, "이미 가입된 이메일 입니다."),
 
