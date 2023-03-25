@@ -23,16 +23,14 @@ public class ClubUserService {
 
 	@Transactional
 	public void joinClub(Long userId, Long clubId, String introduction) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
+		// 이미 가입된 회원인지 확인
+		if (clubUserRepository.existsByUser_IdAndClub_Id(userId, clubId)) {
+			throw new BaseException(ErrorCode.ALREADY_CLUB_MEMBER,
+				"userId=" + userId + ", clubId=" + clubId);
+		}
+
 		Club club = clubRepository.findById(clubId)
 			.orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId));
-
-		// 이미 가입된 회원인지 확인
-		if (clubUserRepository.existsByUserAndClub(user, club)) {
-			throw new BaseException(ErrorCode.ALREADY_CLUB_MEMBER,
-				"userId=" + userId + ", clubId" + clubId);
-		}
 
 		// 멤버 정원이 꽉 찼는지 확인
 		if (club.getMemberLimit() == club.getMemberCnt()) {
@@ -41,6 +39,8 @@ public class ClubUserService {
 		}
 
 		// 클럽 멤버로 등록
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
 		ClubUser clubUser = ClubUser.createClubUser(user, club, introduction);
 		clubUserRepository.save(clubUser);
 	}

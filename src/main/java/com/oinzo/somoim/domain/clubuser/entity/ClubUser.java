@@ -1,5 +1,7 @@
 package com.oinzo.somoim.domain.clubuser.entity;
 
+import static javax.persistence.FetchType.LAZY;
+
 import com.oinzo.somoim.common.entity.BaseEntity;
 import com.oinzo.somoim.common.type.ClubUserLevel;
 import com.oinzo.somoim.domain.club.entity.Club;
@@ -30,11 +32,11 @@ public class ClubUser extends BaseEntity {
 	private ClubUserLevel level;
 	private String introduction;
 
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn
 	private User user;
 
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn
 	private Club club;
 
