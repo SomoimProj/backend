@@ -1,4 +1,4 @@
-package com.oinzo.somoim.domain.club.dto;
+package com.oinzo.somoim.controller.dto;
 
 import com.oinzo.somoim.common.type.Favorite;
 import javax.validation.constraints.NotBlank;

@@ -3,8 +3,8 @@ package com.oinzo.somoim.domain.club.service;
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
-import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
-import com.oinzo.somoim.controller.dto.ClubRequestDto;
+import com.oinzo.somoim.controller.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import lombok.AllArgsConstructor;
@@ -23,11 +23,11 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
 
-    public Club addClub(ClubCreateRequest request) {
-        return clubRepository.save(Club.from(request));
+    public ClubResponse addClub(ClubCreateRequest request) {
+        return ClubResponse.from(clubRepository.save(Club.from(request)));
     }
 
-    public List<Club> readClubListByName(String name){
+    public List<ClubResponse> readClubListByName(String name){
         try{
             List<Club> result = clubRepository.findAllByNameContaining(name);
             if (name.length() < 1) {
@@ -35,13 +35,14 @@ public class ClubService {
             } else if (result.isEmpty()) {
                 throw new BaseException(ErrorCode.NO_DATA_FOUND);
             }
-            return clubRepository.findAllByNameContaining(name);
+            List<Club> clubList = clubRepository.findAllByNameContaining(name);
+            return ClubResponse.listToBoardResponse(clubList);
         } catch (IllegalArgumentException e) {
             throw new BaseException(ErrorCode.NO_SEARCH_NAME);
         }
     }
 
-    public List<Club> readClubListByFavorite(String favorite,String area){
+    public List<ClubResponse> readClubListByFavorite(String favorite,String area){
         Favorite newFavorite = Favorite.valueOfOrHandleException(favorite);
         List<Club> result = clubRepository.findAllByFavoriteAndAreaContaining(newFavorite,area);
         if (favorite.length()<1)
@@ -50,48 +51,52 @@ public class ClubService {
             if (result.isEmpty()) {
                 throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
             } else {
-                return result;
+                return ClubResponse.listToBoardResponse(result);
             }
         } catch (RuntimeException e)  {
             throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         }
     }
 
-    public Club readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
+    public ClubResponse readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
         Club club = clubRepository.findById(clubId)
             .orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId));
 
         Integer newCnt = updateCookie(response, countCookie, clubId, club.getViewCnt());
         updateCnt(club, newCnt);
-        return club;
+        return ClubResponse.from(club);
     }
 
-    public Page<Club> readClubByArea(String area,Pageable pageable){
+    public List<ClubResponse> readClubByArea(String area,Pageable pageable){
         if(area.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
+        List<Club> clubList = clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable).getContent();
+        return ClubResponse.listToBoardResponse(clubList);
     }
 
-    public Page<Club> readAllClubByArea(String area){
+    public List<ClubResponse> readAllClubByArea(String area){
         if(area.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         List<Club> clubList = clubRepository.findAllByAreaLike(area);
         Pageable pageable = Pageable.ofSize(clubList.size());
-        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
+        List<Club> result = clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable).getContent();
+        return ClubResponse.listToBoardResponse(result);
     }
 
-    public Page<Club> readClubByCreateAt(String request, Pageable pageable){
+    public List<ClubResponse> readClubByCreateAt(String request, Pageable pageable){
         if(request.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
+        List<Club> clubList = clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable).getContent();
+        return ClubResponse.listToBoardResponse(clubList);
     }
 
-    public Page<Club> readAllClubByCreateAt(String request){
+    public List<ClubResponse> readAllClubByCreateAt(String request){
         if(request.length()<1)
             throw  new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
         List<Club> clubList = clubRepository.findAllByAreaLike(request);
         Pageable pageable = Pageable.ofSize(clubList.size());
-        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable);
+        List<Club> result = clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(request,pageable).getContent();
+        return ClubResponse.listToBoardResponse(result);
     }
 
     public Integer updateCookie(HttpServletResponse response, Cookie countCookie, Long clubId, Integer clubCnt){
