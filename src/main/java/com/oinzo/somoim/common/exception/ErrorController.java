@@ -1,5 +1,7 @@
 package com.oinzo.somoim.common.exception;
 
+import com.oinzo.somoim.common.response.ErrorResponse;
+import com.oinzo.somoim.common.response.ResponseUtil;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -24,7 +25,7 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 		log.warn("message: {}, detail: {}", e.getErrorCode().getMessage(), e.getDetail(), e);
 		return ResponseEntity
 			.status(e.getHttpStatus())
-			.body(new ErrorResponse(e.getErrorCode(), e.getDetail()));
+			.body(ResponseUtil.error(e.getErrorCode(), e.getDetail()));
 	}
 
 	// @Valid에서 binding error 발생
@@ -39,7 +40,7 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 
 		return ResponseEntity
 			.status(HttpStatus.BAD_REQUEST)
-			.body(new ErrorResponse(ErrorCode.VALIDATION_FAILED, errorMessage));
+			.body(ResponseUtil.error(ErrorCode.VALIDATION_FAILED, errorMessage));
 	}
 
 	// 디버깅을 위해 주석 처리
@@ -47,6 +48,6 @@ public class ErrorController extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(RuntimeException.class)
 	protected ErrorResponse handleRuntimeException(RuntimeException e) {
 		log.error(e.getMessage(), e);
-		return new ErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
+		return ResponseUtil.error(ErrorCode.INTERNAL_SERVER_ERROR);
 	}*/
 }

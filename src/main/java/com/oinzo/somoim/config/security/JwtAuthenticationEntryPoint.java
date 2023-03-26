@@ -2,7 +2,8 @@ package com.oinzo.somoim.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oinzo.somoim.common.exception.ErrorCode;
-import com.oinzo.somoim.common.exception.ErrorResponse;
+import com.oinzo.somoim.common.response.ErrorResponse;
+import com.oinzo.somoim.common.response.ResponseUtil;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +56,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		response.setContentType("application/json;charset=UTF-8");
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-		ErrorResponse errorResponse = new ErrorResponse(errorCode);
+		ErrorResponse errorResponse = ResponseUtil.error(errorCode);
 		String responseJson = objectMapper.writeValueAsString(errorResponse);
 
 		response.getWriter().print(responseJson);	// 한글 출력을 위해 getWriter() 사용
