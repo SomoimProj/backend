@@ -77,23 +77,27 @@ public class EmailService {
 	/**
 	 * 메일 전송
 	 */
-	public String sendMail(String email) throws MessagingException {
+	public String sendVerificationCode(String email) {
 		// 유저테이블에 이메일 존재여부 체크
 		if (userRepository.findByEmail(email).isPresent()) {
 			throw new BaseException(ErrorCode.ALREADY_EXISTS_EMAIL);
 		}
 
-		String verificationCode = createCode();
-		MimeMessage mailForm = createMailForm(email, verificationCode);
-		mailSender.send(mailForm);
+		try {
+			String verificationCode = createCode();
+			MimeMessage mailForm = createMailForm(email, verificationCode);
+			mailSender.send(mailForm);
 
-		redisTemplate.opsForValue().set(
-			EMAIL_PREFIX + email,
-			verificationCode,
-			Duration.ofSeconds(VERIFICATION_CODE_EXPIRATION_TIME)
-		);
+			redisTemplate.opsForValue().set(
+				EMAIL_PREFIX + email,
+				verificationCode,
+				Duration.ofSeconds(VERIFICATION_CODE_EXPIRATION_TIME)
+			);
 
-		return verificationCode;
+			return verificationCode;
+		} catch (MessagingException e) {
+			throw new BaseException(ErrorCode.FAILED_SEND_EMAIL, e.getMessage());
+		}
 	}
 
 	/**

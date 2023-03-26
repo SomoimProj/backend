@@ -11,7 +11,6 @@ import com.oinzo.somoim.domain.user.dto.SignInDto;
 import com.oinzo.somoim.domain.user.dto.SignUpDto;
 import com.oinzo.somoim.domain.user.email.EmailService;
 import com.oinzo.somoim.domain.user.service.AuthService;
-import javax.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +29,8 @@ public class AuthController {
 	private final TokenService tokenService;
 
 	@PostMapping("/email/send")
-	public SuccessResponse<String> sendMail(@RequestBody EmailDto emailDto) throws MessagingException {
-		String verificationCode = emailService.sendMail(emailDto.getEmail());
+	public SuccessResponse<String> sendMail(@RequestBody EmailDto emailDto) {
+		String verificationCode = emailService.sendVerificationCode(emailDto.getEmail());
 		return ResponseUtil.success(verificationCode);
 	}
 
