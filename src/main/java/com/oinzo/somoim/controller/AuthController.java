@@ -5,7 +5,9 @@ import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.jwt.TokenService;
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
+import com.oinzo.somoim.controller.dto.CheckResponse;
 import com.oinzo.somoim.controller.dto.TokenResponse;
+import com.oinzo.somoim.controller.dto.VerificationCodeResponse;
 import com.oinzo.somoim.domain.user.dto.EmailDto;
 import com.oinzo.somoim.domain.user.dto.SignInDto;
 import com.oinzo.somoim.domain.user.dto.SignUpDto;
@@ -29,15 +31,17 @@ public class AuthController {
 	private final TokenService tokenService;
 
 	@PostMapping("/email/send")
-	public SuccessResponse<String> sendMail(@RequestBody EmailDto emailDto) {
-		String verificationCode = emailService.sendVerificationCode(emailDto.getEmail());
-		return ResponseUtil.success(verificationCode);
+	public SuccessResponse<VerificationCodeResponse> sendMail(@RequestBody EmailDto emailDto) {
+		String code = emailService.sendVerificationCode(emailDto.getEmail());
+		VerificationCodeResponse verificationCodeResponse = new VerificationCodeResponse(code);
+		return ResponseUtil.success(verificationCodeResponse);
 	}
 
 	@PostMapping("/email/check")
-	public SuccessResponse<Boolean> checkCode(@RequestBody EmailDto emailDto) {
+	public SuccessResponse<CheckResponse> checkCode(@RequestBody EmailDto emailDto) {
 		boolean result = emailService.checkVerificationCode(emailDto);
-		return ResponseUtil.success(result);
+		CheckResponse checkResponse = new CheckResponse(result);
+		return ResponseUtil.success(checkResponse);
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
