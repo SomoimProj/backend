@@ -22,7 +22,6 @@ public class UserService {
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
 
 		return UserInfoResponse.from(user);
-
 	}
 
 	public UserInfoResponse updateUserInfo(Long userId, UserInfoRequest request) {

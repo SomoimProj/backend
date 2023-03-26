@@ -2,7 +2,6 @@ package com.oinzo.somoim.domain.clubuser.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -56,12 +55,12 @@ class ClubUserServiceTest {
 			.memberCnt(0)
 			.favorite(Favorite.GAME)
 			.build();
-		given(userRepository.findById(anyLong()))
-			.willReturn(Optional.of(mockUser));
+		given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(), anyLong()))
+			.willReturn(false);
 		given(clubRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockClub));
-		given(clubUserRepository.existsByUserAndClub(any(), any()))
-			.willReturn(false);
+		given(userRepository.findById(anyLong()))
+			.willReturn(Optional.of(mockUser));
 
 		ArgumentCaptor<ClubUser> captor = ArgumentCaptor.forClass(ClubUser.class);
 
@@ -81,9 +80,6 @@ class ClubUserServiceTest {
 	@Test
 	void testJoinClub_memberLimitOver() {
 		// given
-		User mockUser = User.builder()
-			.id(1L)
-			.build();
 		Club mockClub = Club.builder()
 			.id(1L)
 			.name("게임 클럽")
@@ -93,12 +89,10 @@ class ClubUserServiceTest {
 			.memberCnt(1)
 			.favorite(Favorite.GAME)
 			.build();
-		given(userRepository.findById(anyLong()))
-			.willReturn(Optional.of(mockUser));
+		given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(), anyLong()))
+			.willReturn(false);
 		given(clubRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockClub));
-		given(clubUserRepository.existsByUserAndClub(any(), any()))
-			.willReturn(false);
 
 		// when
 		String introduction = "안녕하세요 게임 클럽에 가입합니다.";
@@ -112,23 +106,7 @@ class ClubUserServiceTest {
 	@Test
 	void testJoinClub_alreadyMember() {
 		// given
-		User mockUser = User.builder()
-			.id(1L)
-			.build();
-		Club mockClub = Club.builder()
-			.id(1L)
-			.name("게임 클럽")
-			.description("열정맨 게임 클럽입니다.")
-			.area("청파동")
-			.memberLimit(5)
-			.memberCnt(1)
-			.favorite(Favorite.GAME)
-			.build();
-		given(userRepository.findById(anyLong()))
-			.willReturn(Optional.of(mockUser));
-		given(clubRepository.findById(anyLong()))
-			.willReturn(Optional.of(mockClub));
-		given(clubUserRepository.existsByUserAndClub(any(), any()))
+		given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(), anyLong()))
 			.willReturn(true);
 
 		// when

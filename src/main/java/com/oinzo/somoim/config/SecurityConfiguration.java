@@ -44,7 +44,7 @@ public class SecurityConfiguration {
 
 			.and()
 			.authorizeRequests()
-			.antMatchers("/users/oauth/**", "/users/auth/**").permitAll()
+			.antMatchers("/users/oauth/**", "/users/auth/**", "/upload-url").permitAll()
 			.anyRequest().hasRole("USER")
 
 			.and()

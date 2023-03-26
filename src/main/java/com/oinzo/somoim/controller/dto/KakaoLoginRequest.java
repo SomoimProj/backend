@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class kakaoLoginRequest {
+public class KakaoLoginRequest {
 
 	@NotBlank
 	private String code;
