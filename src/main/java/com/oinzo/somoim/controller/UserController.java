@@ -1,5 +1,7 @@
 package com.oinzo.somoim.controller;
 
+import com.oinzo.somoim.common.response.ResponseUtil;
+import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.controller.dto.FavoriteUpdateRequest;
 import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.controller.dto.UserInfoResponse;
@@ -21,21 +23,24 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping
-	public UserInfoResponse readUserInfo(@AuthenticationPrincipal Long userId) {
-		return userService.readUserInfo(userId);
+	public SuccessResponse<UserInfoResponse> readUserInfo(@AuthenticationPrincipal Long userId) {
+		UserInfoResponse userInfoResponse = userService.readUserInfo(userId);
+		return ResponseUtil.success(userInfoResponse);
 	}
 
 	@PostMapping
-	public UserInfoResponse updateUserInfo(
+	public SuccessResponse<UserInfoResponse> updateUserInfo(
 		@AuthenticationPrincipal Long userId,
 		@RequestBody @Valid UserInfoRequest request) {
-		return userService.updateUserInfo(userId, request);
+		UserInfoResponse userInfoResponse = userService.updateUserInfo(userId, request);
+		return ResponseUtil.success(userInfoResponse);
 	}
 
 	@PostMapping("/favorite")
-	public void updateFavorite(
+	public SuccessResponse<?> updateFavorite(
 		@AuthenticationPrincipal Long userId,
 		@RequestBody @Valid FavoriteUpdateRequest request) {
 		userService.updateFavorite(userId, request.getFavorite());
+		return ResponseUtil.success();
 	}
 }

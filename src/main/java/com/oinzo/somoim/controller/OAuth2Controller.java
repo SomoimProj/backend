@@ -3,6 +3,8 @@ package com.oinzo.somoim.controller;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.jwt.TokenService;
+import com.oinzo.somoim.common.response.ResponseUtil;
+import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.controller.dto.GoogleLoginRequest;
 import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.controller.dto.kakaoLoginRequest;
@@ -25,24 +27,30 @@ public class OAuth2Controller {
 	private final TokenService tokenService;
 
 	@PostMapping("/kakao")
-	public TokenResponse kakaoLogin(
+	public SuccessResponse<TokenResponse> kakaoLogin(
 		@RequestBody @Valid kakaoLoginRequest request,
 		HttpServletResponse response) {
 		Long userId = oAuth2Service.kakaoLogin(request.getCode());
+
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 		String refreshToken = tokenDto.getRefreshToken();
+
 		tokenService.setRefreshTokenCookie(refreshToken, response);
-		return TokenResponse.from(tokenDto);
+		TokenResponse tokenResponse = TokenResponse.from(tokenDto);
+		return ResponseUtil.success(tokenResponse);
 	}
 
 	@PostMapping("/google")
-	public TokenResponse googleLogin(
+	public SuccessResponse<TokenResponse> googleLogin(
 		@RequestBody @Valid GoogleLoginRequest request,
 		HttpServletResponse response) {
 		Long userId = oAuth2Service.googleLogin(request.getCode());
+
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 		String refreshToken = tokenDto.getRefreshToken();
+
 		tokenService.setRefreshTokenCookie(refreshToken, response);
-		return TokenResponse.from(tokenDto);
+		TokenResponse tokenResponse = TokenResponse.from(tokenDto);
+		return ResponseUtil.success(tokenResponse);
 	}
 }

@@ -40,7 +40,7 @@ public class ClubBoard extends BaseEntity {
     private String content;
     private String imageUrl;
 
-    public static ClubBoard from(BoardCreateRequest boardRequest,Club club, User user){
+    public static ClubBoard from(BoardCreateRequest boardRequest, Club club, User user){
         return ClubBoard.builder()
                 .club(club)
                 .user(user)

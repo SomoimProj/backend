@@ -1,6 +1,8 @@
 package com.oinzo.somoim.controller;
 
 
+import com.oinzo.somoim.common.response.ResponseUtil;
+import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
@@ -22,46 +24,56 @@ public class ClubController {
     private final ClubService clubService;
 
     @PostMapping()
-    public Club addClub(@RequestBody @Valid ClubCreateRequest request){
-        return clubService.addClub(request);
+    public SuccessResponse<Club> addClub(@RequestBody @Valid ClubCreateRequest request) {
+        Club club = clubService.addClub(request);
+        return ResponseUtil.success(club);
     }
 
     @GetMapping("/search")
-    public List<Club> readClubListByName(@RequestParam String name) {
-        return clubService.readClubListByName(name);
+    public SuccessResponse<List<Club>> readClubListByName(@RequestParam String name) {
+        List<Club> clubs = clubService.readClubListByName(name);
+        return ResponseUtil.success(clubs);
     }
 
     @GetMapping("/favorite")
-    public List<Club> readClubByListFavorite(@RequestParam String favorite, String area){
-        return clubService.readClubListByFavorite(favorite, area);
+    public SuccessResponse<List<Club>> readClubByListFavorite(@RequestParam String favorite, String area) {
+        List<Club> clubs = clubService.readClubListByFavorite(favorite, area);
+        return ResponseUtil.success(clubs);
     }
 
     @GetMapping("/{clubId}")
-    public Club readClubById(
+    public SuccessResponse<Club> readClubById(
         @PathVariable("clubId") Long clubId,
         HttpServletResponse response,
-        @CookieValue(value="count", required=false) Cookie countCookie){
-        return clubService.readClubById(clubId, response, countCookie);
+        @CookieValue(value="count", required=false) Cookie countCookie) {
+        Club club = clubService.readClubById(clubId, response, countCookie);
+        return ResponseUtil.success(club);
     }
 
     @GetMapping("/random")
-    public List<Club> readClubListByArea(
+    public SuccessResponse<List<Club>> readClubListByArea(
         @AuthenticationPrincipal Long userId,
-        @PageableDefault(size = 10) Pageable pageable){
+        @PageableDefault(size = 10) Pageable pageable) {
+        List<Club> clubs;
         if (pageable.getPageSize() == 1) {
-            return clubService.readAllClubListByArea(userId).getContent();
+            clubs = clubService.readAllClubListByArea(userId).getContent();
+        } else {
+            clubs = clubService.readClubListByArea(userId, pageable).getContent();
         }
-        return clubService.readClubListByArea(userId, pageable).getContent();
+        return ResponseUtil.success(clubs);
     }
 
     @GetMapping("/newclub")
-    public List<Club> readClubListByCreateAt(
+    public SuccessResponse<List<Club>> readClubListByCreateAt(
         @AuthenticationPrincipal Long userId,
-        @PageableDefault(size = 10) Pageable pageable){
+        @PageableDefault(size = 10) Pageable pageable) {
+        List<Club> clubs;
         if (pageable.getPageSize() == 1) {
-            return clubService.readAllClubListByCreateAt(userId).getContent();
+            clubs = clubService.readAllClubListByCreateAt(userId).getContent();
+        } else {
+            clubs = clubService.readClubListByCreateAt(userId, pageable).getContent();
         }
-        return clubService.readClubListByCreateAt(userId, pageable).getContent();
+        return ResponseUtil.success(clubs);
     }
 
 }
