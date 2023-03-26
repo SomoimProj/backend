@@ -1,10 +1,13 @@
 package com.oinzo.somoim.domain.user.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
+import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.common.type.SocialType;
+import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.domain.user.dto.GoogleUserInfoDto;
 import com.oinzo.somoim.domain.user.dto.KakaoUserInfoDto;
+import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -28,13 +31,14 @@ public class User extends BaseEntity {
 	private Long id;
 
 	private String name;
-	private String birth;
+	private LocalDate birth;
 	@Enumerated(value = EnumType.STRING)
 	private Gender gender;
 	private String area;
 	private String introduction;
 	private String profileUrl;
-	private String favorite;
+	@Enumerated(value = EnumType.STRING)
+	private Favorite favorite;
 
 	private String email;
 	private String password;
@@ -60,5 +64,19 @@ public class User extends BaseEntity {
 			.name(googleUserInfoDto.getName())
 			.profileUrl(googleUserInfoDto.getProfileUrl())
 			.build();
+	}
+
+	public void updateUserInfo(UserInfoRequest request) {
+		this.name = request.getName();
+		this.area = request.getArea();
+		this.birth = LocalDate.parse(request.getBirth());
+		this.gender = request.getGender();
+		this.area = request.getArea();
+		this.introduction = request.getIntroduction();
+		this.profileUrl = request.getProfileUrl();
+	}
+
+	public void updateFavorite(Favorite favorite) {
+		this.favorite = favorite;
 	}
 }

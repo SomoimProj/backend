@@ -36,8 +36,8 @@ public class Club extends BaseEntity {
 
     private int viewCnt;
 
-    public Club setCnt(int cnt) {
-        this.viewCnt = cnt;
+    public Club setViewCnt(int viewCnt) {
+        this.viewCnt = viewCnt;
         return this;
     }
 
@@ -52,6 +52,14 @@ public class Club extends BaseEntity {
                 .favorite(clubCreateRequest.getFavoriteType())
                 .viewCnt(0)
                 .build();
+    }
+
+    public void plusMemberCnt() {
+        memberCnt++;
+    }
+
+    public void minusMemberCnt() {
+        memberCnt--;
     }
 
 }
