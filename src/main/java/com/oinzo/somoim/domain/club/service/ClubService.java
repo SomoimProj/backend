@@ -30,36 +30,24 @@ public class ClubService {
     }
 
     public List<Club> readClubListByName(String name){
-        try{
-            List<Club> result = clubRepository.findAllByNameContaining(name);
-            if (name.length() < 1) {
-                throw new BaseException(ErrorCode.NO_SEARCH_NAME);
-            } else if (result.isEmpty()) {
-                throw new BaseException(ErrorCode.NO_DATA_FOUND);
-            }
-            return clubRepository.findAllByNameContaining(name);
-        } catch (IllegalArgumentException e) {
+        if (name.isBlank()) {
             throw new BaseException(ErrorCode.NO_SEARCH_NAME);
         }
+        return clubRepository.findAllByNameContaining(name);
     }
 
-    public List<Club> readClubListByFavorite(String favorite,String area){
+    public List<Club> readClubListByFavorite(Long userId, String favorite){
         Favorite newFavorite = Favorite.valueOfOrHandleException(favorite);
-        List<Club> result = clubRepository.findAllByFavoriteAndAreaContaining(newFavorite,area);
-        if (favorite.length()<1)
-            throw new BaseException(ErrorCode.NO_SEARCH_NAME,ErrorCode.NO_SEARCH_NAME.getMessage());
-        try{
-            if (result.isEmpty()) {
-                throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
-            } else {
-                return result;
-            }
-        } catch (RuntimeException e)  {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND,ErrorCode.NO_DATA_FOUND.getMessage());
+
+        String area = getAreaBy(userId);
+        if (area.isBlank()) {
+            throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
+
+        return clubRepository.findAllByFavoriteAndAreaContaining(newFavorite, area);
     }
 
-    public Club readClubById(Long clubId,HttpServletResponse response, Cookie countCookie ){
+    public Club readClubById(Long clubId,HttpServletResponse response, Cookie countCookie){
         Club club = clubRepository.findById(clubId)
             .orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId));
 
@@ -71,36 +59,16 @@ public class ClubService {
     public Page<Club> readClubListByArea(Long userId, Pageable pageable){
         String area = getAreaBy(userId);
         if (area.isBlank()) {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
+            throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
-        return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
-    }
-
-    public Page<Club> readAllClubListByArea(Long userId){
-        String area = getAreaBy(userId);
-        if (area.isBlank()) {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
-        }
-        List<Club> clubList = clubRepository.findAllByAreaLike(area);
-        Pageable pageable = Pageable.ofSize(clubList.size());
         return clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable);
     }
 
     public Page<Club> readClubListByCreateAt(Long userId, Pageable pageable){
         String area = getAreaBy(userId);
         if (area.isBlank()) {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
+            throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
-        return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(area, pageable);
-    }
-
-    public Page<Club> readAllClubListByCreateAt(Long userId){
-        String area = getAreaBy(userId);
-        if (area.isBlank()) {
-            throw new BaseException(ErrorCode.NO_DATA_FOUND, ErrorCode.NO_DATA_FOUND.getMessage());
-        }
-        List<Club> clubList = clubRepository.findAllByAreaLike(area);
-        Pageable pageable = Pageable.ofSize(clubList.size());
         return clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(area, pageable);
     }
 

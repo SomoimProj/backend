@@ -17,6 +17,7 @@ public enum ErrorCode {
 	ALREADY_CLUB_MEMBER(HttpStatus.BAD_REQUEST, 40006, "이미 해당 클럽의 멤버입니다."),
 	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40008, "비밀번호가 일치하지 않습니다."),
 	VALIDATION_FAILED(HttpStatus.BAD_REQUEST, 40009, "입력값 유효성 검사에 실패하였습니다."),
+	NOT_SET_AREA(HttpStatus.BAD_REQUEST, 40010, "사용자의 지역이 설정되지 않았습니다"),
 
 	/* 401 Unauthorized */
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),

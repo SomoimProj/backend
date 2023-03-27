@@ -23,7 +23,7 @@ import java.util.List;
 public class ClubController {
     private final ClubService clubService;
 
-    @PostMapping()
+    @PostMapping
     public SuccessResponse<Club> addClub(@RequestBody @Valid ClubCreateRequest request) {
         Club club = clubService.addClub(request);
         return ResponseUtil.success(club);
@@ -36,8 +36,10 @@ public class ClubController {
     }
 
     @GetMapping("/favorite")
-    public SuccessResponse<List<Club>> readClubByListFavorite(@RequestParam String favorite, String area) {
-        List<Club> clubs = clubService.readClubListByFavorite(favorite, area);
+    public SuccessResponse<List<Club>> readClubByListFavorite(
+        @AuthenticationPrincipal Long userId,
+        @RequestParam String favorite) {
+        List<Club> clubs = clubService.readClubListByFavorite(userId, favorite);
         return ResponseUtil.success(clubs);
     }
 
@@ -54,12 +56,7 @@ public class ClubController {
     public SuccessResponse<List<Club>> readClubListByArea(
         @AuthenticationPrincipal Long userId,
         @PageableDefault(size = 10) Pageable pageable) {
-        List<Club> clubs;
-        if (pageable.getPageSize() == 1) {
-            clubs = clubService.readAllClubListByArea(userId).getContent();
-        } else {
-            clubs = clubService.readClubListByArea(userId, pageable).getContent();
-        }
+        List<Club> clubs = clubService.readClubListByArea(userId, pageable).getContent();
         return ResponseUtil.success(clubs);
     }
 
@@ -67,12 +64,7 @@ public class ClubController {
     public SuccessResponse<List<Club>> readClubListByCreateAt(
         @AuthenticationPrincipal Long userId,
         @PageableDefault(size = 10) Pageable pageable) {
-        List<Club> clubs;
-        if (pageable.getPageSize() == 1) {
-            clubs = clubService.readAllClubListByCreateAt(userId).getContent();
-        } else {
-            clubs = clubService.readClubListByCreateAt(userId, pageable).getContent();
-        }
+        List<Club> clubs = clubService.readClubListByCreateAt(userId, pageable).getContent();
         return ResponseUtil.success(clubs);
     }
 
