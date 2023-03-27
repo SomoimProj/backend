@@ -51,28 +51,15 @@ public class AuthService {
 
 	public Long signIn(SignInRequest signInRequest) {
 
-		if (!userRepository.existsByEmail(signInRequest.getEmail())) {
-			throw new BaseException(ErrorCode.USER_NOT_FOUND);
-		}
-
-		Optional<User> user = userRepository.findByEmail(signInRequest.getEmail());
-		String password = user.get().getPassword();
+		User user = userRepository.findByEmail(signInRequest.getEmail())
+			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND));
+		String password = user.getPassword();
 
 		if (!passwordEncoder.matches(signInRequest.getPassword(), password)) {
 			throw new BaseException(ErrorCode.WRONG_PASSWORD);
 		}
 
-		Long userId = userRepository.findByEmail(signInRequest.getEmail())
-			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND)).getId();
-
-		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-
-		String accessToken = tokenDto.getAccessToken();
-
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add(JwtProperties.AUTHORIZATION_HEADER, JwtProperties.TOKEN_PREFIX + accessToken);
-
-		return user.get().getId();
+		return user.getId();
 	}
 
 	public void singOut(TokenDto tokenDto) {
