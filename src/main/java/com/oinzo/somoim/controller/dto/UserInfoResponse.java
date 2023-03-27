@@ -4,6 +4,7 @@ import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.Gender;
 import com.oinzo.somoim.domain.user.entity.User;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class UserInfoResponse {
 	private String area;
 	private String introduction;
 	private String profileUrl;
-	private Favorite favorite;
+	private List<Favorite> favorites;
 
 	public static UserInfoResponse from(User user) {
 		return UserInfoResponse.builder()
@@ -29,7 +30,7 @@ public class UserInfoResponse {
 			.area(user.getArea())
 			.introduction(user.getIntroduction())
 			.profileUrl(user.getProfileUrl())
-			.favorite(user.getFavorite())
+			.favorites(user.getFavorites())
 			.build();
 	}
 }

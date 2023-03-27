@@ -7,6 +7,9 @@ import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.controller.dto.UserInfoResponse;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +36,15 @@ public class UserService {
 		return UserInfoResponse.from(savedUser);
 	}
 
-	public void updateFavorite(Long userId, String favoriteString) {
-		Favorite favorite = Favorite.valueOfOrHandleException(favoriteString);
+	public void updateFavorite(Long userId, List<String> favoriteStrings) {
+		List<Favorite> favorites = favoriteStrings.stream()
+			.map(Favorite::valueOfOrHandleException)
+			.collect(Collectors.toList());
 
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
 
-		user.updateFavorite(favorite);
+		user.updateFavorites(favorites);
 		userRepository.save(user);
 	}
 }
