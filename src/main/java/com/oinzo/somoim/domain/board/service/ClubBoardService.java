@@ -29,56 +29,54 @@ public class ClubBoardService {
 
     @Transactional
     public BoardResponse addBoard(BoardCreateRequest request, Long clubId, Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        Club club = clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-        return BoardResponse.from(clubBoardRepository.save(ClubBoard.from(request,club,user)));
+        User user = userRepository.findById(userId)
+            .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
+        Club club = clubRepository.findById(clubId)
+            .orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+        return BoardResponse.from(clubBoardRepository.save(ClubBoard.from(request, club, user)));
     }
 
-    public List<BoardResponse> clubBoardList(Long clubId,Pageable pageable){
-        clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIs(clubId,pageable).getContent();
+    public List<BoardResponse> clubBoardList(Long clubId, Pageable pageable){
+        if (!clubRepository.existsById(clubId)) {
+            throw new BaseException(ErrorCode.WRONG_CLUB);
+        }
+        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIs(clubId, pageable).getContent();
         return BoardResponse.ListToBoardResponse(clubBoardList);
     }
 
-    public List<BoardResponse> allClubBoardList(Long clubId){
-        clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-        Pageable pageable = Pageable.ofSize(clubBoardRepository.findAll().size());
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIs(clubId,pageable).getContent();
-        return BoardResponse.ListToBoardResponse(clubBoardList);
-    }
-
-    public List<BoardResponse> clubBoardListByCategory(Long clubId,String category,Pageable pageable){
+    public List<BoardResponse> clubBoardListByCategory(Long clubId, String category, Pageable pageable){
         Category newCategory = Category.valueOfOrHandleException(category);
-        clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId,newCategory,pageable).getContent();
-        return BoardResponse.ListToBoardResponse(clubBoardList);
-    }
-
-    public List<BoardResponse> allClubBoardListByCategory(Long clubId,String category){
-        Category newCategory = Category.valueOfOrHandleException(category);
-        clubRepository.findById(clubId).orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
-        Pageable pageable = Pageable.ofSize(clubBoardRepository.findAll().size());
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId,newCategory,pageable).getContent();
+        if (!clubRepository.existsById(clubId)) {
+            throw new BaseException(ErrorCode.WRONG_CLUB);
+        }
+        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory, pageable).getContent();
         return BoardResponse.ListToBoardResponse(clubBoardList);
     }
 
     public BoardResponse readBoard(Long boardId){
-        return BoardResponse.from(clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD)));
+        ClubBoard board = clubBoardRepository.findById(boardId)
+            .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        return BoardResponse.from(board);
     }
 
     @Transactional
-    public BoardResponse updateBoard(Long boardId,BoardCreateRequest request,Long userId){
-        ClubBoard board = clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
-        userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        if(!userId.equals(board.getUser().getId())) throw new BaseException(ErrorCode.FORBIDDEN_REQUEST,"게시판 작성자가 아닙니다.");
+    public BoardResponse updateBoard(Long boardId, BoardCreateRequest request, Long userId){
+        ClubBoard board = clubBoardRepository.findById(boardId)
+            .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if(!userId.equals(board.getUser().getId())) {
+            throw new BaseException(ErrorCode.FORBIDDEN_REQUEST, "게시판 작성자가 아닙니다.");
+        }
         board.updateClubBoard(request);
         return BoardResponse.from(clubBoardRepository.save(board));
     }
 
     @Transactional
-    public void deleteBoard(Long boardId,Long userId){
-        ClubBoard board = clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
-        userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        if(!userId.equals(board.getUser().getId())) throw new BaseException(ErrorCode.FORBIDDEN_REQUEST,"게시판 작성자가 아닙니다.");
+    public void deleteBoard(Long boardId, Long userId){
+        ClubBoard board = clubBoardRepository.findById(boardId)
+            .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if(!userId.equals(board.getUser().getId())) {
+            throw new BaseException(ErrorCode.FORBIDDEN_REQUEST, "게시판 작성자가 아닙니다.");
+        }
+        clubBoardRepository.delete(board);
     }
 }

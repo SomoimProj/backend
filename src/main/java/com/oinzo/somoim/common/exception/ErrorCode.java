@@ -15,9 +15,9 @@ public enum ErrorCode {
     NO_SEARCH_NAME(HttpStatus.BAD_REQUEST, 40004, "검색 키워드를 입력해주십시오."),
 	CLUB_LIMIT_OVER(HttpStatus.BAD_REQUEST, 40005, "해당 클럽의 멤버 정원이 다 찼습니다."),
 	ALREADY_CLUB_MEMBER(HttpStatus.BAD_REQUEST, 40006, "이미 해당 클럽의 멤버입니다."),
-	WRONG_VERIFICATION_CODE(HttpStatus.BAD_REQUEST, 40007, "입력한 인증번호가 일치하지 않습니다."),
-	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40008, "비밀번호 확인이 일치하지 않습니다."),
+	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40008, "비밀번호가 일치하지 않습니다."),
 	VALIDATION_FAILED(HttpStatus.BAD_REQUEST, 40009, "입력값 유효성 검사에 실패하였습니다."),
+	NOT_SET_AREA(HttpStatus.BAD_REQUEST, 40010, "사용자의 지역이 설정되지 않았습니다"),
 
 	/* 401 Unauthorized */
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),
@@ -44,7 +44,8 @@ public enum ErrorCode {
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50000, "예상치 못한 오류가 발생했습니다."),
 	INVALID_KAKAO_REDIRECT_URI(HttpStatus.INTERNAL_SERVER_ERROR, 50001, "리다이렉트 주소가 일치하지 않습니다. 카카오 인가 코드 요청 시 사용한 리다이렉트 주소를 백엔드 담당자에게 알려주세요."),
 	KAKAO_ACCESS_TOKEN_REQUEST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50002, "인가 코드를 통해 카카오 액세스 토큰을 발급받는 중에 문제가 발생했습니다."),
-	KAKAO_USERINFO_REQUEST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50003, "액세스 토큰을 통해 카카오 사용자 정보를 조회하는 과정에서 문제가 발생했습니다.");
+	KAKAO_USERINFO_REQUEST_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 50003, "액세스 토큰을 통해 카카오 사용자 정보를 조회하는 과정에서 문제가 발생했습니다."),
+	FAILED_SEND_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, 50004, "메일을 전송하는 과정에서 문제가 발생했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final int code;

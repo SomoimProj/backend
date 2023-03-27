@@ -2,11 +2,12 @@ package com.oinzo.somoim.domain.user.email;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
-import com.oinzo.somoim.domain.user.dto.EmailDto;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import javax.mail.internet.MimeMessage;
 import java.time.Duration;
 import java.util.Random;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class EmailService {
@@ -77,44 +79,49 @@ public class EmailService {
 	/**
 	 * 메일 전송
 	 */
-	public String sendMail(String email) throws MessagingException {
+	public String sendVerificationCode(String email) {
 		// 유저테이블에 이메일 존재여부 체크
 		if (userRepository.findByEmail(email).isPresent()) {
 			throw new BaseException(ErrorCode.ALREADY_EXISTS_EMAIL);
 		}
 
-		String verificationCode = createCode();
-		MimeMessage mailForm = createMailForm(email, verificationCode);
-		mailSender.send(mailForm);
+		try {
+			String verificationCode = createCode();
+			MimeMessage mailForm = createMailForm(email, verificationCode);
+			mailSender.send(mailForm);
 
-		redisTemplate.opsForValue().set(
-			EMAIL_PREFIX + email,
-			verificationCode,
-			Duration.ofSeconds(VERIFICATION_CODE_EXPIRATION_TIME)
-		);
+			redisTemplate.opsForValue().set(
+				EMAIL_PREFIX + email,
+				verificationCode,
+				Duration.ofSeconds(VERIFICATION_CODE_EXPIRATION_TIME)
+			);
 
-		return verificationCode;
+			return verificationCode;
+		} catch (MailException | MessagingException e) {
+			log.error(e.getMessage(), e);
+			throw new BaseException(ErrorCode.FAILED_SEND_EMAIL);
+		}
 	}
 
 	/**
 	 * 인증코드 검증
 	 */
-	public boolean checkVerificationCode(EmailDto emailDto) {
+	public boolean checkVerificationCode(String email, String code) {
 
-		if (redisTemplate.opsForValue().get(EMAIL_PREFIX + emailDto.getEmail()) == null) {
+		String codeInRedis = redisTemplate.opsForValue().get(EMAIL_PREFIX + email);
+
+		if (codeInRedis == null) {
 			throw new BaseException(ErrorCode.USER_NOT_FOUND);
 		}
 
-		String checkEmail = redisTemplate.opsForValue().get(EMAIL_PREFIX + emailDto.getEmail());
-
-		if (!emailDto.getCode().equals(checkEmail)) {
-			throw new BaseException(ErrorCode.WRONG_VERIFICATION_CODE);
+		if (!code.equals(codeInRedis)) {
+			return false;
 		}
 
-		redisTemplate.delete(EMAIL_PREFIX + emailDto.getEmail());
+		redisTemplate.delete(EMAIL_PREFIX + email);
 		redisTemplate.opsForValue().set(
-			EMAIL_PREFIX + emailDto.getEmail(),
-			emailDto.getCode(),
+			EMAIL_PREFIX + email,
+			code,
 			Duration.ofSeconds(VERIFICATION_CODE_CHECK_SUCCESS)
 		);
 

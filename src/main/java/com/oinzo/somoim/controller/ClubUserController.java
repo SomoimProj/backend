@@ -1,5 +1,7 @@
 package com.oinzo.somoim.controller;
 
+import com.oinzo.somoim.common.response.ResponseUtil;
+import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.controller.dto.JoinClubRequest;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import javax.validation.Valid;
@@ -21,11 +23,12 @@ public class ClubUserController {
 	// 클럽 가입
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/clubs/{clubId}/join")
-	public void joinClub(
+	public SuccessResponse<?> joinClub(
 		@AuthenticationPrincipal Long userId,
 		@PathVariable Long clubId,
 		@RequestBody @Valid JoinClubRequest request) {
 		clubUserService.joinClub(userId, clubId, request.getIntroduction());
+		return ResponseUtil.success();
 	}
 
 }

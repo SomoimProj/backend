@@ -49,17 +49,6 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("클럽 게시판 전체 조회 테스트")
-    void clubBoardList() {
-        // given
-        // when
-        List<BoardResponse> boardList =  clubBoardService.allClubBoardList(1L);
-        // then
-        assertTrue(boardList.size()>1);
-
-    }
-
-    @Test
     @DisplayName("게시판 상세 조회 테스트")
     void readBoard() {
         // given

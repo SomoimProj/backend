@@ -1,5 +1,7 @@
 package com.oinzo.somoim.controller;
 
+import com.oinzo.somoim.common.response.ResponseUtil;
+import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.common.service.CloudflareService;
 import com.oinzo.somoim.controller.dto.UploadUrlResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +16,12 @@ public class CommonController {
 
 	// Cloudflare 이미지업로드 url 반환
 	@GetMapping("/upload-url")
-	public UploadUrlResponse getUploadUrlResponse() {
+	public SuccessResponse<UploadUrlResponse> getUploadUrlResponse() {
 		String uploadUrl = cloudflareService.getUploadUrl();
-		return UploadUrlResponse.builder()
+		UploadUrlResponse uploadUrlResponse = UploadUrlResponse.builder()
 			.url(uploadUrl)
 			.build();
+		return ResponseUtil.success(uploadUrlResponse);
 	}
 
 }

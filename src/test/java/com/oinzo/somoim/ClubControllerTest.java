@@ -53,7 +53,7 @@ class ClubControllerTest {
     void readClubByFavorite() {
         /* given */
         /* when */
-        List<Club> result = clubService.readClubListByFavorite("GAME","서울");
+        List<Club> result = clubService.readClubListByFavorite(7L,"GAME");
         /* then */
         assertTrue(1 < result.size());
     }
