@@ -4,7 +4,6 @@ import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.controller.dto.BoardCreateRequest;
 import com.oinzo.somoim.controller.dto.BoardResponse;
-import com.oinzo.somoim.domain.board.entity.ClubBoard;
 import com.oinzo.somoim.domain.board.service.ClubBoardService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.web.PageableDefault;
@@ -22,32 +21,28 @@ public class BoardController {
     private final ClubBoardService boardService;
 
     @PostMapping("/clubs/{clubId}/boards")
-    public SuccessResponse<BoardResponse> addBoard(@RequestBody @Valid BoardCreateRequest request,
-                                  @PathVariable Long clubId, @AuthenticationPrincipal Long userId){
+    public SuccessResponse<BoardResponse> addBoard(
+        @AuthenticationPrincipal Long userId,
+        @RequestBody @Valid BoardCreateRequest request,
+        @PathVariable Long clubId) {
         BoardResponse boardResponse = boardService.addBoard(request, clubId, userId);
         return ResponseUtil.success(boardResponse);
     }
 
     @GetMapping("/clubs/{clubId}/boards")
-    public SuccessResponse<List<BoardResponse>> clubBoardList(@PathVariable Long clubId, @PageableDefault(size = 10)Pageable pageable){
-        List<BoardResponse> boardResponses;
-        if (pageable.getPageSize() == 1) {
-            boardResponses = boardService.allClubBoardList(clubId);
-        } else {
-            boardResponses = boardService.clubBoardList(clubId, pageable);
-        }
+    public SuccessResponse<List<BoardResponse>> clubBoardList(
+        @PathVariable Long clubId,
+        @PageableDefault(size = 10) Pageable pageable) {
+        List<BoardResponse> boardResponses = boardService.clubBoardList(clubId, pageable);
         return ResponseUtil.success(boardResponses);
     }
 
     @GetMapping("/clubs/{clubId}/boards/category")
-    public SuccessResponse<List<BoardResponse>> boardListByCategory(@PathVariable Long clubId, @RequestParam String category,
-                                               @PageableDefault(size = 10) Pageable pageable){
-        List<BoardResponse> boardResponses;
-        if (pageable.getPageSize() == 1) {
-            boardResponses = boardService.allClubBoardListByCategory(clubId, category);
-        } else {
-            boardResponses = boardService.clubBoardListByCategory(clubId, category, pageable);
-        }
+    public SuccessResponse<List<BoardResponse>> boardListByCategory(
+        @PathVariable Long clubId,
+        @RequestParam String category,
+        @PageableDefault(size = 10) Pageable pageable) {
+        List<BoardResponse> boardResponses = boardService.clubBoardListByCategory(clubId, category, pageable);
         return ResponseUtil.success(boardResponses);
     }
 
@@ -58,8 +53,10 @@ public class BoardController {
     }
 
     @PatchMapping("/boards/{boardId}")
-    public SuccessResponse<BoardResponse> updateBoard(@PathVariable Long boardId,BoardCreateRequest request,
-                                 @AuthenticationPrincipal Long userId){
+    public SuccessResponse<BoardResponse> updateBoard(
+        @AuthenticationPrincipal Long userId,
+        @PathVariable Long boardId,
+        @RequestBody BoardCreateRequest request){
         BoardResponse boardResponse = boardService.updateBoard(boardId, request, userId);
         return ResponseUtil.success(boardResponse);
     }

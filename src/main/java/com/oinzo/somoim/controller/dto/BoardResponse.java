@@ -27,7 +27,7 @@ public class BoardResponse {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .imageUrl(board.getImageUrl())
-                .category(board.getContent())
+                .category(board.getCategory().name())
                 .build();
     }
 

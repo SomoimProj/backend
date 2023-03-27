@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
 
+    boolean existsById(Long id);
+
     List<Club> findAllByNameContaining(String name);
 
     List<Club> findAllByFavoriteAndAreaContaining(Favorite favorite, String area);
@@ -20,6 +22,5 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     Page<Club> findAllByAreaLikeOrderByCreatedAtDesc(String area,Pageable pageable);
 
-    List<Club> findAllByAreaLike(String area);
 }
 

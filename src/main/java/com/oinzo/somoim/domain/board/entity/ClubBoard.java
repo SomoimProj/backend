@@ -40,7 +40,7 @@ public class ClubBoard extends BaseEntity {
     private String content;
     private String imageUrl;
 
-    public static ClubBoard from(BoardCreateRequest boardRequest, Club club, User user){
+    public static ClubBoard from(BoardCreateRequest boardRequest, Club club, User user) {
         return ClubBoard.builder()
                 .club(club)
                 .user(user)
@@ -51,10 +51,10 @@ public class ClubBoard extends BaseEntity {
                 .build();
     }
 
-    public void updateClubBoard(BoardCreateRequest boardCreateRequest){
-        this.category = boardCreateRequest.getCategoryType();
-        this.title = boardCreateRequest.getTitle();
-        this.content = boardCreateRequest.getContent();
-        this.imageUrl = boardCreateRequest.getImageUrl();
+    public void updateClubBoard(BoardCreateRequest boardCreateRequest) {
+        if (boardCreateRequest.getCategory() != null) this.category = boardCreateRequest.getCategoryType();
+        if (boardCreateRequest.getTitle() != null) this.title = boardCreateRequest.getTitle();
+        if (boardCreateRequest.getContent() != null) this.content = boardCreateRequest.getContent();
+        if (boardCreateRequest.getImageUrl() != null) this.imageUrl = boardCreateRequest.getImageUrl();
     }
 }
