@@ -2,15 +2,12 @@ package com.oinzo.somoim.controller;
 
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
-import com.oinzo.somoim.controller.dto.JoinClubRequest;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,9 +22,8 @@ public class ClubUserController {
 	@PostMapping("/clubs/{clubId}/join")
 	public SuccessResponse<?> joinClub(
 		@AuthenticationPrincipal Long userId,
-		@PathVariable Long clubId,
-		@RequestBody @Valid JoinClubRequest request) {
-		clubUserService.joinClub(userId, clubId, request.getIntroduction());
+		@PathVariable Long clubId) {
+		clubUserService.joinClub(userId, clubId);
 		return ResponseUtil.success();
 	}
 

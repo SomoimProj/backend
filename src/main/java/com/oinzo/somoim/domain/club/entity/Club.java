@@ -2,7 +2,7 @@ package com.oinzo.somoim.domain.club.entity;
 
 import com.oinzo.somoim.common.entity.BaseEntity;
 import com.oinzo.somoim.common.type.Favorite;
-import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubCreateRequest;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

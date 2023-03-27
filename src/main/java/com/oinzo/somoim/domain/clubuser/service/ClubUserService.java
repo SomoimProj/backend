@@ -22,7 +22,7 @@ public class ClubUserService {
 	private final ClubRepository clubRepository;
 
 	@Transactional
-	public void joinClub(Long userId, Long clubId, String introduction) {
+	public void joinClub(Long userId, Long clubId) {
 		// 이미 가입된 회원인지 확인
 		if (clubUserRepository.existsByUser_IdAndClub_Id(userId, clubId)) {
 			throw new BaseException(ErrorCode.ALREADY_CLUB_MEMBER,
@@ -41,7 +41,7 @@ public class ClubUserService {
 		// 클럽 멤버로 등록
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
-		ClubUser clubUser = ClubUser.createClubUser(user, club, introduction);
+		ClubUser clubUser = ClubUser.createClubUser(user, club);
 		clubUserRepository.save(clubUser);
 	}
 }

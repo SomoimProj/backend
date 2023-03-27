@@ -15,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -45,7 +43,7 @@ class BoardControllerTest {
         // when
         ClubBoard board = clubBoardRepository.save(ClubBoard.from(newBoard,club,user));
         // then
-        Assertions.assertEquals(board.getTitle(),"NORMAL");
+        Assertions.assertEquals("NORMAL", board.getTitle());
     }
 
     @Test
@@ -55,7 +53,7 @@ class BoardControllerTest {
         // when
         BoardResponse board = clubBoardService.readBoard(1L);
         // then
-        assertEquals(board.getTitle(),"제목");
+        assertEquals("제목", board.getTitle());
     }
 
     @Test
@@ -69,6 +67,6 @@ class BoardControllerTest {
         // when
         BoardCreateRequest updateBoard = new BoardCreateRequest("NORMAL","수정된 테스트","URL","자유");
         BoardResponse updateBoard1 =clubBoardService.updateBoard(board.getId(),updateBoard,7L);
-        assertEquals(updateBoard1.getTitle(),"NORMAL");
+        assertEquals("NORMAL", updateBoard1.getTitle());
     }
 }

@@ -30,7 +30,6 @@ public class ClubUser extends BaseEntity {
 	private Long id;
 
 	private ClubUserLevel level;
-	private String introduction;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn
@@ -40,11 +39,10 @@ public class ClubUser extends BaseEntity {
 	@JoinColumn
 	private Club club;
 
-	public static ClubUser createClubUser(User user, Club club, String introduction) {
+	public static ClubUser createClubUser(User user, Club club) {
 		club.plusMemberCnt();
 
 		return ClubUser.builder()
-			.introduction(introduction)
 			.level(ClubUserLevel.MEMBER)
 			.user(user)
 			.club(club)

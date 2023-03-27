@@ -65,15 +65,13 @@ class ClubUserServiceTest {
 		ArgumentCaptor<ClubUser> captor = ArgumentCaptor.forClass(ClubUser.class);
 
 		// when
-		String introduction = "안녕하세요 게임 클럽에 가입합니다.";
-		clubUserService.joinClub(1L, 1L, introduction);
+		clubUserService.joinClub(1L, 1L);
 
 		// then
 		verify(clubUserRepository, times(1)).save(captor.capture());
 		assertEquals(1L, captor.getValue().getUser().getId());
 		assertEquals(1L, captor.getValue().getClub().getId());
 		assertEquals(1, captor.getValue().getClub().getMemberCnt());
-		assertEquals(introduction, captor.getValue().getIntroduction());
 		assertEquals(ClubUserLevel.MEMBER, captor.getValue().getLevel());
 	}
 
@@ -95,9 +93,8 @@ class ClubUserServiceTest {
 			.willReturn(Optional.of(mockClub));
 
 		// when
-		String introduction = "안녕하세요 게임 클럽에 가입합니다.";
 		BaseException exception = assertThrows(BaseException.class,
-			() -> clubUserService.joinClub(1L, 1L, introduction));
+			() -> clubUserService.joinClub(1L, 1L));
 
 		// then
 		assertEquals(ErrorCode.CLUB_LIMIT_OVER, exception.getErrorCode());
@@ -110,9 +107,8 @@ class ClubUserServiceTest {
 			.willReturn(true);
 
 		// when
-		String introduction = "안녕하세요 게임 클럽에 가입합니다.";
 		BaseException exception = assertThrows(BaseException.class,
-			() -> clubUserService.joinClub(1L, 1L, introduction));
+			() -> clubUserService.joinClub(1L, 1L));
 
 		// then
 		assertEquals(ErrorCode.ALREADY_CLUB_MEMBER, exception.getErrorCode());
