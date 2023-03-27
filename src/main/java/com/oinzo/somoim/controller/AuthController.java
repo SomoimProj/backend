@@ -6,11 +6,11 @@ import com.oinzo.somoim.common.jwt.TokenService;
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
 import com.oinzo.somoim.controller.dto.CheckResponse;
+import com.oinzo.somoim.controller.dto.EmailRequest;
+import com.oinzo.somoim.controller.dto.SignInRequest;
+import com.oinzo.somoim.controller.dto.SignUpRequest;
 import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.controller.dto.VerificationCodeResponse;
-import com.oinzo.somoim.domain.user.dto.EmailDto;
-import com.oinzo.somoim.domain.user.dto.SignInDto;
-import com.oinzo.somoim.domain.user.dto.SignUpDto;
 import com.oinzo.somoim.domain.user.email.EmailService;
 import com.oinzo.somoim.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -31,30 +31,30 @@ public class AuthController {
 	private final TokenService tokenService;
 
 	@PostMapping("/email/send")
-	public SuccessResponse<VerificationCodeResponse> sendMail(@RequestBody EmailDto emailDto) {
-		String code = emailService.sendVerificationCode(emailDto.getEmail());
+	public SuccessResponse<VerificationCodeResponse> sendMail(@RequestBody @Valid EmailRequest emailRequest) {
+		String code = emailService.sendVerificationCode(emailRequest.getEmail());
 		VerificationCodeResponse verificationCodeResponse = new VerificationCodeResponse(code);
 		return ResponseUtil.success(verificationCodeResponse);
 	}
 
 	@PostMapping("/email/check")
-	public SuccessResponse<CheckResponse> checkCode(@RequestBody EmailDto emailDto) {
-		boolean result = emailService.checkVerificationCode(emailDto);
+	public SuccessResponse<CheckResponse> checkCode(@RequestBody @Valid EmailRequest emailRequest) {
+		boolean result = emailService.checkVerificationCode(emailRequest.getEmail(), emailRequest.getCode());
 		CheckResponse checkResponse = new CheckResponse(result);
 		return ResponseUtil.success(checkResponse);
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/signup")
-	public SuccessResponse<?> signUp(@RequestBody SignUpDto signUpDto) {
-		authService.signUp(signUpDto.getEmail(), signUpDto.getPassword(), signUpDto.getPasswordCheck());
+	public SuccessResponse<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+		authService.signUp(signUpRequest.getEmail(), signUpRequest.getPassword(), signUpRequest.getPasswordCheck());
 		return ResponseUtil.success();
 	}
 
 	@PostMapping("/signin")
-	public SuccessResponse<TokenResponse> signIn(@RequestBody @Valid SignInDto signInDto,
+	public SuccessResponse<TokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest,
 								HttpServletResponse response) {
-		Long userId = authService.signIn(signInDto);
+		Long userId = authService.signIn(signInRequest);
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 		String refreshToken = tokenDto.getRefreshToken();
 		tokenService.setRefreshTokenCookie(refreshToken, response);

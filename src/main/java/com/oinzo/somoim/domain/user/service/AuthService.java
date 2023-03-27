@@ -5,20 +5,17 @@ import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.jwt.JwtProperties;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
-import com.oinzo.somoim.domain.user.dto.SignInDto;
+import com.oinzo.somoim.controller.dto.SignInRequest;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Service
@@ -52,20 +49,20 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	public Long signIn(SignInDto signInDto) {
+	public Long signIn(SignInRequest signInRequest) {
 
-		if (!userRepository.existsByEmail(signInDto.getEmail())) {
+		if (!userRepository.existsByEmail(signInRequest.getEmail())) {
 			throw new BaseException(ErrorCode.USER_NOT_FOUND);
 		}
 
-		Optional<User> user = userRepository.findByEmail(signInDto.getEmail());
+		Optional<User> user = userRepository.findByEmail(signInRequest.getEmail());
 		String password = user.get().getPassword();
 
-		if (!passwordEncoder.matches(signInDto.getPassword(), password)) {
+		if (!passwordEncoder.matches(signInRequest.getPassword(), password)) {
 			throw new BaseException(ErrorCode.WRONG_PASSWORD);
 		}
 
-		Long userId = userRepository.findByEmail(signInDto.getEmail())
+		Long userId = userRepository.findByEmail(signInRequest.getEmail())
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND)).getId();
 
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
