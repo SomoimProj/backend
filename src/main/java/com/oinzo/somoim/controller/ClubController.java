@@ -1,9 +1,9 @@
 package com.oinzo.somoim.controller;
 
-
+import com.oinzo.somoim.controller.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
-import com.oinzo.somoim.domain.club.dto.ClubCreateRequest;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
 import javax.validation.Valid;
@@ -24,47 +24,49 @@ public class ClubController {
     private final ClubService clubService;
 
     @PostMapping
-    public SuccessResponse<Club> addClub(@RequestBody @Valid ClubCreateRequest request) {
-        Club club = clubService.addClub(request);
+    public SuccessResponse<ClubResponse> addClub(
+        @AuthenticationPrincipal Long userId,
+        @RequestBody @Valid ClubCreateRequest request) {
+        ClubResponse club = clubService.addClub(userId, request);
         return ResponseUtil.success(club);
     }
-
+    
     @GetMapping("/search")
-    public SuccessResponse<List<Club>> readClubListByName(@RequestParam String name) {
-        List<Club> clubs = clubService.readClubListByName(name);
+    public SuccessResponse<List<ClubResponse>> readClubListByName(@RequestParam String name) {
+        List<ClubResponse> clubs = clubService.readClubListByName(name);
         return ResponseUtil.success(clubs);
     }
-
+    
     @GetMapping("/favorite")
-    public SuccessResponse<List<Club>> readClubByListFavorite(
+    public SuccessResponse<List<ClubResponse>> readClubByListFavorite(
         @AuthenticationPrincipal Long userId,
         @RequestParam String favorite) {
-        List<Club> clubs = clubService.readClubListByFavorite(userId, favorite);
+        List<ClubResponse> clubs = clubService.readClubListByFavorite(userId, favorite);
         return ResponseUtil.success(clubs);
     }
 
     @GetMapping("/{clubId}")
-    public SuccessResponse<Club> readClubById(
+    public SuccessResponse<ClubResponse> readClubById(
         @PathVariable("clubId") Long clubId,
         HttpServletResponse response,
         @CookieValue(value="count", required=false) Cookie countCookie) {
-        Club club = clubService.readClubById(clubId, response, countCookie);
+        ClubResponse club = clubService.readClubById(clubId, response, countCookie);
         return ResponseUtil.success(club);
     }
-
+    
     @GetMapping("/random")
-    public SuccessResponse<List<Club>> readClubListByArea(
+    public SuccessResponse<List<ClubResponse>> readClubListByArea(
         @AuthenticationPrincipal Long userId,
         @PageableDefault(size = 10) Pageable pageable) {
-        List<Club> clubs = clubService.readClubListByArea(userId, pageable).getContent();
+        List<ClubResponse> clubs = clubService.readClubListByArea(userId, pageable);
         return ResponseUtil.success(clubs);
     }
 
     @GetMapping("/newclub")
-    public SuccessResponse<List<Club>> readClubListByCreateAt(
+    public SuccessResponse<List<ClubResponse>> readClubListByCreateAt(
         @AuthenticationPrincipal Long userId,
         @PageableDefault(size = 10) Pageable pageable) {
-        List<Club> clubs = clubService.readClubListByCreateAt(userId, pageable).getContent();
+        List<ClubResponse> clubs = clubService.readClubListByCreateAt(userId, pageable);
         return ResponseUtil.success(clubs);
     }
 
