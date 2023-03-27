@@ -36,6 +36,8 @@ public enum ErrorCode {
 	WRONG_FAVORITE(HttpStatus.NOT_FOUND, 40404, "해당하는 관심사를 찾을 수 없습니다."),
 	WRONG_BOARD(HttpStatus.NOT_FOUND, 40430, "해당하는 게시글을 찾을 수 없습니다."),
 	WRONG_CATEGORY(HttpStatus.NOT_FOUND, 40431, "해당하는 카테고리를 찾을 수 없습니다."),
+	WRONG_ALBUM(HttpStatus.NOT_FOUND, 40432, "해당하는 사진을 찾을 수 없습니다."),
+	NOT_CLUB_MEMBER(HttpStatus.NOT_FOUND, 40433, "클럽에 가입후 이용 가능합니다."),
 
 	/* 409 Conflict */
 	ALREADY_EXISTS_EMAIL(HttpStatus.CONFLICT, 40901, "이미 가입된 이메일 입니다."),
