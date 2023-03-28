@@ -13,6 +13,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,10 +25,10 @@ public class ClubAlbum extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn
     private User user;
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn
     private Club club;
     @NotBlank
