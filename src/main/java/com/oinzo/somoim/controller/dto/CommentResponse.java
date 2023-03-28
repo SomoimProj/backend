@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -17,6 +20,9 @@ public class CommentResponse {
     private String comment;
     private String userName;
     private String profileImg;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 
     public static CommentResponse from(BoardComment comment, User user){
         return CommentResponse.builder()
@@ -26,6 +32,8 @@ public class CommentResponse {
                 .comment(comment.getComment())
                 .userName(user.getName())
                 .profileImg(user.getProfileUrl())
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 }
