@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class BoardCommentController {
 
     @PostMapping("/{boardId}/comments")
     public SuccessResponse<CommentResponse> addComment(@PathVariable Long boardId,
-                                                       @RequestBody CommentRequest request,
+                                                       @Valid @RequestBody CommentRequest request,
                                                        @AuthenticationPrincipal Long userId){
         CommentResponse response = boardCommentService.addComment(request,boardId,userId);
         return ResponseUtil.success(response);
