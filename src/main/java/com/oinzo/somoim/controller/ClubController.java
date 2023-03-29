@@ -4,7 +4,6 @@ import com.oinzo.somoim.controller.dto.ClubCreateRequest;
 import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
-import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;

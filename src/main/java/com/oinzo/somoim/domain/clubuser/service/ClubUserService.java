@@ -2,12 +2,15 @@ package com.oinzo.somoim.domain.clubuser.service;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.controller.dto.MemberResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clubuser.entity.ClubUser;
 import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,5 +46,16 @@ public class ClubUserService {
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
 		ClubUser clubUser = ClubUser.createClubUser(user, club);
 		clubUserRepository.save(clubUser);
+	}
+
+	@Transactional(readOnly = true)
+	public List<MemberResponse> getMembers(Long clubId) {
+		if (! clubRepository.existsById(clubId)) {
+			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
+		}
+		List<ClubUser> clubUsers = clubUserRepository.findByClub_Id(clubId);
+		return clubUsers.stream()
+			.map(clubUser -> MemberResponse.from(clubUser.getUser()))
+			.collect(Collectors.toList());
 	}
 }
