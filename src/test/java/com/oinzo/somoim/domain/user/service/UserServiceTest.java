@@ -17,6 +17,7 @@ import com.oinzo.somoim.controller.dto.UserInfoResponse;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,7 +46,7 @@ class UserServiceTest {
 			.gender(Gender.MALE)
 			.area("서울")
 			.introduction("자기소개입니다")
-			.favorite(Favorite.GAME)
+			.favorites(List.of(Favorite.GAME, Favorite.PICTURE))
 			.build();
 		given(userRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockUser));
@@ -59,7 +60,9 @@ class UserServiceTest {
 		assertEquals("MALE", response.getGender().name());
 		assertEquals("서울", response.getArea());
 		assertEquals("자기소개입니다", response.getIntroduction());
-		assertEquals("GAME", response.getFavorite().name());
+		assertEquals(2, response.getFavorites().size());
+		assertTrue(response.getFavorites().contains(Favorite.GAME));
+		assertTrue(response.getFavorites().contains(Favorite.PICTURE));
 	}
 
 	@Test
@@ -72,7 +75,7 @@ class UserServiceTest {
 			.gender(Gender.MALE)
 			.area("서울")
 			.introduction("자기소개입니다")
-			.favorite(Favorite.GAME)
+			.favorites(List.of(Favorite.GAME, Favorite.PICTURE))
 			.build();
 		given(userRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockUser));
@@ -113,11 +116,14 @@ class UserServiceTest {
 		ArgumentCaptor<User> captor = ArgumentCaptor.forClass(User.class);
 
 		// when
-		userService.updateFavorite(1L, "GAME");
+		userService.updateFavorite(1L, List.of("GAME", "PICTURE"));
 
 		// then
 		verify(userRepository, times(1)).save(captor.capture());
-		assertEquals("GAME", captor.getValue().getFavorite().toString());
+		List<Favorite> favorites = captor.getValue().getFavorites();
+		assertEquals(2, favorites.size());
+		assertTrue(favorites.contains(Favorite.GAME));
+		assertTrue(favorites.contains(Favorite.PICTURE));
 	}
 
 	@Test
@@ -125,7 +131,7 @@ class UserServiceTest {
 		// given
 		// when
 		BaseException exception = assertThrows(BaseException.class,
-			() -> userService.updateFavorite(1L, "WRONG_FAVORITE"));
+			() -> userService.updateFavorite(1L, List.of("WRONG_FAVORITE")));
 
 		// then
 		assertEquals(ErrorCode.WRONG_FAVORITE, exception.getErrorCode());
