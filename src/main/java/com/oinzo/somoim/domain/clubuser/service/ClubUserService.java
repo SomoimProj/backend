@@ -2,6 +2,7 @@ package com.oinzo.somoim.domain.clubuser.service;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.controller.dto.MemberResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
@@ -50,12 +51,21 @@ public class ClubUserService {
 
 	@Transactional(readOnly = true)
 	public List<MemberResponse> getMembers(Long clubId) {
-		if (! clubRepository.existsById(clubId)) {
+		if (!clubRepository.existsById(clubId)) {
 			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
 		}
 		List<ClubUser> clubUsers = clubUserRepository.findByClub_Id(clubId);
 		return clubUsers.stream()
 			.map(clubUser -> MemberResponse.from(clubUser.getUser()))
+			.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public List<ClubResponse> getJoinClubs(Long userId) {
+		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
+		List<ClubUser> clubUsers = clubUserRepository.findByUser_Id(userId);
+		return clubUsers.stream()
+			.map(clubUser -> ClubResponse.from(clubUser.getClub()))
 			.collect(Collectors.toList());
 	}
 }

@@ -11,5 +11,6 @@ public interface ClubUserRepository extends JpaRepository<ClubUser, Long> {
 	Boolean existsByUser_IdAndClub_Id(Long userId, Long clubId);
 
 	List<ClubUser> findByClub_Id(Long clubId);
+	List<ClubUser> findByUser_Id(Long userId);
 
 }
