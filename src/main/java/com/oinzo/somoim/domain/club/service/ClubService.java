@@ -32,10 +32,10 @@ public class ClubService {
         Club club = Club.from(request);
         Club savedClub = clubRepository.save(club);
 
-        // 클럽 멤버로 등록
+        // 클럽 매니저로 등록
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
-        ClubUser clubUser = ClubUser.createClubUser(user, club);
+        ClubUser clubUser = ClubUser.createClubUserManager(user, club);
 
         clubUserRepository.save(clubUser);
 

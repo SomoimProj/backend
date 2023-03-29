@@ -41,7 +41,7 @@ public class ClubUserService {
 		// 클럽 멤버로 등록
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
-		ClubUser clubUser = ClubUser.createClubUser(user, club);
+		ClubUser clubUser = ClubUser.createClubUserMember(user, club);
 		clubUserRepository.save(clubUser);
 	}
 }
