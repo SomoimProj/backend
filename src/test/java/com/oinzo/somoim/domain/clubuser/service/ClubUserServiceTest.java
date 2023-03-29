@@ -11,6 +11,7 @@ import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.common.type.ClubUserLevel;
+import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.controller.dto.MemberResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
@@ -51,8 +52,8 @@ class ClubUserServiceTest {
 		Club mockClub = Club.builder()
 			.id(1L)
 			.name("게임 클럽")
-			.description("열정맨 게임 클럽입니다.")
-			.area("청파동")
+			.description("게임 클럽입니다.")
+			.area("서울")
 			.memberLimit(4)
 			.memberCnt(0)
 			.favorite(Favorite.GAME)
@@ -83,8 +84,8 @@ class ClubUserServiceTest {
 		Club mockClub = Club.builder()
 			.id(1L)
 			.name("게임 클럽")
-			.description("열정맨 게임 클럽입니다.")
-			.area("청파동")
+			.description("게임 클럽입니다.")
+			.area("서울")
 			.memberLimit(1)
 			.memberCnt(1)
 			.favorite(Favorite.GAME)
@@ -122,10 +123,10 @@ class ClubUserServiceTest {
 		Club mockClub = Club.builder()
 			.id(1L)
 			.name("게임 클럽")
-			.description("열정맨 게임 클럽입니다.")
-			.area("청파동")
-			.memberLimit(1)
-			.memberCnt(1)
+			.description("게임 클럽입니다.")
+			.area("서울")
+			.memberLimit(10)
+			.memberCnt(2)
 			.favorite(Favorite.GAME)
 			.build();
 		User mockUser1 = User.builder()
@@ -172,5 +173,48 @@ class ClubUserServiceTest {
 
 		// then
 		assertEquals(ErrorCode.WRONG_CLUB, exception.getErrorCode());
+	}
+
+	@Test
+	void testGetJoinClubs() {
+		// given
+		Club mockClub1 = Club.builder()
+			.id(1L)
+			.name("게임 클럽")
+			.description("열정맨 게임 클럽입니다.")
+			.area("서울")
+			.memberLimit(10)
+			.memberCnt(2)
+			.favorite(Favorite.GAME)
+			.build();
+		Club mockClub2 = Club.builder()
+			.id(2L)
+			.name("스포츠 클럽")
+			.description("스포츠 클럽입니다.")
+			.area("인천")
+			.memberLimit(10)
+			.memberCnt(3)
+			.favorite(Favorite.EXERCISE)
+			.build();
+		User mockUser = User.builder().id(1L).build();
+		List<ClubUser> clubUsers = List.of(
+			new ClubUser(1L, ClubUserLevel.MEMBER, mockUser, mockClub1),
+			new ClubUser(2L, ClubUserLevel.MEMBER, mockUser, mockClub2)
+		);
+
+		given(clubUserRepository.findByUser_Id(anyLong()))
+			.willReturn(clubUsers);
+
+		// when
+		List<ClubResponse> clubs = clubUserService.getJoinClubs(1L);
+
+		// then
+		assertEquals(2, clubs.size());
+		assertEquals(1L, clubs.get(0).getId());
+		assertEquals("게임 클럽", clubs.get(0).getName());
+		assertEquals(Favorite.GAME, clubs.get(0).getFavorite());
+		assertEquals(2L, clubs.get(1).getId());
+		assertEquals("스포츠 클럽", clubs.get(1).getName());
+		assertEquals(Favorite.EXERCISE, clubs.get(1).getFavorite());
 	}
 }
