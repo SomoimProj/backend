@@ -51,7 +51,7 @@ class BoardControllerTest {
     void readBoard() {
         // given
         // when
-        BoardResponse board = clubBoardService.readBoard(1L);
+        BoardResponse board = clubBoardService.readBoard(1L,7L);
         // then
         assertEquals("제목", board.getTitle());
     }
