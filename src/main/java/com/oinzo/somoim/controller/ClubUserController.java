@@ -2,7 +2,6 @@ package com.oinzo.somoim.controller;
 
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
-import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.controller.dto.MemberResponse;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import java.util.List;
@@ -36,13 +35,6 @@ public class ClubUserController {
 	public SuccessResponse<List<MemberResponse>> getMembers(@PathVariable Long clubId) {
 		List<MemberResponse> members = clubUserService.getMembers(clubId);
 		return ResponseUtil.success(members);
-	}
-
-	// 자신이 가입한 클럽 조회
-	@GetMapping("/users/join-clubs")
-	public SuccessResponse<List<ClubResponse>> getJoinClubs(@AuthenticationPrincipal Long userId) {
-		List<ClubResponse> clubs = clubUserService.getJoinClubs(userId);
-		return ResponseUtil.success(clubs);
 	}
 
 }
