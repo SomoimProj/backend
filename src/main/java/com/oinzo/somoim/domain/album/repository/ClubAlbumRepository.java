@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClubAlbumRepository extends JpaRepository<ClubAlbum,Long> {
 
-    Page<ClubAlbum> findAllByClubIdIs(Long clubId, Pageable pageable);
+    Page<ClubAlbum> findAllByClubId(Long clubId, Pageable pageable);
 }

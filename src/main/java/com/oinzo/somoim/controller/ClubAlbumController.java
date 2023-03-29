@@ -15,31 +15,31 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/albums")
+@RequestMapping("/clubs")
 public class ClubAlbumController {
     private final ClubAlbumService clubAlbumService;
 
-    @PostMapping("/clubs/{clubId}")
+    @PostMapping("{clubId}/albums")
     public SuccessResponse<AlbumResponse> addAlbum(@AuthenticationPrincipal Long userId,
                                   @RequestBody @Valid AlbumCreateRequest request, @PathVariable Long clubId){
         AlbumResponse albumResponse = clubAlbumService.addAlbum(request,userId,clubId);
         return ResponseUtil.success(albumResponse);
     }
 
-    @GetMapping("/clubs/{clubId}")
+    @GetMapping("{clubId}/albums")
     public SuccessResponse<List<AlbumResponse>> readAllAlbum(@PathVariable Long clubId, Pageable pageable){
         List<AlbumResponse> albumResponses = clubAlbumService.readAllAlbum(clubId,pageable);
         return ResponseUtil.success(albumResponses);
     }
 
-    @GetMapping("/{albumId}")
+    @GetMapping("/albums/{albumId}")
     public SuccessResponse<AlbumResponse> readAlbum(@PathVariable Long albumId,
                                    @AuthenticationPrincipal Long userId){
         AlbumResponse albumResponse = clubAlbumService.readOneAlbum(albumId,userId);
         return ResponseUtil.success(albumResponse);
     }
 
-    @DeleteMapping("/{albumId}")
+    @DeleteMapping("/albums/{albumId}")
     public SuccessResponse<?> deleteAlbum(@PathVariable Long albumId,
                             @AuthenticationPrincipal Long userId){
         clubAlbumService.deleteAlbum(albumId,userId);

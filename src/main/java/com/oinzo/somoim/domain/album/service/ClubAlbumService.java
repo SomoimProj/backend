@@ -30,17 +30,17 @@ public class ClubAlbumService {
     public AlbumResponse addAlbum(AlbumCreateRequest request, Long userId, Long clubId){
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+        if(!clubRepository.existsById(clubId))
+                throw new BaseException(ErrorCode.WRONG_CLUB);
         if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,clubId)) throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
-        return AlbumResponse.from(clubAlbumRepository.save(ClubAlbum.from(request,user,club)));
+        return AlbumResponse.from(clubAlbumRepository.save(ClubAlbum.from(request,user,clubId)));
     }
 
     public List<AlbumResponse> readAllAlbum(Long clubId,Pageable pageable){
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubAlbum> albumList = clubAlbumRepository.findAllByClubIdIs(clubId,pageable).getContent();
+        List<ClubAlbum> albumList = clubAlbumRepository.findAllByClubId(clubId,pageable).getContent();
         return AlbumResponse.listToAlbumResponse(albumList);
     }
 
@@ -50,7 +50,7 @@ public class ClubAlbumService {
         }
         ClubAlbum album = clubAlbumRepository.findById(albumId)
                 .orElseThrow(()-> new BaseException(ErrorCode.WRONG_ALBUM));
-        if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,album.getClub().getId())) throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
+        if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,album.getClubId())) throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         return AlbumResponse.from(album);
     }
 

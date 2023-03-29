@@ -57,17 +57,8 @@ class ClubAlbumServiceTest {
                 .introduction("테스트")
                 .favorite(Favorite.GAME)
                 .build();
-        Club mockClub = Club.builder()
-                .id(1L)
-                .name("테스트 클럽")
-                .description("테스트 클럽입니다.")
-                .area("서울")
-                .memberLimit(1)
-                .memberCnt(0)
-                .favorite(Favorite.GAME)
-                .build();
-        given(clubRepository.findById(anyLong()))
-                .willReturn(Optional.of(mockClub));
+        given(clubRepository.existsById(anyLong()))
+                .willReturn(true);
         given(userRepository.findById(anyLong()))
                 .willReturn(Optional.of(mockUser));
         given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(),anyLong()))
@@ -80,7 +71,7 @@ class ClubAlbumServiceTest {
         // when
         AlbumCreateRequest request = AlbumCreateRequest.builder()
                 .imageUrl("URL").build();
-        clubAlbumService.addAlbum(request,mockUser.getId(),mockClub.getId());
+        clubAlbumService.addAlbum(request,mockUser.getId(),1L);
 
         // then
         verify(clubAlbumRepository,times(1)).save(captor.capture());
@@ -102,18 +93,9 @@ class ClubAlbumServiceTest {
                 .introduction("테스트")
                 .favorite(Favorite.GAME)
                 .build();
-        Club mockClub = Club.builder()
-                .id(1L)
-                .name("테스트 클럽")
-                .description("테스트 클럽입니다.")
-                .area("서울")
-                .memberLimit(1)
-                .memberCnt(0)
-                .favorite(Favorite.GAME)
-                .build();
         ClubAlbum album = ClubAlbum.builder()
                 .id(1L)
-                .club(mockClub)
+                .clubId(1L)
                 .user(mockUser)
                 .imageUrl("URL")
                 .build();
@@ -145,18 +127,9 @@ class ClubAlbumServiceTest {
                 .introduction("테스트")
                 .favorite(Favorite.GAME)
                 .build();
-        Club mockClub = Club.builder()
-                .id(1L)
-                .name("테스트 클럽")
-                .description("테스트 클럽입니다.")
-                .area("서울")
-                .memberLimit(1)
-                .memberCnt(0)
-                .favorite(Favorite.GAME)
-                .build();
         ClubAlbum album = ClubAlbum.builder()
                 .id(1L)
-                .club(mockClub)
+                .clubId(1L)
                 .user(mockUser)
                 .imageUrl("URL")
                 .build();

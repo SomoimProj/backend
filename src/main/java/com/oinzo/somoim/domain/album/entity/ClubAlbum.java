@@ -25,17 +25,18 @@ public class ClubAlbum extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = LAZY)
+
+    @ManyToOne
     @JoinColumn
     private User user;
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn
-    private Club club;
+
+    @NotNull
+    private Long clubId;
     @NotBlank
     private String imageUrl;
-    public static ClubAlbum from(AlbumCreateRequest request, User user, Club club){
+    public static ClubAlbum from(AlbumCreateRequest request, User user, Long clubId){
         return ClubAlbum.builder()
-                .club(club)
+                .clubId(clubId)
                 .user(user)
                 .imageUrl(request.getImageUrl())
                 .build();
