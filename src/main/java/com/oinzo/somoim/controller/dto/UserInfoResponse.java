@@ -13,6 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserInfoResponse {
 
+	private long id;
 	private String name;
 	private LocalDate birth;
 	private Gender gender;
@@ -23,6 +24,7 @@ public class UserInfoResponse {
 
 	public static UserInfoResponse from(User user) {
 		return UserInfoResponse.builder()
+			.id(user.getId())
 			.name(user.getName())
 			.birth(user.getBirth())
 			.gender(user.getGender())

@@ -54,6 +54,7 @@ class UserServiceTest {
 		UserInfoResponse response = userService.readUserInfo(1L);
 
 		// then
+		assertEquals(1L, response.getId());
 		assertEquals("홍길동", response.getName());
 		assertEquals("2000-01-01", response.getBirth().toString());
 		assertEquals("MALE", response.getGender().name());
