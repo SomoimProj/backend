@@ -26,7 +26,8 @@ public enum Favorite {
 
     public static Favorite valueOfOrHandleException(String string) {
         try {
-            return Favorite.valueOf(string);
+            String treatedString = string.trim().toUpperCase();
+            return Favorite.valueOf(treatedString);
         } catch (IllegalArgumentException e)  {
             throw new BaseException(ErrorCode.WRONG_FAVORITE, "favorite=" + string);
         }
