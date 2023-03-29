@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,46 +29,58 @@ public class BoardCommentService {
     private final ClubUserRepository clubUserRepository;
 
     public CommentResponse addComment(CommentRequest request, Long boardId, Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        ClubBoard board = clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
-        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId())) throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
-        return CommentResponse.from(boardCommentRepository.save(BoardComment.from(request,board,user)),user);
+        User user = userRepository.findById(userId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
+        ClubBoard board = clubBoardRepository.findById(boardId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
+        	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
+        BoardComment comment = BoardComment.from(request, boardId, user);
+        comment = boardCommentRepository.save(comment);
+        return CommentResponse.from(comment, user);
     }
 
     public CommentResponse readOneComment(Long commentId,Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        BoardComment comment = boardCommentRepository.findById(commentId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
-        ClubBoard clubBoard = clubBoardRepository.findById(comment.getBoard().getId())
-                .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD,"게시글 조회에 실패하였습니다."));
+        User user = userRepository.findById(userId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
+        BoardComment comment = boardCommentRepository.findById(commentId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
+        ClubBoard clubBoard = clubBoardRepository.findById(comment.getBoardId())
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD,"게시글 조회에 실패하였습니다."));
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,clubBoard.getClub().getId())) {
-            throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
+        	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
-        return CommentResponse.from(boardCommentRepository.findById(commentId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT)),user);
+        return CommentResponse.from(comment,user);
     }
 
+    @Transactional(readOnly=true)
     public List<CommentResponse> readAllComment(Long boardId, Long userId){
-        if(!userRepository.existsById(userId)) throw new BaseException(ErrorCode.USER_NOT_FOUND);
-        ClubBoard board = clubBoardRepository.findById(boardId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if(!userRepository.existsById(userId))
+        	throw new BaseException(ErrorCode.USER_NOT_FOUND);
+        ClubBoard board = clubBoardRepository.findById(boardId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId())) {
-            throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
+        	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
-        List<BoardComment> resultList = boardCommentRepository.findAllByBoardId(board.getId());
-        List<CommentResponse> result = new ArrayList<>();
+        List<BoardComment> comments = boardCommentRepository.findAllByBoardId(board.getId());
+        return comments.stream()
+                .map(comment -> CommentResponse.from(comment, comment.getUser()))
+                .collect(Collectors.toList());
 
-        for (BoardComment comment : resultList) {
-            User userInfo = userRepository.findById(comment.getUser().getId())
-                    .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND,"댓글의 유저정보 조회에 실패하였습니다."));
-            result.add(CommentResponse.from(comment, userInfo));
-        }
-        return result;
     }
 
     @Transactional
     public CommentResponse updateComment(CommentRequest request, Long commentId, Long userId){
-        User user = userRepository.findById(userId).orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
-        BoardComment comment = boardCommentRepository.findById(commentId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
-        if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,comment.getBoard().getClub().getId())) throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
-        if(!Objects.equals(userId, comment.getUser().getId())) throw new BaseException(ErrorCode.FORBIDDEN_REQUEST,"작성자가 아닙니다.");
+        User user = userRepository.findById(userId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
+        BoardComment comment = boardCommentRepository.findById(commentId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
+        ClubBoard board = clubBoardRepository.findById(comment.getBoardId())
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
+        	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
+        if(!Objects.equals(userId, comment.getUser().getId()))
+        	throw new BaseException(ErrorCode.FORBIDDEN_REQUEST,"작성자가 아닙니다.");
         comment.updateComment(request);
         return CommentResponse.from(boardCommentRepository.save(comment),user);
     }
@@ -75,11 +88,12 @@ public class BoardCommentService {
     @Transactional
     public void deleteComment(Long commentId, Long userId){
         if (!userRepository.existsById(userId)) {
-            throw new BaseException(ErrorCode.USER_NOT_FOUND);
+        	throw new BaseException(ErrorCode.USER_NOT_FOUND);
         }
-        BoardComment comment = boardCommentRepository.findById(commentId).orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
-        if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,comment.getBoard().getClub().getId())) throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
-        if(!Objects.equals(userId, comment.getUser().getId())) throw new BaseException(ErrorCode.FORBIDDEN_REQUEST,"작성자가 아닙니다.");
+        BoardComment comment = boardCommentRepository.findById(commentId)
+        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
+        if(!Objects.equals(userId, comment.getUser().getId()))
+        	throw new BaseException(ErrorCode.FORBIDDEN_REQUEST,"작성자가 아닙니다.");
         boardCommentRepository.delete(comment);
     }
 }

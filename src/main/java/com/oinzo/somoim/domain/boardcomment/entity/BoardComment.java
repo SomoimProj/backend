@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
@@ -26,17 +27,17 @@ public class BoardComment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private ClubBoard board;
+
+    @NotNull
+    private Long boardId;
 
     @NotBlank
     private String comment;
 
-    public static BoardComment from(CommentRequest request, ClubBoard board, User user){
+    public static BoardComment from(CommentRequest request, Long boardId, User user){
         return BoardComment.builder()
                 .user(user)
-                .board(board)
+                .boardId(boardId)
                 .comment(request.getComment())
                 .build();
     }

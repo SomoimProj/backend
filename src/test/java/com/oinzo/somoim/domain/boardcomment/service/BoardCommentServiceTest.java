@@ -72,7 +72,7 @@ class BoardCommentServiceTest {
                 .id(1L)
                 .user(mockUser)
                 .club(mockClub)
-                .category(Category.자유)
+                .category(Category.FREE)
                 .title("테스트")
                 .content("테스트 게시판")
                 .imageUrl("URL")
@@ -124,7 +124,7 @@ class BoardCommentServiceTest {
                 .id(1L)
                 .user(mockUser)
                 .club(mockClub)
-                .category(Category.자유)
+                .category(Category.FREE)
                 .title("테스트")
                 .content("테스트 게시판")
                 .imageUrl("URL")
@@ -132,7 +132,7 @@ class BoardCommentServiceTest {
         BoardComment comment = BoardComment.builder()
                 .id(1L)
                 .user(mockUser)
-                .board(mockBoard)
+                .boardId(1L)
                 .comment("테스트 댓글")
                 .build();
         given(userRepository.findById(anyLong()))
@@ -176,17 +176,19 @@ class BoardCommentServiceTest {
                 .id(1L)
                 .user(mockUser)
                 .club(mockClub)
-                .category(Category.자유)
+                .category(Category.FREE)
                 .title("테스트")
                 .content("테스트 게시판")
                 .imageUrl("URL")
                 .build();
         BoardComment comment = BoardComment.builder()
                 .user(mockUser)
-                .board(mockBoard)
+                .boardId(1L)
                 .comment("테스트 댓글").build();
         given(userRepository.findById(anyLong()))
                 .willReturn(Optional.of(mockUser));
+        given(boardRepository.findById(anyLong()))
+                .willReturn(Optional.of(mockBoard));
         given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(),anyLong()))
                 .willReturn(true);
         when(commentRepository.save(any(BoardComment.class)))

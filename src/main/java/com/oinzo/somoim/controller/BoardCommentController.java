@@ -20,38 +20,43 @@ public class BoardCommentController {
     private final BoardCommentService boardCommentService;
 
     @PostMapping("/{boardId}/comments")
-    public SuccessResponse<CommentResponse> addComment(@PathVariable Long boardId,
-                                                       @Valid @RequestBody CommentRequest request,
-                                                       @AuthenticationPrincipal Long userId){
+    public SuccessResponse<CommentResponse> addComment(
+            @PathVariable Long boardId,
+            @Valid @RequestBody CommentRequest request,
+            @AuthenticationPrincipal Long userId){
         CommentResponse response = boardCommentService.addComment(request,boardId,userId);
         return ResponseUtil.success(response);
     }
 
     @GetMapping("/comments/{commentId}")
-    public SuccessResponse<CommentResponse> readOneComment(@PathVariable Long commentId,
-                                                           @AuthenticationPrincipal Long userId){
+    public SuccessResponse<CommentResponse> readOneComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal Long userId){
         CommentResponse response = boardCommentService.readOneComment(commentId,userId);
         return ResponseUtil.success(response);
     }
 
     @GetMapping("/{boardId}/comments")
-    public SuccessResponse<List<CommentResponse>> readAllComment(@PathVariable Long boardId,
-                                                                 @AuthenticationPrincipal Long userId){
+    public SuccessResponse<List<CommentResponse>> readAllComment(
+            @PathVariable Long boardId,
+            @AuthenticationPrincipal Long userId){
         List<CommentResponse> response = boardCommentService.readAllComment(boardId,userId);
         return ResponseUtil.success(response);
     }
 
     @PatchMapping("/comments/{commentId}")
-    public SuccessResponse<CommentResponse> updateComment(@PathVariable Long commentId,
-                                                          @RequestBody CommentRequest request,
-                                                          @AuthenticationPrincipal Long userId){
+    public SuccessResponse<CommentResponse> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequest request,
+            @AuthenticationPrincipal Long userId){
         CommentResponse response = boardCommentService.updateComment(request,commentId,userId);
         return ResponseUtil.success(response);
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public SuccessResponse<?> deleteComment(@PathVariable Long commentId,
-                                            @AuthenticationPrincipal Long userId){
+    public SuccessResponse<?> deleteComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal Long userId){
         boardCommentService.deleteComment(commentId,userId);
         return ResponseUtil.success();
     }
