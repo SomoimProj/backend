@@ -1,4 +1,4 @@
-package com.oinzo.somoim;
+package com.oinzo.somoim.domain.club.service;
 
 import com.oinzo.somoim.controller.dto.ClubCreateRequest;
 import com.oinzo.somoim.controller.dto.ClubResponse;
