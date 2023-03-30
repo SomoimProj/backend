@@ -8,6 +8,9 @@ import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.domain.user.dto.GoogleUserInfoDto;
 import com.oinzo.somoim.domain.user.dto.KakaoUserInfoDto;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,8 +40,9 @@ public class User extends BaseEntity {
 	private String area;
 	private String introduction;
 	private String profileUrl;
-	@Enumerated(value = EnumType.STRING)
-	private Favorite favorite;
+
+	@Convert(converter = FavoriteListConverter.class)
+	private List<Favorite> favorites;
 
 	private String email;
 	private String password;
@@ -76,7 +80,7 @@ public class User extends BaseEntity {
 		this.profileUrl = request.getProfileUrl();
 	}
 
-	public void updateFavorite(Favorite favorite) {
-		this.favorite = favorite;
+	public void updateFavorites(List<Favorite> favorites) {
+		this.favorites = favorites;
 	}
 }

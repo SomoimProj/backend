@@ -44,7 +44,7 @@ public class UserController {
 	public SuccessResponse<?> updateFavorite(
 		@AuthenticationPrincipal Long userId,
 		@RequestBody @Valid FavoriteUpdateRequest request) {
-		userService.updateFavorite(userId, request.getFavorite());
+		userService.updateFavorite(userId, request.getFavorites());
 		return ResponseUtil.success();
 	}
 

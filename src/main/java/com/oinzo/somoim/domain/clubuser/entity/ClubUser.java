@@ -39,7 +39,17 @@ public class ClubUser extends BaseEntity {
 	@JoinColumn
 	private Club club;
 
-	public static ClubUser createClubUser(User user, Club club) {
+	public static ClubUser createClubUserManager(User user, Club club) {
+		club.plusMemberCnt();
+
+		return ClubUser.builder()
+			.level(ClubUserLevel.MANAGER)
+			.user(user)
+			.club(club)
+			.build();
+	}
+
+	public static ClubUser createClubUserMember(User user, Club club) {
 		club.plusMemberCnt();
 
 		return ClubUser.builder()
