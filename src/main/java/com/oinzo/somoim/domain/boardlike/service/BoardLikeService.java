@@ -24,7 +24,7 @@ public class BoardLikeService {
     private final ClubUserRepository clubUserRepository;
 
     public BoardLikeResponse addLike(Long userId, Long boardId){
-        if(likeRepository.existsByBoard_IdAndUser_Id(boardId,userId))
+        if(likeRepository.existsByBoardIdAndUserId(boardId,userId))
             throw new BaseException(ErrorCode.ALREADY_LIKED);
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
@@ -39,7 +39,7 @@ public class BoardLikeService {
     public List<BoardLikeResponse> readAllLike(Long boardId){
         if(!clubBoardRepository.existsById(boardId))
             throw new BaseException(ErrorCode.WRONG_BOARD);
-        List<BoardLike> likeLists = likeRepository.findAllByBoard_Id(boardId);
+        List<BoardLike> likeLists = likeRepository.findAllByBoardId(boardId);
         return BoardLikeResponse.responseToList(likeLists);
     }
 
@@ -51,7 +51,7 @@ public class BoardLikeService {
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId())) {
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
-        BoardLike like = likeRepository.findByBoard_IdAndUser_Id(boardId,userId)
+        BoardLike like = likeRepository.findByBoardIdAndUserId(boardId,userId)
                 .orElseThrow(()-> new BaseException(ErrorCode.WRONG_LIKE));
         likeRepository.delete(like);
     }

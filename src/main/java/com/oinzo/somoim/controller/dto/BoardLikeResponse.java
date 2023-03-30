@@ -27,7 +27,7 @@ public class BoardLikeResponse {
                 .userId(like.getUser().getId())
                 .userName(like.getUser().getName())
                 .userImg(like.getUser().getProfileUrl())
-                .boardId(like.getBoard().getId())
+                .boardId(like.getBoardId())
                 .createdAt(like.getCreatedAt())
                 .updatedAt(like.getUpdatedAt())
                 .build();
