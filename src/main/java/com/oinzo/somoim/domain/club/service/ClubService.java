@@ -4,11 +4,13 @@ import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
 import com.oinzo.somoim.controller.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubDetailResponse;
 import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clubuser.entity.ClubUser;
 import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
+import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -24,22 +26,23 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ClubService {
 
+    private final ClubUserService clubUserService;
     private final UserRepository userRepository;
     private final ClubRepository clubRepository;
     private final ClubUserRepository clubUserRepository;
 
-    public ClubResponse addClub(Long userId, ClubCreateRequest request) {
+    public ClubDetailResponse addClub(Long userId, ClubCreateRequest request) {
         Club club = Club.from(request);
         Club savedClub = clubRepository.save(club);
 
-        // 클럽 멤버로 등록
+        // 클럽 매니저로 등록
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_FOUND, "userId=" + userId));
-        ClubUser clubUser = ClubUser.createClubUser(user, club);
+        ClubUser clubUser = ClubUser.createClubUserManager(user, club);
 
         clubUserRepository.save(clubUser);
 
-        return ClubResponse.from(savedClub);
+        return ClubDetailResponse.fromClubAndManagerId(savedClub, user.getId());
     }
 
     public List<ClubResponse> readClubListByName(String name){
@@ -62,13 +65,15 @@ public class ClubService {
         return ClubResponse.listToBoardResponse(clubList);
     }
 
-    public ClubResponse readClubById(Long clubId, HttpServletResponse response, Cookie countCookie){
+    public ClubDetailResponse readClubById(Long clubId, HttpServletResponse response, Cookie countCookie){
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId));
 
         Integer newCnt = updateCookie(response, countCookie, clubId, club.getViewCnt());
         updateCnt(club, newCnt);
-        return ClubResponse.from(club);
+
+        Long managerId = clubUserService.getClubManagerId(clubId);
+        return ClubDetailResponse.fromClubAndManagerId(club, managerId);
     }
 
     public List<ClubResponse> readClubListByArea(Long userId, Pageable pageable){
