@@ -28,16 +28,16 @@ public class BoardComment extends BaseEntity {
     @JoinColumn
     private User user;
 
-    @NotNull
-    private Long boardId;
+    @ManyToOne
+    private ClubBoard board;
 
     @NotBlank
     private String comment;
 
-    public static BoardComment from(CommentRequest request, Long boardId, User user){
+    public static BoardComment from(CommentRequest request, ClubBoard board, User user){
         return BoardComment.builder()
                 .user(user)
-                .boardId(boardId)
+                .board(board)
                 .comment(request.getComment())
                 .build();
     }

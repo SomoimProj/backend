@@ -132,7 +132,7 @@ class BoardCommentServiceTest {
         BoardComment comment = BoardComment.builder()
                 .id(1L)
                 .user(mockUser)
-                .boardId(1L)
+                .board(mockBoard)
                 .comment("테스트 댓글")
                 .build();
         given(userRepository.findById(anyLong()))
@@ -183,14 +183,14 @@ class BoardCommentServiceTest {
                 .build();
         BoardComment comment = BoardComment.builder()
                 .user(mockUser)
-                .boardId(1L)
+                .board(mockBoard)
                 .comment("테스트 댓글").build();
         given(userRepository.findById(anyLong()))
                 .willReturn(Optional.of(mockUser));
-        given(boardRepository.findById(anyLong()))
-                .willReturn(Optional.of(mockBoard));
         given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(),anyLong()))
                 .willReturn(true);
+        given(boardRepository.findById(anyLong()))
+                .willReturn(Optional.of(mockBoard));
         when(commentRepository.save(any(BoardComment.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
         given(commentRepository.findById(anyLong()))

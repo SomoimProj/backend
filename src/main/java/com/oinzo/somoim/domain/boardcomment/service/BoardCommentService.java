@@ -35,7 +35,7 @@ public class BoardCommentService {
         	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
         	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
-        BoardComment comment = BoardComment.from(request, boardId, user);
+        BoardComment comment = BoardComment.from(request, board, user);
         comment = boardCommentRepository.save(comment);
         return CommentResponse.from(comment, user);
     }
@@ -45,9 +45,7 @@ public class BoardCommentService {
         	.orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
         BoardComment comment = boardCommentRepository.findById(commentId)
         	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
-        ClubBoard clubBoard = clubBoardRepository.findById(comment.getBoardId())
-        	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD,"게시글 조회에 실패하였습니다."));
-        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,clubBoard.getClub().getId())) {
+        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,comment.getBoard().getClub().getId())) {
         	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
         return CommentResponse.from(comment,user);
@@ -75,7 +73,7 @@ public class BoardCommentService {
         	.orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
         BoardComment comment = boardCommentRepository.findById(commentId)
         	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_COMMENT));
-        ClubBoard board = clubBoardRepository.findById(comment.getBoardId())
+        ClubBoard board = clubBoardRepository.findById(comment.getBoard().getId())
         	.orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
         if(!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
         	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);

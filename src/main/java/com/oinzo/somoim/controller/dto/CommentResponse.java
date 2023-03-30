@@ -27,7 +27,7 @@ public class CommentResponse {
     public static CommentResponse from(BoardComment comment, User user){
         return CommentResponse.builder()
                 .id(comment.getId())
-                .boardId(comment.getBoardId())
+                .boardId(comment.getBoard().getId())
                 .userId(comment.getUser().getId())
                 .comment(comment.getComment())
                 .userName(user.getName())
