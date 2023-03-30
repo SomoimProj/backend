@@ -11,8 +11,7 @@ public enum ErrorCode {
 	/* 400 Bad Request */
 	INVALID_TOKEN(HttpStatus.BAD_REQUEST, 40002, "잘못된 토큰입니다."),
 	INVALID_KAKAO_CODE(HttpStatus.BAD_REQUEST, 40003, "올바르지 않은 카카오 인가 코드입니다."),
-
-    NO_SEARCH_NAME(HttpStatus.BAD_REQUEST, 40004, "검색 키워드를 입력해주십시오."),
+	NO_SEARCH_NAME(HttpStatus.BAD_REQUEST, 40004, "검색 키워드를 입력해주십시오."),
 	CLUB_LIMIT_OVER(HttpStatus.BAD_REQUEST, 40005, "해당 클럽의 멤버 정원이 다 찼습니다."),
 	ALREADY_CLUB_MEMBER(HttpStatus.BAD_REQUEST, 40006, "이미 해당 클럽의 멤버입니다."),
 	WRONG_PASSWORD(HttpStatus.BAD_REQUEST, 40008, "비밀번호가 일치하지 않습니다."),
@@ -33,12 +32,13 @@ public enum ErrorCode {
 
 	/* 404 Not Found */
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, 40401, "사용자를 찾을 수 없습니다."),
-  	NO_DATA_FOUND(HttpStatus.NOT_FOUND, 40402, "해당하는 데이터를 찾을 수 없습니다."),
+	NO_DATA_FOUND(HttpStatus.NOT_FOUND, 40402, "해당하는 데이터를 찾을 수 없습니다."),
 	WRONG_CLUB(HttpStatus.NOT_FOUND, 40403, "해당하는 클럽을 찾을 수 없습니다."),
 	WRONG_FAVORITE(HttpStatus.NOT_FOUND, 40404, "해당하는 관심사를 찾을 수 없습니다."),
 	WRONG_BOARD(HttpStatus.NOT_FOUND, 40430, "해당하는 게시글을 찾을 수 없습니다."),
 	WRONG_CATEGORY(HttpStatus.NOT_FOUND, 40431, "해당하는 카테고리를 찾을 수 없습니다."),
-	WRONG_ALBUM(HttpStatus.NOT_FOUND, 40432, "해당하는 사진을 찾을 수 없습니다."),
+	WRONG_COMMENT(HttpStatus.NOT_FOUND, 40432, "해당하는 댓글을 찾을 수 없습니다."),
+	WRONG_ALBUM(HttpStatus.NOT_FOUND, 40433, "해당하는 사진을 찾을 수 없습니다."),
 
 	/* 409 Conflict */
 	ALREADY_EXISTS_EMAIL(HttpStatus.CONFLICT, 40901, "이미 가입된 이메일 입니다."),
@@ -54,3 +54,4 @@ public enum ErrorCode {
 	private final int code;
 	private final String message;
 }
+

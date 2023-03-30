@@ -5,11 +5,11 @@ import com.oinzo.somoim.common.exception.ErrorCode;
 
 public enum Category {
 
-    자유,
-    관심사,
-    정모,
-    가입,
-    공지;
+    FREE,
+    FAVORITE,
+    MEET,
+    JOIN,
+    ANNOUCEMENT;
 
     public static Category valueOfOrHandleException(String string) {
         try {
