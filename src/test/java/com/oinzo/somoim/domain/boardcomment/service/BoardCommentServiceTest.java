@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,7 +58,7 @@ class BoardCommentServiceTest {
                 .gender(Gender.MALE)
                 .area("서울")
                 .introduction("테스트")
-                .favorite(Favorite.GAME)
+                .favorites(List.of(Favorite.GAME))
                 .build();
         Club mockClub = Club.builder()
                 .id(1L)
@@ -109,7 +110,7 @@ class BoardCommentServiceTest {
                 .gender(Gender.MALE)
                 .area("서울")
                 .introduction("테스트")
-                .favorite(Favorite.GAME)
+                .favorites(List.of(Favorite.GAME))
                 .build();
         Club mockClub = Club.builder()
                 .id(1L)
@@ -161,7 +162,7 @@ class BoardCommentServiceTest {
                 .gender(Gender.MALE)
                 .area("서울")
                 .introduction("테스트")
-                .favorite(Favorite.GAME)
+                .favorites(List.of(Favorite.GAME))
                 .build();
         Club mockClub = Club.builder()
                 .id(1L)

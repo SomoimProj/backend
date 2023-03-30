@@ -1,10 +1,10 @@
 package com.oinzo.somoim.controller;
 
 import com.oinzo.somoim.controller.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubDetailResponse;
 import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
-import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.service.ClubService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,10 +24,10 @@ public class ClubController {
     private final ClubService clubService;
 
     @PostMapping
-    public SuccessResponse<ClubResponse> addClub(
+    public SuccessResponse<ClubDetailResponse> addClub(
         @AuthenticationPrincipal Long userId,
         @RequestBody @Valid ClubCreateRequest request) {
-        ClubResponse club = clubService.addClub(userId, request);
+        ClubDetailResponse club = clubService.addClub(userId, request);
         return ResponseUtil.success(club);
     }
     
@@ -46,11 +46,11 @@ public class ClubController {
     }
 
     @GetMapping("/{clubId}")
-    public SuccessResponse<ClubResponse> readClubById(
+    public SuccessResponse<ClubDetailResponse> readClubById(
         @PathVariable("clubId") Long clubId,
         HttpServletResponse response,
         @CookieValue(value="count", required=false) Cookie countCookie) {
-        ClubResponse club = clubService.readClubById(clubId, response, countCookie);
+        ClubDetailResponse club = clubService.readClubById(clubId, response, countCookie);
         return ResponseUtil.success(club);
     }
     
