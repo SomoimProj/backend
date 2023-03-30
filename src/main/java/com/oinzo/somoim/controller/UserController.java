@@ -40,7 +40,7 @@ public class UserController {
 		return ResponseUtil.success(userInfoResponse);
 	}
 
-	@PostMapping("/favorite")
+	@PostMapping("/favorites")
 	public SuccessResponse<?> updateFavorite(
 		@AuthenticationPrincipal Long userId,
 		@RequestBody @Valid FavoriteUpdateRequest request) {
