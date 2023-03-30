@@ -3,6 +3,7 @@ package com.oinzo.somoim.domain.clubuser.repository;
 import com.oinzo.somoim.common.type.ClubUserLevel;
 import com.oinzo.somoim.domain.clubuser.entity.ClubUser;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,6 @@ public interface ClubUserRepository extends JpaRepository<ClubUser, Long> {
 	List<ClubUser> findByClub_Id(Long clubId);
 	List<ClubUser> findByUser_Id(Long userId);
   
-	ClubUser findByClub_IdAndLevel(Long clubId, ClubUserLevel level);
+	Optional<ClubUser> findByClub_IdAndLevel(Long clubId, ClubUserLevel level);
 
 }

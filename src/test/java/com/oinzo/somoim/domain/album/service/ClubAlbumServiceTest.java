@@ -13,6 +13,7 @@ import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +56,7 @@ class ClubAlbumServiceTest {
                 .gender(Gender.MALE)
                 .area("서울")
                 .introduction("테스트")
-                .favorite(Favorite.GAME)
+                .favorites(List.of(Favorite.GAME))
                 .build();
         given(clubRepository.existsById(anyLong()))
                 .willReturn(true);
@@ -91,7 +92,7 @@ class ClubAlbumServiceTest {
                 .gender(Gender.MALE)
                 .area("서울")
                 .introduction("테스트")
-                .favorite(Favorite.GAME)
+                .favorites(List.of(Favorite.GAME))
                 .build();
         ClubAlbum album = ClubAlbum.builder()
                 .id(1L)
@@ -125,7 +126,7 @@ class ClubAlbumServiceTest {
                 .gender(Gender.MALE)
                 .area("서울")
                 .introduction("테스트")
-                .favorite(Favorite.GAME)
+                .favorites(List.of(Favorite.GAME))
                 .build();
         ClubAlbum album = ClubAlbum.builder()
                 .id(1L)

@@ -70,8 +70,10 @@ public class ClubUserService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public Long getClubManagerId(long clubId) {
-		ClubUser managerClubUser = clubUserRepository.findByClub_IdAndLevel(clubId, ClubUserLevel.MANAGER);
+		ClubUser managerClubUser = clubUserRepository.findByClub_IdAndLevel(clubId, ClubUserLevel.MANAGER)
+			.orElseThrow(() -> new BaseException(ErrorCode.INTERNAL_SERVER_ERROR, "클럽의 매니저 정보가 조회되지 않습니다. clubId=" + clubId));
 		return managerClubUser.getUser().getId();
 	}
 }

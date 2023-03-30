@@ -21,7 +21,7 @@ public class ClubDetailResponse {
 	private Favorite favorite;
 	private Long managerId;
 
-	public static ClubDetailResponse fromClubAndManagerId(Club club, Long ManagerId){
+	public static ClubDetailResponse fromClubAndManagerId(Club club, Long managerId){
 		return ClubDetailResponse.builder()
 			.id(club.getId())
 			.name(club.getName())
@@ -31,7 +31,7 @@ public class ClubDetailResponse {
 			.memberLimit(club.getMemberLimit())
 			.memberCnt(club.getMemberCnt())
 			.favorite(club.getFavorite())
-			.managerId(builder().managerId)
+			.managerId(managerId)
 			.build();
 	}
 
