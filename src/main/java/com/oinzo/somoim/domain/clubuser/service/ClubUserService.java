@@ -68,6 +68,7 @@ public class ClubUserService {
 		return clubUsers.stream()
 			.map(clubUser -> ClubResponse.from(clubUser.getClub()))
 			.collect(Collectors.toList());
+	}
 
 	public Long getClubManagerId(long clubId) {
 		ClubUser managerClubUser = clubUserRepository.findByClub_IdAndLevel(clubId, ClubUserLevel.MANAGER);
