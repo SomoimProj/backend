@@ -13,7 +13,6 @@ import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -34,13 +33,6 @@ public class BoardLikeService {
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         BoardLike like = likeRepository.save(BoardLike.from(user,boardId));
         return BoardLikeResponse.from(like);
-    }
-
-    public List<BoardLikeResponse> readAllLike(Long boardId){
-        if(!clubBoardRepository.existsById(boardId))
-            throw new BaseException(ErrorCode.WRONG_BOARD);
-        List<BoardLike> likeLists = likeRepository.findAllByBoardId(boardId);
-        return BoardLikeResponse.responseToList(likeLists);
     }
 
     public void deleteLike(Long userId,Long boardId){

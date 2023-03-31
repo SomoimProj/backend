@@ -1,13 +1,13 @@
-package com.oinzo.somoim.controller.dto;
+package com.oinzo.somoim.controller;
 
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
+import com.oinzo.somoim.controller.dto.BoardLikeResponse;
 import com.oinzo.somoim.domain.boardlike.service.BoardLikeService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -30,10 +30,4 @@ public class BoardLikeController {
         return ResponseUtil.success();
     }
 
-    @GetMapping("/boards/{boardId}/likes")
-    public SuccessResponse<List<BoardLikeResponse>> readAllLike(
-            @PathVariable Long boardId){
-        List<BoardLikeResponse> responses = likeService.readAllLike(boardId);
-        return ResponseUtil.success(responses);
-    }
 }
