@@ -11,6 +11,8 @@ public class FavoriteListConverter implements AttributeConverter<List<Favorite>,
 
 	@Override
 	public String convertToDatabaseColumn(List<Favorite> favorites) {
+		if (favorites == null) return null;
+
 		StringBuilder sb = new StringBuilder();
 		for (Favorite favorite : favorites) {
 			sb.append(favorite.name());
@@ -23,6 +25,8 @@ public class FavoriteListConverter implements AttributeConverter<List<Favorite>,
 
 	@Override
 	public List<Favorite> convertToEntityAttribute(String string) {
+		if (string == null) return null;
+
 		return Arrays.stream(string.split(SPLIT_CHAR))
 			.map(Favorite::valueOfOrHandleException)
 			.collect(Collectors.toList());
