@@ -39,6 +39,8 @@ public enum ErrorCode {
 	WRONG_CATEGORY(HttpStatus.NOT_FOUND, 40431, "해당하는 카테고리를 찾을 수 없습니다."),
 	WRONG_COMMENT(HttpStatus.NOT_FOUND, 40432, "해당하는 댓글을 찾을 수 없습니다."),
 	WRONG_ALBUM(HttpStatus.NOT_FOUND, 40433, "해당하는 사진을 찾을 수 없습니다."),
+	WRONG_ACTIVITY(HttpStatus.NOT_FOUND, 40435, "해당하는 활동을 찾을 수 없습니다."),
+
 
 	/* 409 Conflict */
 	ALREADY_EXISTS_EMAIL(HttpStatus.CONFLICT, 40901, "이미 가입된 이메일 입니다."),
