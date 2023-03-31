@@ -37,11 +37,11 @@ class BoardControllerTest {
     @DisplayName("게시판 생성 테스트")
     void addBoard() {
         // given
-        BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL","게시판 테스트","URL","자유");
+        BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL", "게시판 테스트", "URL", "FREE");
         Club club = clubRepository.findById(1L).orElseThrow();
         User user = userRepository.findById(7L).orElseThrow();
         // when
-        ClubBoard board = clubBoardRepository.save(ClubBoard.from(newBoard,club,user));
+        ClubBoard board = clubBoardRepository.save(ClubBoard.from(newBoard, club, user));
         // then
         Assertions.assertEquals("NORMAL", board.getTitle());
     }
@@ -51,22 +51,22 @@ class BoardControllerTest {
     void readBoard() {
         // given
         // when
-        BoardResponse board = clubBoardService.readBoard(1L);
+        BoardResponse board = clubBoardService.readBoard(160L);
         // then
-        assertEquals("제목", board.getTitle());
+        assertEquals("NORMAL", board.getTitle());
     }
 
     @Test
     @DisplayName("게시판 수정 테스트")
     void updateBoard() {
         // given
-        BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL","게시판 테스트","URL","자유");
+        BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL", "게시판 테스트", "URL", "FREE");
         Club club = clubRepository.findById(1L).orElseThrow();
         User user = userRepository.findById(7L).orElseThrow();
-        ClubBoard board = clubBoardRepository.save(ClubBoard.from(newBoard,club,user));
+        ClubBoard board = clubBoardRepository.save(ClubBoard.from(newBoard, club, user));
         // when
-        BoardCreateRequest updateBoard = new BoardCreateRequest("NORMAL","수정된 테스트","URL","자유");
-        BoardResponse updateBoard1 =clubBoardService.updateBoard(board.getId(),updateBoard,7L);
+        BoardCreateRequest updateBoard = new BoardCreateRequest("NORMAL", "수정된 테스트", "URL", "FREE");
+        BoardResponse updateBoard1 = clubBoardService.updateBoard(board.getId(), updateBoard, 7L);
         assertEquals("NORMAL", updateBoard1.getTitle());
     }
 }

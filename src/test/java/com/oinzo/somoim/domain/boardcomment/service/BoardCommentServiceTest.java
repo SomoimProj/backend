@@ -138,8 +138,6 @@ class BoardCommentServiceTest {
                 .build();
         given(userRepository.findById(anyLong()))
                 .willReturn(Optional.of(mockUser));
-        given(boardRepository.findById(anyLong()))
-                .willReturn(Optional.of(mockBoard));
         given(commentRepository.findById(anyLong()))
                 .willReturn(Optional.of(comment));
         given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(),anyLong()))
