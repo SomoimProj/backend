@@ -18,9 +18,9 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 
     List<Club> findAllByFavoriteAndAreaContaining(Favorite favorite, String area);
 
-    Page<Club> findAllByAreaLikeOrderByViewCntDesc(String area,Pageable pageable);
+    Page<Club> findAllByAreaLikeOrderByViewCntDescIdDesc(String area,Pageable pageable);
 
-    Page<Club> findAllByAreaLikeOrderByCreatedAtDesc(String area,Pageable pageable);
+    Page<Club> findAllByAreaLikeOrderByCreatedAtDescIdDesc(String area,Pageable pageable);
 
 }
 

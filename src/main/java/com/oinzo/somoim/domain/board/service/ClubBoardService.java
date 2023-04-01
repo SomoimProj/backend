@@ -40,7 +40,7 @@ public class ClubBoardService {
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIs(clubId, pageable).getContent();
+        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClub_IdOrderByIdDesc(clubId, pageable).getContent();
         return BoardResponse.ListToBoardResponse(clubBoardList);
     }
 
@@ -49,7 +49,7 @@ public class ClubBoardService {
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory, pageable).getContent();
+        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClub_IdAndCategoryOrderByIdDesc(clubId, newCategory, pageable).getContent();
         return BoardResponse.ListToBoardResponse(clubBoardList);
     }
 

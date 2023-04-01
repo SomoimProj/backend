@@ -12,9 +12,9 @@ import java.util.Optional;
 @Repository
 public interface ClubBoardRepository extends JpaRepository<ClubBoard,Long> {
 
-    Page<ClubBoard> findAllByClubIdIs(Long clubId, Pageable pageable);
+    Page<ClubBoard> findAllByClub_IdOrderByIdDesc(Long clubId, Pageable pageable);
 
-    Page<ClubBoard> findAllByClubIdIsAndCategory(Long clubId, Category category, Pageable pageable);
+    Page<ClubBoard> findAllByClub_IdAndCategoryOrderByIdDesc(Long clubId, Category category, Pageable pageable);
 
     Optional<ClubBoard> findById(Long boardId);
 
