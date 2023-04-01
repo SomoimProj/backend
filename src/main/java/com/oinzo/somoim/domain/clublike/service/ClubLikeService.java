@@ -32,4 +32,18 @@ public class ClubLikeService {
 		clubLikeRepository.save(clubLike);
 	}
 
+	public void deleteLike(long userId, long clubId) {
+		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
+		if (!clubRepository.existsById(clubId)) {
+			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
+		}
+		ClubLike clubLike = clubLikeRepository.findByClub_IdAndUserId(clubId, userId)
+			.orElseThrow(() -> new BaseException(ErrorCode.WRONG_LIKE, "clubId=" + clubId));
+		clubLikeRepository.delete(clubLike);
+	}
+
+	// 좋아요 누른 클럽 목록 조회
+
+	// 좋아요 카운트
+
 }

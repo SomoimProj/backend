@@ -27,4 +27,12 @@ public class ClubLikeController {
 		return ResponseUtil.success();
 	}
 
+	@DeleteMapping("/clubs/{clubId}/likes")
+	public SuccessResponse<?> deleteLike(
+		@AuthenticationPrincipal Long userId,
+		@PathVariable Long clubId) {
+		clubLikeService.deleteLike(userId, clubId);
+		return ResponseUtil.success();
+	}
+
 }
