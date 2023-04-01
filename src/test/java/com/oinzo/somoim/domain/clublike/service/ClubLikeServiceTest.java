@@ -101,4 +101,68 @@ class ClubLikeServiceTest {
 		assertEquals(ErrorCode.ALREADY_LIKED, exception.getErrorCode());
 	}
 
+	@Test
+	void testDeleteLike() {
+		// given
+		Club mockClub = Club.builder()
+			.id(1L)
+			.name("게임 클럽")
+			.description("게임 클럽입니다.")
+			.area("서울")
+			.memberLimit(4)
+			.memberCnt(0)
+			.favorite(Favorite.GAME)
+			.build();
+		ClubLike mockClubLike = ClubLike.builder()
+			.id(1L)
+			.club(mockClub)
+			.userId(1L)
+			.build();
+		given(clubRepository.existsById(anyLong()))
+			.willReturn(true);
+		given(clubLikeRepository.findByClub_IdAndUserId(anyLong(), anyLong()))
+			.willReturn(Optional.of(mockClubLike));
+
+		ArgumentCaptor<ClubLike> captor = ArgumentCaptor.forClass(ClubLike.class);
+
+		// when
+		clubLikeService.deleteLike(1L, 1L);
+
+		// then
+		verify(clubLikeRepository, times(1)).delete(captor.capture());
+		assertEquals(1L, captor.getValue().getClub().getId());
+		assertEquals("게임 클럽", captor.getValue().getClub().getName());
+		assertEquals(1L, captor.getValue().getUserId());
+	}
+
+	@Test
+	void testDeleteLike_wrongClub() {
+		// given
+		given(clubRepository.existsById(anyLong()))
+			.willReturn(false);
+
+		// when
+		BaseException exception = assertThrows(BaseException.class,
+			() -> clubLikeService.deleteLike(1L, 1L));
+
+		// then
+		assertEquals(ErrorCode.WRONG_CLUB, exception.getErrorCode());
+	}
+
+	@Test
+	void testDeleteLike_wrongLike() {
+		// given
+		given(clubRepository.existsById(anyLong()))
+			.willReturn(true);
+		given(clubLikeRepository.findByClub_IdAndUserId(anyLong(), anyLong()))
+			.willReturn(Optional.empty());
+
+		// when
+		BaseException exception = assertThrows(BaseException.class,
+			() -> clubLikeService.deleteLike(1L, 1L));
+
+		// then
+		assertEquals(ErrorCode.WRONG_LIKE, exception.getErrorCode());
+	}
+
 }
