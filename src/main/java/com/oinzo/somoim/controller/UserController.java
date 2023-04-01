@@ -50,8 +50,8 @@ public class UserController {
 
 	// 자신이 가입한 클럽 조회
 	@GetMapping("/join-clubs")
-	public SuccessResponse<List<ClubResponse>> getJoinClubs(@AuthenticationPrincipal Long userId) {
-		List<ClubResponse> clubs = clubUserService.getJoinClubs(userId);
+	public SuccessResponse<List<ClubResponse>> readJoinClubList(@AuthenticationPrincipal Long userId) {
+		List<ClubResponse> clubs = clubUserService.readJoinClubList(userId);
 		return ResponseUtil.success(clubs);
 	}
 }

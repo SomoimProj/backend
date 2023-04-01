@@ -55,17 +55,17 @@ public class ClubUserService {
 		if (!clubRepository.existsById(clubId)) {
 			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
 		}
-		List<ClubUser> clubUsers = clubUserRepository.findByClub_Id(clubId);
-		return clubUsers.stream()
+		List<ClubUser> clubUserList = clubUserRepository.findByClub_Id(clubId);
+		return clubUserList.stream()
 			.map(clubUser -> MemberResponse.from(clubUser.getUser()))
 			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<ClubResponse> getJoinClubs(Long userId) {
+	public List<ClubResponse> readJoinClubList(Long userId) {
 		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
-		List<ClubUser> clubUsers = clubUserRepository.findByUser_Id(userId);
-		return clubUsers.stream()
+		List<ClubUser> clubUserList = clubUserRepository.findByUser_Id(userId);
+		return clubUserList.stream()
 			.map(clubUser -> ClubResponse.from(clubUser.getClub()))
 			.collect(Collectors.toList());
 	}
