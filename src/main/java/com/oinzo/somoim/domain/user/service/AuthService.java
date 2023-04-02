@@ -21,9 +21,9 @@ public class AuthService {
 
 	private final UserRepository userRepository;
 	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisService redisService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
-	private final RedisService redisService;
 
 	private String passwordEncode(String password) {
 		return passwordEncoder.encode(password);
@@ -107,6 +107,5 @@ public class AuthService {
 //
 //		return ResponseEntity.ok(newToken.getRefreshToken());
 //	}
-
 
 }
