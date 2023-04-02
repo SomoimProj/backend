@@ -4,12 +4,15 @@ import com.oinzo.somoim.domain.albumlike.entity.AlbumLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface AlbumLikeRepository extends JpaRepository<AlbumLike,Long> {
+public interface AlbumLikeRepository extends JpaRepository<AlbumLike, Long> {
 
-    boolean existsByAlbumIdAndUserId(Long albumId,Long userId);
+    Boolean existsByAlbum_IdAndUser(Long albumId, Long userId);
 
-    Optional<AlbumLike> findByAlbumIdAndUserId(Long albumId, Long userId);
+    Optional<AlbumLike> findByAlbum_IdAndUser(Long albumId, Long userId);
+
+    List<AlbumLike> findAllByAlbum_Id(Long albumIdl);
 }
