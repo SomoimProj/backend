@@ -21,7 +21,8 @@ public class AlbumResponse {
     private int likeCnt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    public static AlbumResponse from(ClubAlbum album,int likeCnt){
+
+    public static AlbumResponse from(ClubAlbum album, int likeCnt) {
         return AlbumResponse.builder()
                 .id(album.getId())
                 .userId(album.getUser().getId())
