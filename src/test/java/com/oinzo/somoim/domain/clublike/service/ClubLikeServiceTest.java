@@ -9,10 +9,12 @@ import static org.mockito.Mockito.verify;
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.type.Favorite;
+import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clublike.entity.ClubLike;
 import com.oinzo.somoim.domain.clublike.repository.ClubLikeRepository;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -163,6 +165,48 @@ class ClubLikeServiceTest {
 
 		// then
 		assertEquals(ErrorCode.WRONG_LIKE, exception.getErrorCode());
+	}
+
+	@Test
+	void testReadLikeClubList() {
+		// given
+		Club mockClub1 = Club.builder()
+			.id(1L)
+			.name("게임 클럽")
+			.description("게임 클럽입니다.")
+			.area("서울")
+			.memberLimit(4)
+			.memberCnt(0)
+			.favorite(Favorite.GAME)
+			.build();
+		Club mockClub2 = Club.builder()
+			.id(2L)
+			.name("음악 클럽")
+			.description("음악 클럽입니다.")
+			.area("서울")
+			.memberLimit(4)
+			.memberCnt(0)
+			.favorite(Favorite.MUSIC)
+			.build();
+		ClubLike mockClubLike1 = ClubLike.builder()
+			.id(1L)
+			.userId(1L)
+			.club(mockClub1)
+			.build();
+		ClubLike mockClubLike2 = ClubLike.builder()
+			.id(2L)
+			.userId(1L)
+			.club(mockClub2)
+			.build();
+		List<ClubLike> mockClubLikeList = List.of(mockClubLike1, mockClubLike2);
+		given(clubLikeRepository.findAllByUserIdOrderByIdDesc(anyLong()))
+			.willReturn(mockClubLikeList);
+
+		// when
+		List<ClubResponse> clubResponses = clubLikeService.readLikeClubList(1L);
+
+		// then
+		assertEquals(2, clubResponses.size());
 	}
 
 }
