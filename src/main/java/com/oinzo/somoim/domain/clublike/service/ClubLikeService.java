@@ -2,10 +2,13 @@ package com.oinzo.somoim.domain.clublike.service;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clublike.entity.ClubLike;
 import com.oinzo.somoim.domain.clublike.repository.ClubLikeRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,7 @@ public class ClubLikeService {
 		clubLikeRepository.save(clubLike);
 	}
 
+	@Transactional
 	public void deleteLike(long userId, long clubId) {
 		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
 		if (!clubRepository.existsById(clubId)) {
@@ -41,8 +45,15 @@ public class ClubLikeService {
 			.orElseThrow(() -> new BaseException(ErrorCode.WRONG_LIKE, "clubId=" + clubId));
 		clubLikeRepository.delete(clubLike);
 	}
-
-	// 좋아요 누른 클럽 목록 조회
+	
+	@Transactional(readOnly = true)
+	public List<ClubResponse> readLikeClubList(long userId) {
+		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
+		List<ClubLike> clubLikeList = clubLikeRepository.findAllByUserIdOrderByIdDesc(userId);
+		return clubLikeList.stream()
+			.map(clubLike -> ClubResponse.from(clubLike.getClub()))
+			.collect(Collectors.toList());
+	}
 
 	// 좋아요 카운트
 

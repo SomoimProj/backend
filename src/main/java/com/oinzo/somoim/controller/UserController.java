@@ -6,6 +6,7 @@ import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.controller.dto.FavoriteUpdateRequest;
 import com.oinzo.somoim.controller.dto.UserInfoRequest;
 import com.oinzo.somoim.controller.dto.UserInfoResponse;
+import com.oinzo.somoim.domain.clublike.service.ClubLikeService;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import com.oinzo.somoim.domain.user.service.UserService;
 import java.util.List;
@@ -25,6 +26,7 @@ public class UserController {
 
 	private final UserService userService;
 	private final ClubUserService clubUserService;
+	private final ClubLikeService clubLikeService;
 
 	@GetMapping
 	public SuccessResponse<UserInfoResponse> readUserInfo(@AuthenticationPrincipal Long userId) {
@@ -52,6 +54,13 @@ public class UserController {
 	@GetMapping("/join-clubs")
 	public SuccessResponse<List<ClubResponse>> readJoinClubList(@AuthenticationPrincipal Long userId) {
 		List<ClubResponse> clubs = clubUserService.readJoinClubList(userId);
+		return ResponseUtil.success(clubs);
+	}
+
+	// 자신이 찜한 클럽 조회
+	@GetMapping("/like-clubs")
+	public SuccessResponse<List<ClubResponse>> readLikeClubList(@AuthenticationPrincipal Long userId) {
+		List<ClubResponse> clubs = clubLikeService.readLikeClubList(userId);
 		return ResponseUtil.success(clubs);
 	}
 }
