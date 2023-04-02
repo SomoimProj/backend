@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -20,9 +18,11 @@ public class AlbumResponse {
     private String userImg;
     private Long clubId;
     private String imageUrl;
+    private int likeCnt;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    public static AlbumResponse from(ClubAlbum album){
+
+    public static AlbumResponse from(ClubAlbum album, int likeCnt) {
         return AlbumResponse.builder()
                 .id(album.getId())
                 .userId(album.getUser().getId())
@@ -30,14 +30,10 @@ public class AlbumResponse {
                 .userImg(album.getUser().getProfileUrl())
                 .clubId(album.getClubId())
                 .imageUrl(album.getImageUrl())
+                .likeCnt(likeCnt)
                 .createdAt(album.getCreatedAt())
                 .updatedAt(album.getUpdatedAt())
                 .build();
     }
 
-    public static List<AlbumResponse> listToAlbumResponse(List<ClubAlbum> albumList){
-        return albumList.stream()
-                .map(AlbumResponse::from)
-                .collect(Collectors.toList());
-    }
 }

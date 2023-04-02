@@ -8,7 +8,7 @@ import com.oinzo.somoim.controller.dto.AlbumCreateRequest;
 import com.oinzo.somoim.controller.dto.AlbumResponse;
 import com.oinzo.somoim.domain.album.entity.ClubAlbum;
 import com.oinzo.somoim.domain.album.repository.ClubAlbumRepository;
-import com.oinzo.somoim.domain.club.entity.Club;
+import com.oinzo.somoim.domain.albumlike.repository.AlbumLikeRepository;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
 import com.oinzo.somoim.domain.user.entity.User;
@@ -24,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,6 +44,8 @@ class ClubAlbumServiceTest {
     private ClubRepository clubRepository;
     @Mock
     private ClubUserRepository clubUserRepository;
+    @Mock
+    private AlbumLikeRepository likeRepository;
 
     @Test
     @DisplayName("앨범 등록")
@@ -141,6 +142,8 @@ class ClubAlbumServiceTest {
                 .willReturn(true);
         given(clubAlbumRepository.findById(anyLong()))
                 .willReturn(Optional.of(album));
+        given(likeRepository.countAllByAlbum_Id(anyLong()))
+                .willReturn(1);
 
         // when
         AlbumResponse response = clubAlbumService.readOneAlbum(1L,1L);
