@@ -5,17 +5,15 @@ import com.oinzo.somoim.common.exception.ErrorCode;
 import com.oinzo.somoim.common.jwt.JwtProperties;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
+import com.oinzo.somoim.common.redis.RedisService;
 import com.oinzo.somoim.controller.dto.SignInRequest;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +23,7 @@ public class AuthService {
 	private final RedisTemplate<String, String> redisTemplate;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
-	private final String TOKEN_PREFIX = "RTK:";
+	private final RedisService redisService;
 
 	private String passwordEncode(String password) {
 		return passwordEncoder.encode(password);
@@ -63,19 +61,21 @@ public class AuthService {
 	}
 
 	public void singOut(TokenDto tokenDto) {
-		if (!jwtProvider.isValidateToken(tokenDto.getAccessToken())) {
+		String accessToken = tokenDto.getAccessToken();
+
+		if (!jwtProvider.isValidateToken(accessToken)) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN);
 		}
 
-		Authentication authentication = jwtProvider.getAuthentication(tokenDto.getAccessToken());
+		Authentication authentication = jwtProvider.getAuthentication(accessToken);
 
-		String key = TOKEN_PREFIX + authentication.getName();
-
+		String key = JwtProperties.REFRESH_TOKEN_PREFIX + authentication.getName();
 		if (redisTemplate.opsForValue().get(key) != null) {
 			redisTemplate.delete(key);
 		}
 
-		// todo : AT 유효시간을 가져와서 블랙리스트로 저장하기
+		// 블랙리스트에 accessToken 등록
+		redisService.setBlackList(accessToken, "accessToken", 30);
 	}
 
 	/**
