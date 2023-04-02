@@ -4,7 +4,6 @@ import com.oinzo.somoim.controller.dto.BoardCreateRequest;
 import com.oinzo.somoim.controller.dto.BoardResponse;
 import com.oinzo.somoim.domain.board.entity.ClubBoard;
 import com.oinzo.somoim.domain.board.repository.ClubBoardRepository;
-import com.oinzo.somoim.domain.board.service.ClubBoardService;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.user.entity.User;
@@ -37,7 +36,7 @@ class BoardControllerTest {
     @DisplayName("게시판 생성 테스트")
     void addBoard() {
         // given
-        BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL","게시판 테스트","URL","FREE");
+        BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL","게시판 테스트","URL", "FREE");
         Club club = clubRepository.findById(1L).orElseThrow();
         User user = userRepository.findById(7L).orElseThrow();
         // when
@@ -51,9 +50,9 @@ class BoardControllerTest {
     void readBoard() {
         // given
         // when
-        BoardResponse board = clubBoardService.readBoard(1L,7L);
+        BoardResponse board = clubBoardService.readBoard(160L,7L);
         // then
-        assertEquals("제목", board.getTitle());
+        assertEquals("NORMAL", board.getTitle());
     }
 
     @Test

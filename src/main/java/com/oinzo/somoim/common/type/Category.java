@@ -9,12 +9,11 @@ public enum Category {
     FAVORITE,
     MEET,
     JOIN,
-    ANNOUNCEMENT;
+    ANNOUCEMENT;
 
     public static Category valueOfOrHandleException(String string) {
         try {
-            String tradedString = string.trim().toUpperCase();
-            return Category.valueOf(tradedString);
+            return Category.valueOf(string);
         } catch (IllegalArgumentException e)  {
             throw new BaseException(ErrorCode.WRONG_CATEGORY, "category=" + string);
         }

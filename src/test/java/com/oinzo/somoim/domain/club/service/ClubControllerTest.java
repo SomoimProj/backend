@@ -1,6 +1,7 @@
 package com.oinzo.somoim.domain.club.service;
 
 import com.oinzo.somoim.controller.dto.ClubCreateRequest;
+import com.oinzo.somoim.controller.dto.ClubDetailResponse;
 import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
@@ -30,10 +31,10 @@ class ClubControllerTest {
         /* given */
         ClubCreateRequest newClub = new ClubCreateRequest("새로운 클럽","테스트용 클럽","","서울",3,"GAME");
         /* when */
-        ClubResponse clubResponse = clubService.addClub(7L, newClub);
+        ClubDetailResponse clubDetailResponse = clubService.addClub(7L, newClub);
         /* then */
-        Assertions.assertEquals("새로운 클럽", clubResponse.getName());
-        Assertions.assertEquals(1, clubResponse.getMemberCnt());
+        Assertions.assertEquals("새로운 클럽", clubDetailResponse.getName());
+        Assertions.assertEquals(1, clubDetailResponse.getMemberCnt());
     }
 
     @Test

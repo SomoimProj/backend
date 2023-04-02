@@ -25,20 +25,21 @@ public class ClubResponse {
 
     public static ClubResponse from(Club club){
         return ClubResponse.builder()
-                .id(club.getId())
-                .name(club.getName())
-                .description(club.getDescription())
-                .imageUrl(club.getImageUrl())
-                .area(club.getArea())
-                .memberLimit(club.getMemberLimit())
-                .memberCnt(club.getMemberCnt())
-                .build();
+            .id(club.getId())
+            .name(club.getName())
+            .description(club.getDescription())
+            .imageUrl(club.getImageUrl())
+            .area(club.getArea())
+            .memberLimit(club.getMemberLimit())
+            .memberCnt(club.getMemberCnt())
+            .favorite(club.getFavorite())
+            .build();
     }
 
     public static List<ClubResponse> listToBoardResponse(List<Club> clubList){
         return clubList.stream()
-                .map(ClubResponse::from)
-                .collect(Collectors.toList());
+            .map(ClubResponse::from)
+            .collect(Collectors.toList());
     }
 
 }

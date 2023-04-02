@@ -2,10 +2,13 @@ package com.oinzo.somoim.controller;
 
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
+import com.oinzo.somoim.controller.dto.MemberResponse;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +28,13 @@ public class ClubUserController {
 		@PathVariable Long clubId) {
 		clubUserService.joinClub(userId, clubId);
 		return ResponseUtil.success();
+	}
+
+	// 클럽 멤버 조회
+	@GetMapping("/clubs/{clubId}/members")
+	public SuccessResponse<List<MemberResponse>> getMembers(@PathVariable Long clubId) {
+		List<MemberResponse> members = clubUserService.getMembers(clubId);
+		return ResponseUtil.success(members);
 	}
 
 }
