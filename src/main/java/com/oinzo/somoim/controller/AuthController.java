@@ -11,6 +11,8 @@ import com.oinzo.somoim.domain.user.service.AuthService;
 import com.oinzo.somoim.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -55,7 +57,7 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public SuccessResponse<TokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest,
-								HttpServletResponse response) {
+												 HttpServletResponse response) {
 		Long userId = authService.signIn(signInRequest);
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 		String refreshToken = tokenDto.getRefreshToken();
@@ -70,13 +72,9 @@ public class AuthController {
 		return ResponseUtil.success();
 	}
 
-	/**
-	 * TODO: 토큰재발급
-	 */
-//	@PostMapping("/reissue")
-//	public ResponseEntity<String> regenerateToken(@RequestBody RegenerateTokenDto regenerateTokenDto) {
-//
-//		return authService.regenerateToken(regenerateTokenDto);
-//	}
-
+	@PostMapping("/reissue")
+	public SuccessResponse<TokenResponse> reissue(@Valid TokenDto tokenDto, Errors error) {
+		authService.reissue(tokenDto);
+		return ResponseUtil.success(TokenResponse.from(tokenDto));
+	}
 }

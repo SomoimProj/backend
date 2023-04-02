@@ -11,6 +11,7 @@ import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -79,33 +80,26 @@ public class AuthService {
 	}
 
 	/**
-	 * TODO : 토큰 재발급
+	 * 토큰 재발급
 	 */
-//	public ResponseEntity<String> regenerateToken(RegenerateTokenDto regenerateTokenDto) {
-//		Authentication authentication = jwtProvider.getAuthentication(regenerateTokenDto.getRefreshToken());
-//
-//		if (!jwtProvider.isValidateToken(redisTemplate.opsForValue().get(PREFIX+authentication.getName()))) {
-//			throw new BaseException(ErrorCode.WRONG_REFRESH_TOKEN);
-//		}
-//
-//		String refreshToken = redisTemplate.opsForValue().get(PREFIX + authentication.getName());
-//
-//		if (ObjectUtils.isEmpty(refreshToken)) {
-//			throw new BaseException(ErrorCode.INVALID_TOKEN);
-//		}
-//
-//		if (!refreshToken.equals(regenerateTokenDto.getRefreshToken())) {
-//			throw new BaseException(ErrorCode.WRONG_REFRESH_TOKEN);
-//		}
-//
-//		Optional<User> user = userRepository.findByEmail(authentication.getName());
-//		Long userId = user.get().getId();
-//		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-//
-//		redisTemplate.opsForValue()
-//			.set(PREFIX + authentication.getName(), newToken.getRefreshToken(), JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
-//
-//		return ResponseEntity.ok(newToken.getRefreshToken());
-//	}
+	public ResponseEntity<?> reissue(TokenDto tokenDto) {
+		if (!jwtProvider.isValidateToken(tokenDto.getRefreshToken())) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "RefreshToken 불일치");
+		}
 
+		Authentication authentication = jwtProvider.getAuthentication(tokenDto.getAccessToken());
+		Long userId = (Long) authentication.getPrincipal();
+
+		String RefreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
+		if (RefreshTokenInRedis == null) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "레디스에 RefreshToken이 존재하지 않음");
+		}
+
+		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+		String newAccessToken = newToken.getAccessToken();
+
+		redisService.set(JwtProperties.REFRESH_TOKEN_PREFIX + userId, newAccessToken, JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME);
+
+		return ResponseEntity.ok(newAccessToken);
+	}
 }
