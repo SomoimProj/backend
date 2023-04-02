@@ -4,12 +4,15 @@ import com.oinzo.somoim.domain.boardlike.entity.BoardLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BoardLikeRepository extends JpaRepository<BoardLike,Long> {
+public interface BoardLikeRepository extends JpaRepository<BoardLike, Long> {
 
-    boolean existsByBoardIdAndUserId(Long boardId,Long userId);
+    boolean existsByBoard_IdAndUserId(Long boardId, Long userId);
 
-    Optional<BoardLike> findByBoardIdAndUserId(Long boardId, Long userId);
+    Optional<BoardLike> findByBoard_IdAndUserId(Long boardId, Long userId);
+
+    List<BoardLike> findAllByBoard_Id(Long boardId);
 }
