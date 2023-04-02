@@ -9,9 +9,11 @@ import com.oinzo.somoim.domain.board.entity.ClubBoard;
 import com.oinzo.somoim.domain.board.repository.ClubBoardRepository;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
+import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ public class ClubBoardService {
     private final ClubBoardRepository clubBoardRepository;
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final ClubUserRepository clubUserRepository;
 
     @Transactional
     public BoardResponse addBoard(BoardCreateRequest request, Long clubId, Long userId){
@@ -33,29 +36,52 @@ public class ClubBoardService {
             .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
         Club club = clubRepository.findById(clubId)
             .orElseThrow(()->new BaseException(ErrorCode.WRONG_CLUB));
+        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,clubId))
+            throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         return BoardResponse.from(clubBoardRepository.save(ClubBoard.from(request, club, user)));
     }
 
-    public List<BoardResponse> clubBoardList(Long clubId, Pageable pageable){
+    public Page<BoardResponse> clubBoardList(Long clubId, Pageable pageable){
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIs(clubId, pageable).getContent();
+        Page<ClubBoard> boardResponses = clubBoardRepository.findAllByClubIdIs(clubId, pageable);
+        return boardResponses.map(BoardResponse::from);
+    }
+
+    public List<BoardResponse> clubBoardListAll(Long clubId){
+        if (!clubRepository.existsById(clubId)) {
+            throw new BaseException(ErrorCode.WRONG_CLUB);
+        }
+        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIs(clubId);
         return BoardResponse.ListToBoardResponse(clubBoardList);
     }
 
-    public List<BoardResponse> clubBoardListByCategory(Long clubId, String category, Pageable pageable){
+    public Page<BoardResponse> clubBoardListByCategory(Long clubId, String category, Pageable pageable){
         Category newCategory = Category.valueOfOrHandleException(category);
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory, pageable).getContent();
+        Page<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory, pageable);
+        return clubBoardList.map(BoardResponse::from);
+    }
+
+    public List<BoardResponse> allClubBoardListByCategory(Long clubId, String category){
+        Category newCategory = Category.valueOfOrHandleException(category);
+        if (!clubRepository.existsById(clubId)) {
+            throw new BaseException(ErrorCode.WRONG_CLUB);
+        }
+        List<ClubBoard> clubBoardList = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory);
         return BoardResponse.ListToBoardResponse(clubBoardList);
     }
 
-    public BoardResponse readBoard(Long boardId){
+    public BoardResponse readBoard(Long boardId,Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_FOUND));
         ClubBoard board = clubBoardRepository.findById(boardId)
             .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
+            throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         return BoardResponse.from(board);
     }
 
@@ -63,6 +89,8 @@ public class ClubBoardService {
     public BoardResponse updateBoard(Long boardId, BoardCreateRequest request, Long userId){
         ClubBoard board = clubBoardRepository.findById(boardId)
             .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
+            throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         if(!userId.equals(board.getUser().getId())) {
             throw new BaseException(ErrorCode.FORBIDDEN_REQUEST, "게시판 작성자가 아닙니다.");
         }
@@ -74,6 +102,8 @@ public class ClubBoardService {
     public void deleteBoard(Long boardId, Long userId){
         ClubBoard board = clubBoardRepository.findById(boardId)
             .orElseThrow(()-> new BaseException(ErrorCode.WRONG_BOARD));
+        if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId()))
+            throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         if(!userId.equals(board.getUser().getId())) {
             throw new BaseException(ErrorCode.FORBIDDEN_REQUEST, "게시판 작성자가 아닙니다.");
         }

@@ -1,11 +1,9 @@
-package com.oinzo.somoim;
+package com.oinzo.somoim.domain.board.service;
 
-import com.oinzo.somoim.common.type.Category;
 import com.oinzo.somoim.controller.dto.BoardCreateRequest;
 import com.oinzo.somoim.controller.dto.BoardResponse;
 import com.oinzo.somoim.domain.board.entity.ClubBoard;
 import com.oinzo.somoim.domain.board.repository.ClubBoardRepository;
-import com.oinzo.somoim.domain.board.service.ClubBoardService;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.user.entity.User;
@@ -52,7 +50,7 @@ class BoardControllerTest {
     void readBoard() {
         // given
         // when
-        BoardResponse board = clubBoardService.readBoard(160L);
+        BoardResponse board = clubBoardService.readBoard(160L,7L);
         // then
         assertEquals("NORMAL", board.getTitle());
     }
