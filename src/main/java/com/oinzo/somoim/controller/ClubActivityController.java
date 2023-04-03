@@ -33,7 +33,6 @@ public class ClubActivityController {
         return ResponseUtil.success(responses);
     }
 
-    @CrossOrigin(origins="*")
     @PatchMapping("/activities/{activityId}")
     public SuccessResponse<ClubActivityResponse> updateActivity(
             @RequestBody ClubActivityRequest request,

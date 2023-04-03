@@ -65,7 +65,7 @@ public class SecurityConfiguration {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOriginPatterns(List.of("*"));
 		// preflighted request를 보낼 때 OPTIONS로 보내므로 API에서 안쓰더라도 꼭 추가해주어야 함
-		configuration.setAllowedMethods(Arrays.asList("OPTIONS", "GET", "POST", "PUT", "DELETE"));
+		configuration.setAllowedMethods(Arrays.asList("OPTIONS", "GET", "POST", "PUT", "DELETE","PATCH"));
 		configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.CACHE_CONTROL, HttpHeaders.CONTENT_TYPE, HttpHeaders.SET_COOKIE));
 		configuration.setAllowCredentials(true);
 		configuration.setMaxAge(3600L);	// 3600초 동안 preflighted request 결과를 캐시에 저장
