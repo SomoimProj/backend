@@ -55,6 +55,11 @@ public class ClubLikeService {
 			.collect(Collectors.toList());
 	}
 
-	// 좋아요 카운트
+	public Long readLikesCount(Long clubId) {
+		if (!clubRepository.existsById(clubId)) {
+			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
+		}
+		return clubLikeRepository.countByClub_Id(clubId);
+	}
 
 }

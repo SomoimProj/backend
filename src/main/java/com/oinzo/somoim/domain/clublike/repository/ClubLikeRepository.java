@@ -12,4 +12,6 @@ public interface ClubLikeRepository extends JpaRepository<ClubLike, Long> {
 	Optional<ClubLike> findByClub_IdAndUserId(Long clubId, Long userId);
 
 	List<ClubLike> findAllByUserIdOrderByIdDesc(Long userId);
+
+	Long countByClub_Id(Long clubId);
 }
