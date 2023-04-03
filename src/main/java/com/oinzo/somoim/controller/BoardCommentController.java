@@ -44,6 +44,7 @@ public class BoardCommentController {
         return ResponseUtil.success(response);
     }
 
+    @CrossOrigin(origins="*")
     @PatchMapping("/comments/{commentId}")
     public SuccessResponse<CommentResponse> updateComment(
             @PathVariable Long commentId,

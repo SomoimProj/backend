@@ -71,6 +71,7 @@ public class BoardController {
         return ResponseUtil.success(boardResponse);
     }
 
+    @CrossOrigin(origins="*")
     @PatchMapping("/boards/{boardId}")
     public SuccessResponse<BoardResponse> updateBoard(
         @AuthenticationPrincipal Long userId,
