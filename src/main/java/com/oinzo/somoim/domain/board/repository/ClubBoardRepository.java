@@ -7,16 +7,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ClubBoardRepository extends JpaRepository<ClubBoard,Long> {
 
-    Page<ClubBoard> findAllByClubIdIs(Long clubId, Pageable pageable);
+    Page<ClubBoard> findAllByClub_IdOrderByIdDesc(Long clubId, Pageable pageable);
 
-    Page<ClubBoard> findAllByClubIdIsAndCategory(Long clubId, Category category, Pageable pageable);
+    Page<ClubBoard> findAllByClub_IdAndCategoryOrderByIdDesc(Long clubId, Category category, Pageable pageable);
 
+    List<ClubBoard> findAllByClub_IdAndCategory(Long clubId, Category category);
     Optional<ClubBoard> findById(Long boardId);
+
+    List<ClubBoard> findAllByClub_Id(Long clubId);
 
 
 }
