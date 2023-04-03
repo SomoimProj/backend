@@ -2,6 +2,7 @@ package com.oinzo.somoim.domain.user.email;
 
 import com.oinzo.somoim.common.exception.BaseException;
 import com.oinzo.somoim.common.exception.ErrorCode;
+import com.oinzo.somoim.common.redis.RedisService;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,8 @@ public class EmailService {
 	private String sender;
 
 	private final UserRepository userRepository;
-	private final RedisTemplate<String, String> redisTemplate;
 	private final JavaMailSender mailSender;
+	private final RedisService redisService;
 	private final String EMAIL_PREFIX = "email:";
 	private final long VERIFICATION_CODE_EXPIRATION_TIME = 60 * 3L;
 	private final long VERIFICATION_CODE_CHECK_SUCCESS = 60 * 60 * 24 * 3L;
@@ -90,11 +91,9 @@ public class EmailService {
 			MimeMessage mailForm = createMailForm(email, verificationCode);
 			mailSender.send(mailForm);
 
-			redisTemplate.opsForValue().set(
-				EMAIL_PREFIX + email,
+			redisService.set(EMAIL_PREFIX + email,
 				verificationCode,
-				Duration.ofSeconds(VERIFICATION_CODE_EXPIRATION_TIME)
-			);
+				VERIFICATION_CODE_EXPIRATION_TIME);
 
 			return verificationCode;
 		} catch (MailException | MessagingException e) {
@@ -107,8 +106,7 @@ public class EmailService {
 	 * 인증코드 검증
 	 */
 	public boolean checkVerificationCode(String email, String code) {
-
-		String codeInRedis = redisTemplate.opsForValue().get(EMAIL_PREFIX + email);
+		String codeInRedis = (String) redisService.get(EMAIL_PREFIX + email);
 
 		if (codeInRedis == null) {
 			throw new BaseException(ErrorCode.USER_NOT_FOUND);
@@ -118,12 +116,10 @@ public class EmailService {
 			return false;
 		}
 
-		redisTemplate.delete(EMAIL_PREFIX + email);
-		redisTemplate.opsForValue().set(
-			EMAIL_PREFIX + email,
+		redisService.delete(EMAIL_PREFIX + email);
+		redisService.set(EMAIL_PREFIX + email,
 			code,
-			Duration.ofSeconds(VERIFICATION_CODE_CHECK_SUCCESS)
-		);
+			VERIFICATION_CODE_CHECK_SUCCESS);
 
 		return true;
 	}
