@@ -13,6 +13,7 @@ import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,8 @@ public class ClubService {
 
         clubUserRepository.save(clubUser);
 
-        return ClubDetailResponse.fromClubAndManagerId(savedClub, user.getId());
+        Long memberCnt = clubUserService.readMembersCount(club.getId());
+        return ClubDetailResponse.fromClubAndManagerIdAndMemberCnt(savedClub, user.getId(), memberCnt);
     }
 
     public List<ClubResponse> readClubListByName(String name){
@@ -50,7 +52,12 @@ public class ClubService {
             throw new BaseException(ErrorCode.NO_SEARCH_NAME);
         }
         List<Club> clubList = clubRepository.findAllByNameContaining(name);
-        return ClubResponse.listToBoardResponse(clubList);
+        return clubList.stream()
+            .map(club -> {
+                Long memberCnt = clubUserService.readMembersCount(club.getId());
+                return ClubResponse.fromClubAndMemberCnt(club, memberCnt);
+            })
+            .collect(Collectors.toList());
     }
 
     public List<ClubResponse> readClubListByFavorite(Long userId, String favorite){
@@ -62,7 +69,12 @@ public class ClubService {
         }
 
         List<Club> clubList = clubRepository.findAllByFavoriteAndAreaContaining(newFavorite, area);
-        return ClubResponse.listToBoardResponse(clubList);
+        return clubList.stream()
+            .map(club -> {
+                Long memberCnt = clubUserService.readMembersCount(club.getId());
+                return ClubResponse.fromClubAndMemberCnt(club, memberCnt);
+            })
+            .collect(Collectors.toList());
     }
 
     public ClubDetailResponse readClubById(Long clubId, HttpServletResponse response, Cookie countCookie){
@@ -73,7 +85,8 @@ public class ClubService {
         updateCnt(club, newCnt);
 
         Long managerId = clubUserService.getClubManagerId(clubId);
-        return ClubDetailResponse.fromClubAndManagerId(club, managerId);
+        Long memberCnt = clubUserService.readMembersCount(club.getId());
+        return ClubDetailResponse.fromClubAndManagerIdAndMemberCnt(club, managerId, memberCnt);
     }
 
     public List<ClubResponse> readClubListByArea(Long userId, Pageable pageable){
@@ -82,7 +95,12 @@ public class ClubService {
             throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
         List<Club> clubList = clubRepository.findAllByAreaLikeOrderByViewCntDescIdDesc(area,pageable).getContent();
-        return ClubResponse.listToBoardResponse(clubList);
+        return clubList.stream()
+            .map(club -> {
+                Long memberCnt = clubUserService.readMembersCount(club.getId());
+                return ClubResponse.fromClubAndMemberCnt(club, memberCnt);
+            })
+            .collect(Collectors.toList());
     }
 
     public List<ClubResponse> readClubListByCreateAt(Long userId, Pageable pageable){
@@ -91,7 +109,12 @@ public class ClubService {
             throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
         List<Club> clubList = clubRepository.findAllByAreaLikeOrderByCreatedAtDescIdDesc(area, pageable).getContent();
-        return ClubResponse.listToBoardResponse(clubList);
+        return clubList.stream()
+            .map(club -> {
+                Long memberCnt = clubUserService.readMembersCount(club.getId());
+                return ClubResponse.fromClubAndMemberCnt(club, memberCnt);
+            })
+            .collect(Collectors.toList());
     }
 
     private String getAreaBy(Long userId) {
