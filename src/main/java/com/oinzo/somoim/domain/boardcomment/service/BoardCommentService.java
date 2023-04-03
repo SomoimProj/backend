@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -60,7 +59,7 @@ public class BoardCommentService {
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId,board.getClub().getId())) {
         	throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
-        List<BoardComment> comments = boardCommentRepository.findAllByBoardId(board.getId());
+        List<BoardComment> comments = boardCommentRepository.findAllByBoard_Id(board.getId());
         return comments.stream()
                 .map(comment -> CommentResponse.from(comment, comment.getUser()))
                 .collect(Collectors.toList());
