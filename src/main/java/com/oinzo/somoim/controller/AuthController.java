@@ -69,10 +69,9 @@ public class AuthController {
 		return ResponseUtil.success();
 	}
 
-	@ResponseBody
 	@PostMapping("/reissue")
-	public SuccessResponse<TokenResponse> reissue(@Valid TokenDto tokenDto) {
-		TokenDto reissue = authService.reissue(tokenDto);
-		return ResponseUtil.success(TokenResponse.from(reissue));
+	public SuccessResponse<String> reissue(@RequestBody @Valid TokenDto tokenDto) {
+		String reissue = authService.reissue(tokenDto.getRefreshToken());
+		return ResponseUtil.success(reissue);
 	}
 }
