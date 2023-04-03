@@ -156,7 +156,17 @@ public class ClubService {
         }
         club.updateClub(request);
         clubRepository.save(club);
-        return ClubDetailResponse.fromClubAndManagerId(club,managerId);
+        return ClubDetailResponse.fromClubAndManagerId(club, managerId);
     }
+
+    public List<ClubResponse> readByNameFavorite(String name, String favorite) {
+        Favorite newFavorite = Favorite.valueOfOrHandleException(favorite);
+        if (name.isBlank()) {
+            throw new BaseException(ErrorCode.NO_SEARCH_NAME);
+        }
+        List<Club> clubs = clubRepository.findAllByNameContainingAndFavorite(name,newFavorite);
+        return ClubResponse.listToBoardResponse(clubs);
+    }
+
 
 }

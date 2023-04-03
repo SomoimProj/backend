@@ -64,7 +64,7 @@ public class ClubController {
     public SuccessResponse<Page<ClubResponse>> readClubListByArea(
             @AuthenticationPrincipal Long userId,
             @PathVariable int pageNum) {
-        PageRequest pageable = PageRequest.of(pageNum,10);
+        PageRequest pageable = PageRequest.of(pageNum, 10);
         Page<ClubResponse> clubs = clubService.readClubListByArea(userId, pageable);
         return ResponseUtil.success(clubs);
     }
@@ -73,7 +73,7 @@ public class ClubController {
     public SuccessResponse<Page<ClubResponse>> readClubListByCreateAt(
             @AuthenticationPrincipal Long userId,
             @PathVariable int pageNum) {
-        PageRequest pageable = PageRequest.of(pageNum,10);
+        PageRequest pageable = PageRequest.of(pageNum, 10);
         Page<ClubResponse> clubs = clubService.readClubListByCreateAt(userId, pageable);
         return ResponseUtil.success(clubs);
     }
@@ -85,5 +85,14 @@ public class ClubController {
             @RequestBody ClubCreateRequest request) {
         ClubDetailResponse club = clubService.updateClub(request, clubId, userId);
         return ResponseUtil.success(club);
+    }
+
+    @GetMapping("/search/favorite")
+    public SuccessResponse<List<ClubResponse>> readByFavoriteName(
+            @RequestParam String name,
+            @RequestParam String favorite) {
+
+        List<ClubResponse> responses = clubService.readByNameFavorite(name,favorite);
+        return ResponseUtil.success(responses);
     }
 }
