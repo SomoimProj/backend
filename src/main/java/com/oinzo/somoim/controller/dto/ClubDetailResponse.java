@@ -6,33 +6,39 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
 public class ClubDetailResponse {
 
-	private Long id;
-	private String name;
-	private String description;
-	private String imageUrl;
-	private String area;
-	private int memberLimit;
-	private int memberCnt;
-	private Favorite favorite;
-	private Long managerId;
+    private Long id;
+    private String name;
+    private String description;
+    private String imageUrl;
+    private String area;
+    private int memberLimit;
+    private int memberCnt;
+    private Favorite favorite;
+    private Long managerId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-	public static ClubDetailResponse fromClubAndManagerId(Club club, Long managerId){
-		return ClubDetailResponse.builder()
-			.id(club.getId())
-			.name(club.getName())
-			.description(club.getDescription())
-			.imageUrl(club.getImageUrl())
-			.area(club.getArea())
-			.memberLimit(club.getMemberLimit())
-			.memberCnt(club.getMemberCnt())
-			.favorite(club.getFavorite())
-			.managerId(managerId)
-			.build();
-	}
+    public static ClubDetailResponse fromClubAndManagerId(Club club, Long managerId) {
+        return ClubDetailResponse.builder()
+                .id(club.getId())
+                .name(club.getName())
+                .description(club.getDescription())
+                .imageUrl(club.getImageUrl())
+                .area(club.getArea())
+                .memberLimit(club.getMemberLimit())
+                .memberCnt(club.getMemberCnt())
+                .favorite(club.getFavorite())
+                .managerId(managerId)
+                .createdAt(club.getCreatedAt())
+                .updatedAt(club.getUpdatedAt())
+                .build();
+    }
 
 }
