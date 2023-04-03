@@ -9,7 +9,7 @@ public enum Category {
     FAVORITE,
     MEET,
     JOIN,
-    ANNOUCEMENT;
+    ANNOUNCEMENT;
 
     public static Category valueOfOrHandleException(String string) {
         try {

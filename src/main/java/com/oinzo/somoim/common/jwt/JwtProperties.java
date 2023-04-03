@@ -6,5 +6,6 @@ public interface JwtProperties {
 	long REFRESH_TOKEN_EXPIRATION_TIME = 30 * 24 * 60 * 60 * 1000L;	// Refresh Token: 30일간 토큰 유효
 	String AUTHORIZATION_HEADER = "Authorization";
 	String TOKEN_PREFIX = "Bearer";
+	String REFRESH_TOKEN_PREFIX = "RTK:";
 
 }

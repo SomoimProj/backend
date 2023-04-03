@@ -18,7 +18,7 @@ public enum ErrorCode {
 	VALIDATION_FAILED(HttpStatus.BAD_REQUEST, 40009, "입력값 유효성 검사에 실패하였습니다."),
 	NOT_SET_AREA(HttpStatus.BAD_REQUEST, 40010, "사용자의 지역이 설정되지 않았습니다"),
 	ALREADY_LIKED(HttpStatus.BAD_REQUEST, 40030, "이미 좋아요 한 클럽 또는 게시물 입니다."),
-
+  
 	/* 401 Unauthorized */
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),
 	EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 40103, "만료된 액세스 토큰입니다."),
@@ -41,6 +41,7 @@ public enum ErrorCode {
 	WRONG_COMMENT(HttpStatus.NOT_FOUND, 40432, "해당하는 댓글을 찾을 수 없습니다."),
 	WRONG_ALBUM(HttpStatus.NOT_FOUND, 40433, "해당하는 사진을 찾을 수 없습니다."),
 	WRONG_LIKE(HttpStatus.NOT_FOUND, 40434, "해당하는 좋아요를 찾을 수 없습니다."),
+	WRONG_ACTIVITY(HttpStatus.NOT_FOUND, 40435, "해당하는 활동을 찾을 수 없습니다."),
 
 	/* 409 Conflict */
 	ALREADY_EXISTS_EMAIL(HttpStatus.CONFLICT, 40901, "이미 가입된 이메일 입니다."),

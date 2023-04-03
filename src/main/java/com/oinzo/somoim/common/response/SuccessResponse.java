@@ -17,5 +17,4 @@ public class SuccessResponse<T> {
 	protected SuccessResponse(T data) {
 		this.data = data;
 	}
-
 }
