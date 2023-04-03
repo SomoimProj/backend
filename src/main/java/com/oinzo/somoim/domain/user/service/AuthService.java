@@ -6,24 +6,31 @@ import com.oinzo.somoim.common.jwt.JwtProperties;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.redis.RedisService;
+import com.oinzo.somoim.config.security.JwtAuthenticationFilter;
 import com.oinzo.somoim.controller.dto.SignInRequest;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class AuthService {
 
 	private final UserRepository userRepository;
 	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisService redisService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
-	private final RedisService redisService;
+
 
 	private String passwordEncode(String password) {
 		return passwordEncoder.encode(password);
@@ -79,34 +86,24 @@ public class AuthService {
 	}
 
 	/**
-	 * TODO : 토큰 재발급
+	 * 토큰 재발급
 	 */
-//	public ResponseEntity<String> regenerateToken(RegenerateTokenDto regenerateTokenDto) {
-//		Authentication authentication = jwtProvider.getAuthentication(regenerateTokenDto.getRefreshToken());
-//
-//		if (!jwtProvider.isValidateToken(redisTemplate.opsForValue().get(PREFIX+authentication.getName()))) {
-//			throw new BaseException(ErrorCode.WRONG_REFRESH_TOKEN);
-//		}
-//
-//		String refreshToken = redisTemplate.opsForValue().get(PREFIX + authentication.getName());
-//
-//		if (ObjectUtils.isEmpty(refreshToken)) {
-//			throw new BaseException(ErrorCode.INVALID_TOKEN);
-//		}
-//
-//		if (!refreshToken.equals(regenerateTokenDto.getRefreshToken())) {
-//			throw new BaseException(ErrorCode.WRONG_REFRESH_TOKEN);
-//		}
-//
-//		Optional<User> user = userRepository.findByEmail(authentication.getName());
-//		Long userId = user.get().getId();
-//		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-//
-//		redisTemplate.opsForValue()
-//			.set(PREFIX + authentication.getName(), newToken.getRefreshToken(), JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME, TimeUnit.MILLISECONDS);
-//
-//		return ResponseEntity.ok(newToken.getRefreshToken());
-//	}
+	public String reissue(String refreshToken) {
 
+		Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+		Long userId = (Long) authentication.getPrincipal();
+		String refreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
 
+		if (!jwtProvider.isValidateToken(refreshTokenInRedis)) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "검증되지 않은 refreshToken 입니다.");
+		}
+
+		if (!refreshToken.equals(refreshTokenInRedis)) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 불일치");
+		}
+
+		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+
+		return newToken.getAccessToken();
+	}
 }

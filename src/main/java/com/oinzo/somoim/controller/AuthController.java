@@ -55,7 +55,7 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public SuccessResponse<TokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest,
-								HttpServletResponse response) {
+												 HttpServletResponse response) {
 		Long userId = authService.signIn(signInRequest);
 		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 		String refreshToken = tokenDto.getRefreshToken();
@@ -63,20 +63,15 @@ public class AuthController {
 		return ResponseUtil.success(TokenResponse.from(tokenDto));
 	}
 
-
 	@PostMapping("/signout")
 	public SuccessResponse<?> signOut(@RequestBody TokenDto tokenDto) {
 		authService.singOut(tokenDto);
 		return ResponseUtil.success();
 	}
 
-	/**
-	 * TODO: 토큰재발급
-	 */
-//	@PostMapping("/reissue")
-//	public ResponseEntity<String> regenerateToken(@RequestBody RegenerateTokenDto regenerateTokenDto) {
-//
-//		return authService.regenerateToken(regenerateTokenDto);
-//	}
-
+	@PostMapping("/reissue")
+	public SuccessResponse<String> reissue(@RequestBody @Valid TokenDto tokenDto) {
+		String reissue = authService.reissue(tokenDto.getRefreshToken());
+		return ResponseUtil.success(reissue);
+	}
 }

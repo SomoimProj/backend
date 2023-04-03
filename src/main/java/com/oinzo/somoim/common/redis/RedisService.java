@@ -25,12 +25,12 @@ public class RedisService {
 		return redisTemplate.opsForValue().get(key);
 	}
 
-	public Boolean delete(String key) {
-		return redisTemplate.delete(key);
+	public boolean delete(String key) {
+		return Boolean.TRUE.equals(redisTemplate.delete(key));
 	}
 
-	public Boolean hasKey(String key) {
-		return redisTemplate.hasKey(key);
+	public boolean hasKey(String key) {
+		return Boolean.TRUE.equals(redisTemplate.hasKey(key));
 	}
 
 	public void setBlackList(String key, Object o, int minutes) {
@@ -42,11 +42,11 @@ public class RedisService {
 		return redisBlackListTemplate.opsForValue().get(key);
 	}
 
-	public Boolean deleteBlackList(String key) {
-		return redisBlackListTemplate.delete(key);
+	public boolean deleteBlackList(String key) {
+		return Boolean.TRUE.equals(redisBlackListTemplate.delete(key));
 	}
 
-	public Boolean hasKeyBlackList(String key) {
-		return redisBlackListTemplate.hasKey(key);
+	public boolean hasKeyBlackList(String key) {
+		return Boolean.TRUE.equals(redisBlackListTemplate.hasKey(key));
 	}
 }
