@@ -16,7 +16,7 @@ import java.util.List;
 public class ActivityUserController {
     private final ActivityUserService activityUserService;
 
-    @PostMapping("/{activityId}/user")
+    @PostMapping("/{activityId}/users")
     public SuccessResponse<ActivityUserResponse> addActivityUser(
             @PathVariable Long activityId,
             @AuthenticationPrincipal Long userId) {
@@ -24,14 +24,14 @@ public class ActivityUserController {
         return ResponseUtil.success(response);
     }
 
-    @GetMapping("/{activityId}/user")
+    @GetMapping("/{activityId}/users")
     public SuccessResponse<List<ActivityUserResponse>> readActivityUserList(
             @PathVariable Long activityId) {
         List<ActivityUserResponse> responses = activityUserService.readAllActivityUser(activityId);
         return ResponseUtil.success(responses);
     }
 
-    @DeleteMapping("/{activityId}/user")
+    @DeleteMapping("/{activityId}/users")
     public SuccessResponse<?> deleteActivityUser(
             @PathVariable Long activityId,
             @AuthenticationPrincipal Long userId) {
