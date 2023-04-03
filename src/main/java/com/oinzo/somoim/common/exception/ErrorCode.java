@@ -23,6 +23,7 @@ public enum ErrorCode {
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),
 	EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 40103, "만료된 액세스 토큰입니다."),
 	NOT_CLUB_MEMBER(HttpStatus.NOT_FOUND, 40130, "클럽에 가입후 이용 가능합니다."),
+	NOT_CLUB_MANAGER(HttpStatus.NOT_FOUND, 40131, "클럽 관리자만 이용 가능합니다."),
 	EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40161, "만료된 리프레쉬 토큰입니다."),
 	LOGOUT_USER(HttpStatus.UNAUTHORIZED, 40162, "로그아웃된 사용자입니다."),
 	WRONG_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, 40163, "리프레쉬 토큰 정보가 유효하지 않습니다."),
