@@ -81,7 +81,7 @@ public class ClubService {
         if (area.isBlank()) {
             throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
-        List<Club> clubList = clubRepository.findAllByAreaLikeOrderByViewCntDesc(area,pageable).getContent();
+        List<Club> clubList = clubRepository.findAllByAreaLikeOrderByViewCntDescIdDesc(area,pageable).getContent();
         return ClubResponse.listToBoardResponse(clubList);
     }
 
@@ -90,7 +90,7 @@ public class ClubService {
         if (area.isBlank()) {
             throw new BaseException(ErrorCode.NOT_SET_AREA);
         }
-        List<Club> clubList = clubRepository.findAllByAreaLikeOrderByCreatedAtDesc(area, pageable).getContent();
+        List<Club> clubList = clubRepository.findAllByAreaLikeOrderByCreatedAtDescIdDesc(area, pageable).getContent();
         return ClubResponse.listToBoardResponse(clubList);
     }
 

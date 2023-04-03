@@ -48,11 +48,11 @@ public class ClubBoardService {
         return BoardResponse.from(clubBoardRepository.save(ClubBoard.from(request, club, user)), 0, 0);
     }
 
-    public Page<BoardResponse> clubBoardList(Long clubId, Pageable pageable) {
+    public Page<BoardResponse> readClubBoardList(Long clubId, Pageable pageable) {
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        Page<ClubBoard> boards = clubBoardRepository.findAllByClubIdIs(clubId, pageable);
+        Page<ClubBoard> boards = clubBoardRepository.findAllByClub_IdOrderByIdDesc(clubId, pageable);
         return new PageImpl<>(boards.stream()
                 .map(board -> BoardResponse.from(board,
                         likeRepository.countAllByBoard_Id(board.getId()),
@@ -60,11 +60,11 @@ public class ClubBoardService {
                 .collect(Collectors.toList()));
     }
 
-    public List<BoardResponse> clubBoardListAll(Long clubId) {
+    public List<BoardResponse> readClubBoardListAll(Long clubId) {
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubBoard> boards = clubBoardRepository.findAllByClubIdIs(clubId);
+        List<ClubBoard> boards = clubBoardRepository.findAllByClub_Id(clubId);
         return boards.stream()
                 .map(board -> BoardResponse.from(board,
                         likeRepository.countAllByBoard_Id(board.getId()),
@@ -72,12 +72,12 @@ public class ClubBoardService {
                 .collect(Collectors.toList());
     }
 
-    public Page<BoardResponse> clubBoardListByCategory(Long clubId, String category, Pageable pageable) {
+    public Page<BoardResponse> readClubBoardListByCategory(Long clubId, String category, Pageable pageable) {
         Category newCategory = Category.valueOfOrHandleException(category);
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        Page<ClubBoard> boards = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory, pageable);
+        Page<ClubBoard> boards = clubBoardRepository.findAllByClub_IdAndCategoryOrderByIdDesc(clubId, newCategory, pageable);
         return new PageImpl<>(boards.stream()
                 .map(board -> BoardResponse.from(board,
                         likeRepository.countAllByBoard_Id(board.getId()),
@@ -85,12 +85,12 @@ public class ClubBoardService {
                 .collect(Collectors.toList()));
     }
 
-    public List<BoardResponse> allClubBoardListByCategory(Long clubId, String category) {
+    public List<BoardResponse> readClubBoardListAllByCategory(Long clubId, String category) {
         Category newCategory = Category.valueOfOrHandleException(category);
         if (!clubRepository.existsById(clubId)) {
             throw new BaseException(ErrorCode.WRONG_CLUB);
         }
-        List<ClubBoard> boards = clubBoardRepository.findAllByClubIdIsAndCategory(clubId, newCategory);
+        List<ClubBoard> boards = clubBoardRepository.findAllByClub_IdAndCategory(clubId, newCategory);
         return boards.stream()
                 .map(board -> BoardResponse.from(board,
                         likeRepository.countAllByBoard_Id(board.getId()),

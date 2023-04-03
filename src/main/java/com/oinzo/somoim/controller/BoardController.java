@@ -34,14 +34,14 @@ public class BoardController {
         @PathVariable Long clubId,
         @PathVariable Integer pageNum) {
         PageRequest pageable = PageRequest.of(pageNum,10);
-        Page<BoardResponse> boardResponses = boardService.clubBoardList(clubId, pageable);
+        Page<BoardResponse> boardResponses = boardService.readClubBoardList(clubId, pageable);
         return ResponseUtil.success(boardResponses);
     }
 
     @GetMapping("/clubs/{clubId}/boards")
     public SuccessResponse<List<BoardResponse>> allClubBoardList(
             @PathVariable Long clubId) {
-        List<BoardResponse> boardResponses = boardService.clubBoardListAll(clubId);
+        List<BoardResponse> boardResponses = boardService.readClubBoardListAll(clubId);
         return ResponseUtil.success(boardResponses);
     }
 
@@ -49,7 +49,7 @@ public class BoardController {
     public SuccessResponse<List<BoardResponse>> allBoardListByCategory(
         @PathVariable Long clubId,
         @RequestParam String category) {
-        List<BoardResponse> boardResponses = boardService.allClubBoardListByCategory(clubId, category);
+        List<BoardResponse> boardResponses = boardService.readClubBoardListAllByCategory(clubId, category);
         return ResponseUtil.success(boardResponses);
     }
 
@@ -59,7 +59,7 @@ public class BoardController {
             @PathVariable Integer pageNum,
             @RequestParam String category) {
         PageRequest pageable = PageRequest.of(pageNum,10);
-        Page<BoardResponse> boardResponses = boardService.clubBoardListByCategory(clubId, category, pageable);
+        Page<BoardResponse> boardResponses = boardService.readClubBoardListByCategory(clubId, category, pageable);
         return ResponseUtil.success(boardResponses);
     }
 
