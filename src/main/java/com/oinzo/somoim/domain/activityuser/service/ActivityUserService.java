@@ -34,6 +34,10 @@ public class ActivityUserService {
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId, activity.getClubId())) {
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
+        if (activity.getMemberLimit() == activity.getMemberCnt()) {
+            throw new BaseException(ErrorCode.ACTIVITY_LIMIT_OVER);
+        }
+        activity.plusMemberCnt();
         ActivityUser activityUser = ActivityUser.builder()
                 .user(user)
                 .activityId(activity.getId())
@@ -50,11 +54,11 @@ public class ActivityUserService {
     }
 
     public void deleteActivityUser(Long userId, Long activityId) {
-        if (!activityRepository.existsById(activityId)) {
-            throw new BaseException(ErrorCode.WRONG_ACTIVITY);
-        }
+        ClubActivity activity = activityRepository.findById(activityId)
+                .orElseThrow(() -> new BaseException(ErrorCode.WRONG_ACTIVITY));
         ActivityUser activityUser = activityUserRepository.findByUser_IdAndActivityId(userId, activityId)
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_ACTIVITY_USER));
+        activity.minusMemberCnt();
         activityUserRepository.delete(activityUser);
     }
 }

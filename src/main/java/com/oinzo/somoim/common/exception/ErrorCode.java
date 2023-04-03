@@ -19,6 +19,7 @@ public enum ErrorCode {
 	NOT_SET_AREA(HttpStatus.BAD_REQUEST, 40010, "사용자의 지역이 설정되지 않았습니다"),
 	ALREADY_LIKED(HttpStatus.BAD_REQUEST, 40030, "이미 좋아요 한 게시물 입니다."),
 	ALREADY_JOINED_ACTIVITY(HttpStatus.BAD_REQUEST, 40031, "이미 참여한 액티비티 입니다."),
+	ACTIVITY_LIMIT_OVER(HttpStatus.BAD_REQUEST, 40032, "해당 액티비티의 정원이 다 찼습니다."),
 
 	/* 401 Unauthorized */
 	ACCESS_TOKEN_OMISSION(HttpStatus.UNAUTHORIZED, 40101, "인증 정보(액세스 토큰)가 누락되었습니다."),
