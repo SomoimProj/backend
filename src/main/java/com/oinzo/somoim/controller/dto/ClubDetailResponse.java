@@ -18,10 +18,11 @@ public class ClubDetailResponse {
 	private String area;
 	private int memberLimit;
 	private int memberCnt;
+	private Long likeCnt;
 	private Favorite favorite;
 	private Long managerId;
 
-	public static ClubDetailResponse fromClubAndManagerId(Club club, Long managerId){
+	public static ClubDetailResponse fromClubAndManagerIdAndLikeCnt(Club club, Long managerId, Long likeCnt){
 		return ClubDetailResponse.builder()
 			.id(club.getId())
 			.name(club.getName())
@@ -30,6 +31,7 @@ public class ClubDetailResponse {
 			.area(club.getArea())
 			.memberLimit(club.getMemberLimit())
 			.memberCnt(club.getMemberCnt())
+			.likeCnt(likeCnt)
 			.favorite(club.getFavorite())
 			.managerId(managerId)
 			.build();

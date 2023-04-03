@@ -8,6 +8,7 @@ import com.oinzo.somoim.controller.dto.ClubDetailResponse;
 import com.oinzo.somoim.controller.dto.ClubResponse;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
+import com.oinzo.somoim.domain.clublike.service.ClubLikeService;
 import com.oinzo.somoim.domain.clubuser.entity.ClubUser;
 import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
 import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
@@ -27,6 +28,7 @@ import java.util.Objects;
 public class ClubService {
 
     private final ClubUserService clubUserService;
+    private final ClubLikeService clubLikeService;
     private final UserRepository userRepository;
     private final ClubRepository clubRepository;
     private final ClubUserRepository clubUserRepository;
@@ -42,7 +44,8 @@ public class ClubService {
 
         clubUserRepository.save(clubUser);
 
-        return ClubDetailResponse.fromClubAndManagerId(savedClub, user.getId());
+        Long likeCnt = clubLikeService.readLikesCount(club.getId());
+        return ClubDetailResponse.fromClubAndManagerIdAndLikeCnt(savedClub, user.getId(), likeCnt);
     }
 
     public List<ClubResponse> readClubListByName(String name){
@@ -72,8 +75,9 @@ public class ClubService {
         Integer newCnt = updateCookie(response, countCookie, clubId, club.getViewCnt());
         updateCnt(club, newCnt);
 
-        Long managerId = clubUserService.getClubManagerId(clubId);
-        return ClubDetailResponse.fromClubAndManagerId(club, managerId);
+        Long managerId = clubUserService.readClubManagerId(clubId);
+        Long likeCnt = clubLikeService.readLikesCount(club.getId());
+        return ClubDetailResponse.fromClubAndManagerIdAndLikeCnt(club, managerId, likeCnt);
     }
 
     public List<ClubResponse> readClubListByArea(Long userId, Pageable pageable){
