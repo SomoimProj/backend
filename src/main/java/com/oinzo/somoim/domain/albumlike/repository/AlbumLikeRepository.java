@@ -14,5 +14,7 @@ public interface AlbumLikeRepository extends JpaRepository<AlbumLike, Long> {
 
     Optional<AlbumLike> findByAlbum_IdAndUser(Long albumId, Long userId);
 
-    List<AlbumLike> findAllByAlbum_Id(Long albumIdl);
+    List<AlbumLike> findAllByAlbum_Id(Long albumId);
+
+    int countAllByAlbum_Id(Long albumId);
 }

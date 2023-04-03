@@ -3,16 +3,12 @@ package com.oinzo.somoim.controller;
 import com.oinzo.somoim.common.jwt.JwtProvider;
 import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.jwt.TokenService;
+import com.oinzo.somoim.common.redis.RedisService;
 import com.oinzo.somoim.common.response.ResponseUtil;
 import com.oinzo.somoim.common.response.SuccessResponse;
-import com.oinzo.somoim.controller.dto.CheckResponse;
-import com.oinzo.somoim.controller.dto.EmailRequest;
-import com.oinzo.somoim.controller.dto.SignInRequest;
-import com.oinzo.somoim.controller.dto.SignUpRequest;
-import com.oinzo.somoim.controller.dto.TokenResponse;
-import com.oinzo.somoim.controller.dto.VerificationCodeResponse;
-import com.oinzo.somoim.domain.user.email.EmailService;
+import com.oinzo.somoim.controller.dto.*;
 import com.oinzo.somoim.domain.user.service.AuthService;
+import com.oinzo.somoim.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +25,7 @@ public class AuthController {
 	private final AuthService authService;
 	private final JwtProvider jwtProvider;
 	private final TokenService tokenService;
+	private final RedisService redisService;
 
 	@PostMapping("/email/send")
 	public SuccessResponse<VerificationCodeResponse> sendMail(@RequestBody @Valid EmailRequest emailRequest) {
@@ -48,6 +45,11 @@ public class AuthController {
 	@PostMapping("/signup")
 	public SuccessResponse<?> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
 		authService.signUp(signUpRequest.getEmail(), signUpRequest.getPassword(), signUpRequest.getPasswordCheck());
+
+		String emailInRedis = "email:" + signUpRequest.getEmail();
+		if (redisService.get(emailInRedis) != null) {
+			redisService.delete(emailInRedis);
+		}
 		return ResponseUtil.success();
 	}
 
