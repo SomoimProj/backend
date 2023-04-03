@@ -63,7 +63,6 @@ public class AuthController {
 		return ResponseUtil.success(TokenResponse.from(tokenDto));
 	}
 
-
 	@PostMapping("/signout")
 	public SuccessResponse<?> signOut(@RequestBody TokenDto tokenDto) {
 		authService.singOut(tokenDto);
