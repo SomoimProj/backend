@@ -11,8 +11,6 @@ import com.oinzo.somoim.domain.user.service.AuthService;
 import com.oinzo.somoim.domain.user.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.Errors;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -72,9 +70,10 @@ public class AuthController {
 		return ResponseUtil.success();
 	}
 
+	@ResponseBody
 	@PostMapping("/reissue")
-	public SuccessResponse<TokenResponse> reissue(@Valid TokenDto tokenDto, Errors error) {
-		authService.reissue(tokenDto);
-		return ResponseUtil.success(TokenResponse.from(tokenDto));
+	public SuccessResponse<TokenResponse> reissue(@Valid TokenDto tokenDto) {
+		TokenDto reissue = authService.reissue(tokenDto);
+		return ResponseUtil.success(TokenResponse.from(reissue));
 	}
 }

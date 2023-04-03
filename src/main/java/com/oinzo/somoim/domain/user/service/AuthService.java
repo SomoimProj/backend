@@ -11,7 +11,6 @@ import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,7 +81,7 @@ public class AuthService {
 	/**
 	 * 토큰 재발급
 	 */
-	public ResponseEntity<?> reissue(TokenDto tokenDto) {
+	public TokenDto reissue(TokenDto tokenDto) {
 		if (!jwtProvider.isValidateToken(tokenDto.getRefreshToken())) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN, "RefreshToken 불일치");
 		}
@@ -92,14 +91,16 @@ public class AuthService {
 
 		String RefreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
 		if (RefreshTokenInRedis == null) {
-			throw new BaseException(ErrorCode.INVALID_TOKEN, "레디스에 RefreshToken이 존재하지 않음");
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "레디스에 RefreshToken 존재하지 않음");
 		}
 
 		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
 		String newAccessToken = newToken.getAccessToken();
+		TokenDto tokenInfo = TokenDto.builder()
+			.accessToken(newAccessToken)
+			.refreshToken(RefreshTokenInRedis)
+			.build();
 
-		redisService.set(JwtProperties.REFRESH_TOKEN_PREFIX + userId, newAccessToken, JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME);
-
-		return ResponseEntity.ok(newAccessToken);
+		return tokenInfo;
 	}
 }
