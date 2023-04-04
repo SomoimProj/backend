@@ -41,7 +41,7 @@ public class Club extends BaseEntity {
         return this;
     }
 
-    public static Club from(ClubCreateRequest clubCreateRequest){
+    public static Club from(ClubCreateRequest clubCreateRequest) {
         return Club.builder()
                 .name(clubCreateRequest.getName())
                 .description(clubCreateRequest.getDescription())
@@ -60,6 +60,21 @@ public class Club extends BaseEntity {
 
     public void minusMemberCnt() {
         memberCnt--;
+    }
+
+    public void updateClub(ClubCreateRequest request) {
+        if (request.getName() != null)
+            this.name = request.getName();
+        if (request.getDescription() != null)
+            this.description = request.getDescription();
+        if (request.getImageUrl() != null)
+            this.imageUrl = request.getImageUrl();
+        if (request.getArea() != null)
+            this.area = request.getArea();
+        if (request.getMemberLimit() != 0)
+            this.memberLimit = request.getMemberLimit();
+        if (request.getFavorite() != null)
+            this.favorite = request.getFavoriteType();
     }
 
 }

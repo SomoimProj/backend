@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,24 +23,28 @@ public class ClubResponse {
     private int memberLimit;
     private int memberCnt;
     private Favorite favorite;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public static ClubResponse from(Club club){
+    public static ClubResponse from(Club club) {
         return ClubResponse.builder()
-            .id(club.getId())
-            .name(club.getName())
-            .description(club.getDescription())
-            .imageUrl(club.getImageUrl())
-            .area(club.getArea())
-            .memberLimit(club.getMemberLimit())
-            .memberCnt(club.getMemberCnt())
-            .favorite(club.getFavorite())
-            .build();
+                .id(club.getId())
+                .name(club.getName())
+                .description(club.getDescription())
+                .imageUrl(club.getImageUrl())
+                .area(club.getArea())
+                .memberLimit(club.getMemberLimit())
+                .memberCnt(club.getMemberCnt())
+                .favorite(club.getFavorite())
+                .createdAt(club.getCreatedAt())
+                .updatedAt(club.getUpdatedAt())
+                .build();
     }
 
-    public static List<ClubResponse> listToBoardResponse(List<Club> clubList){
+    public static List<ClubResponse> listToBoardResponse(List<Club> clubList) {
         return clubList.stream()
-            .map(ClubResponse::from)
-            .collect(Collectors.toList());
+                .map(ClubResponse::from)
+                .collect(Collectors.toList());
     }
 
 }
