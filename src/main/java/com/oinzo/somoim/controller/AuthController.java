@@ -57,21 +57,21 @@ public class AuthController {
 	public SuccessResponse<TokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest,
 												 HttpServletResponse response) {
 		Long userId = authService.signIn(signInRequest);
-		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-		String refreshToken = tokenDto.getRefreshToken();
-		tokenService.setRefreshTokenCookie(refreshToken, response);
-		return ResponseUtil.success(TokenResponse.from(tokenDto));
+		TokenDto accessToken = jwtProvider.generateAccessToken(userId);
+		TokenDto refreshToken  = jwtProvider.generateRefreshToken(userId);
+		tokenService.setRefreshTokenCookie(refreshToken.getToken(), response);
+		return ResponseUtil.success(TokenResponse.fromAccessTokenAndRefreshToken(accessToken, refreshToken));
 	}
 
 	@PostMapping("/signout")
-	public SuccessResponse<?> signOut(@RequestBody TokenDto tokenDto) {
-		authService.singOut(tokenDto);
+	public SuccessResponse<?> signOut(@RequestBody SignOutRequest signOutRequest) {
+		authService.singOut(signOutRequest);
 		return ResponseUtil.success();
 	}
 
 	@PostMapping("/reissue")
-	public SuccessResponse<String> reissue(@RequestBody @Valid TokenDto tokenDto) {
-		String reissue = authService.reissue(tokenDto.getRefreshToken());
-		return ResponseUtil.success(reissue);
+	public SuccessResponse<TokenResponse> reissue(@CookieValue(value = "refreshToken") String refreshToken) {
+		TokenDto tokenDto = authService.reissue(refreshToken);
+		return ResponseUtil.success(TokenResponse.fromAccessToken(tokenDto));
 	}
 }

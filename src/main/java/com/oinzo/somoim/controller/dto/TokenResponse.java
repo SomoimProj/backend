@@ -16,12 +16,19 @@ public class TokenResponse {
 	private String refreshToken;
 	private LocalDateTime refreshTokenExpirationDateTime;
 
-	public static TokenResponse from(TokenDto tokenDto) {
+	public static TokenResponse fromAccessTokenAndRefreshToken(TokenDto accessToken, TokenDto refreshToken) {
 		return TokenResponse.builder()
-			.accessToken(tokenDto.getAccessToken())
-			.accessTokenExpirationDateTime(tokenDto.getAccessTokenExpirationDateTime())
+			.accessToken(accessToken.getToken())
+			.accessTokenExpirationDateTime(accessToken.getTokenExpirationDateTime())
 			.refreshToken("HttpOnly")
-			.refreshTokenExpirationDateTime(tokenDto.getRefreshTokenExpirationDateTime())
+			.refreshTokenExpirationDateTime(refreshToken.getTokenExpirationDateTime())
+			.build();
+	}
+
+	public static TokenResponse fromAccessToken(TokenDto accessToken) {
+		return TokenResponse.builder()
+			.accessToken(accessToken.getToken())
+			.accessTokenExpirationDateTime(accessToken.getTokenExpirationDateTime())
 			.build();
 	}
 }

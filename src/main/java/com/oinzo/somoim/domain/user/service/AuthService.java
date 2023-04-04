@@ -8,6 +8,8 @@ import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.redis.RedisService;
 import com.oinzo.somoim.config.security.JwtAuthenticationFilter;
 import com.oinzo.somoim.controller.dto.SignInRequest;
+import com.oinzo.somoim.controller.dto.SignOutRequest;
+import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
@@ -67,8 +68,8 @@ public class AuthService {
 		return user.getId();
 	}
 
-	public void singOut(TokenDto tokenDto) {
-		String accessToken = tokenDto.getAccessToken();
+	public void singOut(SignOutRequest request) {
+		String accessToken = request.getAccessToken();
 
 		if (!jwtProvider.isValidateToken(accessToken)) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN);
@@ -88,22 +89,24 @@ public class AuthService {
 	/**
 	 * 토큰 재발급
 	 */
-	public String reissue(String refreshToken) {
+	public TokenDto reissue(String refreshToken) {
+		if (!jwtProvider.isValidateToken(refreshToken)) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 이 유효하지 않습니다.");
+		}
 
 		Authentication authentication = jwtProvider.getAuthentication(refreshToken);
 		Long userId = (Long) authentication.getPrincipal();
+
+		if (userId == null) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 이 유효하지 않습니다.");
+		}
+
 		String refreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
-
-		if (!jwtProvider.isValidateToken(refreshTokenInRedis)) {
-			throw new BaseException(ErrorCode.INVALID_TOKEN, "검증되지 않은 refreshToken 입니다.");
+		if (!refreshTokenInRedis.equals(refreshToken)) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 이 일치하지 않습니다.");
 		}
 
-		if (!refreshToken.equals(refreshTokenInRedis)) {
-			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 불일치");
-		}
-
-		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-
-		return newToken.getAccessToken();
+		return jwtProvider.generateAccessToken(userId);
 	}
+
 }
