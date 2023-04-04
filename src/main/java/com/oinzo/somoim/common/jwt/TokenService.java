@@ -11,7 +11,7 @@ public class TokenService {
 		ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
 			.maxAge(JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME / 1000)
 			.path("/")
-			.secure(true)
+//			.secure(true)
 			.sameSite("None")
 			.httpOnly(true)
 			.build();
