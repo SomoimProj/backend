@@ -10,9 +10,9 @@ import java.util.Optional;
 @Repository
 public interface AlbumLikeRepository extends JpaRepository<AlbumLike, Long> {
 
-    Boolean existsByAlbum_IdAndUser(Long albumId, Long userId);
+    Boolean existsByAlbum_IdAndUserId(Long albumId, Long userId);
 
-    Optional<AlbumLike> findByAlbum_IdAndUser(Long albumId, Long userId);
+    Optional<AlbumLike> findByAlbum_IdAndUserId(Long albumId, Long userId);
 
     List<AlbumLike> findAllByAlbum_Id(Long albumId);
 

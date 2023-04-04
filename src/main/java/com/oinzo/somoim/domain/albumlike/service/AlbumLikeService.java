@@ -28,12 +28,12 @@ public class AlbumLikeService {
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId, album.getClubId())) {
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         }
-        if (likeRepository.existsByAlbum_IdAndUser(albumId, userId)) {
+        if (likeRepository.existsByAlbum_IdAndUserId(albumId, userId)) {
             throw new BaseException(ErrorCode.ALREADY_LIKED);
         }
         AlbumLike albumLike = AlbumLike.builder()
                 .album(album)
-                .user(userId)
+                .userId(userId)
                 .build();
         return AlbumLikeResponse.from(likeRepository.save(albumLike));
     }
@@ -43,7 +43,7 @@ public class AlbumLikeService {
         if (!clubAlbumRepository.existsById(albumId)) {
             throw new BaseException(ErrorCode.WRONG_ALBUM);
         }
-        AlbumLike like = likeRepository.findByAlbum_IdAndUser(albumId, userId)
+        AlbumLike like = likeRepository.findByAlbum_IdAndUserId(albumId, userId)
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_LIKE));
         likeRepository.delete(like);
     }

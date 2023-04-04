@@ -23,5 +23,5 @@ public class AlbumLike extends BaseEntity {
     private ClubAlbum album;
 
     @NotNull
-    private Long user;
+    private Long userId;
 }

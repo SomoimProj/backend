@@ -63,7 +63,7 @@ class AlbumLikeServiceTest {
 
         given(clubAlbumRepository.findById(anyLong())).willReturn(Optional.of(mockAlbum));
         given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(), anyLong())).willReturn(true);
-        given(albumLikeRepository.existsByAlbum_IdAndUser(anyLong(), anyLong())).willReturn(false);
+        given(albumLikeRepository.existsByAlbum_IdAndUserId(anyLong(), anyLong())).willReturn(false);
         when(albumLikeRepository.save(any(AlbumLike.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
 
@@ -74,7 +74,7 @@ class AlbumLikeServiceTest {
 
         //then
         verify(albumLikeRepository, times(1)).save(captor.capture());
-        assertEquals(1L, captor.getValue().getUser());
+        assertEquals(1L, captor.getValue().getUserId());
         assertEquals(1L, captor.getValue().getAlbum().getId());
     }
 
@@ -99,12 +99,12 @@ class AlbumLikeServiceTest {
         AlbumLike mockLike1 = AlbumLike.builder()
                 .id(1L)
                 .album(mockAlbum1)
-                .user(1L)
+                .userId(1L)
                 .build();
         AlbumLike mockLike2 = AlbumLike.builder()
                 .id(2L)
                 .album(mockAlbum1)
-                .user(2L)
+                .userId(2L)
                 .build();
         List<AlbumLike> likeList = List.of(
                 mockLike1,

@@ -19,7 +19,7 @@ public class AlbumLikeResponse {
     public static AlbumLikeResponse from(AlbumLike like) {
         return AlbumLikeResponse.builder()
                 .id(like.getId())
-                .userId(like.getUser())
+                .userId(like.getUserId())
                 .albumId(like.getAlbum().getId())
                 .build();
     }
