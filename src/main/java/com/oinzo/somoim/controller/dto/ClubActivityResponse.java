@@ -17,7 +17,7 @@ public class ClubActivityResponse {
     private String title;
     private LocalDateTime activityTime;
     private String location;
-    private int fee;
+    private String fee;
     private int memberLimit;
     private int memberCnt;
 

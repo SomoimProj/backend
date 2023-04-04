@@ -16,8 +16,8 @@ public class ClubActivityRequest {
     @FutureOrPresent
     private LocalDateTime activityTime;
     private String location;
-    @PositiveOrZero
-    private int fee;
+    @NotBlank
+    private String fee;
     @NotNull
     @Positive
     private int memberLimit;
