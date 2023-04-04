@@ -32,11 +32,11 @@ public class OAuth2Controller {
 		HttpServletResponse response) {
 		Long userId = oAuth2Service.kakaoLogin(request.getCode());
 
-		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-		String refreshToken = tokenDto.getRefreshToken();
+		TokenDto accessToken = jwtProvider.generateAccessToken(userId);
+		TokenDto refreshToken = jwtProvider.generateRefreshToken(userId);
 
-		tokenService.setRefreshTokenCookie(refreshToken, response);
-		TokenResponse tokenResponse = TokenResponse.from(tokenDto);
+		tokenService.setRefreshTokenCookie(refreshToken.getToken(), response);
+		TokenResponse tokenResponse = TokenResponse.fromAccessTokenAndRefreshToken(accessToken, refreshToken);
 		return ResponseUtil.success(tokenResponse);
 	}
 
@@ -46,11 +46,11 @@ public class OAuth2Controller {
 		HttpServletResponse response) {
 		Long userId = oAuth2Service.googleLogin(request.getCode());
 
-		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-		String refreshToken = tokenDto.getRefreshToken();
+		TokenDto accessToken = jwtProvider.generateAccessToken(userId);
+		TokenDto refreshToken = jwtProvider.generateRefreshToken(userId);
 
-		tokenService.setRefreshTokenCookie(refreshToken, response);
-		TokenResponse tokenResponse = TokenResponse.from(tokenDto);
+		tokenService.setRefreshTokenCookie(refreshToken.getToken(), response);
+		TokenResponse tokenResponse = TokenResponse.fromAccessTokenAndRefreshToken(accessToken, refreshToken);
 		return ResponseUtil.success(tokenResponse);
 	}
 }
