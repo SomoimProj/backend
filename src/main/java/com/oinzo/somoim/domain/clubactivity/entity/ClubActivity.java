@@ -31,7 +31,8 @@ public class ClubActivity extends BaseEntity {
     @NotNull
     private LocalDateTime activityTime;
     private String location;
-    private int fee;
+    @NotBlank
+    private String fee;
     @NotNull
     private int memberLimit;
     @NotNull
@@ -64,7 +65,7 @@ public class ClubActivity extends BaseEntity {
             this.activityTime = activityRequest.getActivityTime();
         if (activityRequest.getLocation() != null)
             this.location = activityRequest.getLocation();
-        if (activityRequest.getFee() != 0) this.fee = activityRequest.getFee();
+        if (activityRequest.getFee() != null) this.fee = activityRequest.getFee();
         if (activityRequest.getMemberLimit() != 0)
             this.memberLimit = activityRequest.getMemberLimit();
     }

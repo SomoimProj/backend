@@ -5,8 +5,7 @@ import com.oinzo.somoim.controller.dto.ClubActivityResponse;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clubactivity.entity.ClubActivity;
 import com.oinzo.somoim.domain.clubactivity.repository.ClubActivityRepository;
-import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
-import com.oinzo.somoim.domain.user.repository.UserRepository;
+import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
@@ -32,21 +31,16 @@ class ClubActivityServiceTest {
     @Mock
     private ClubActivityRepository activityRepository;
     @Mock
-    private UserRepository userRepository;
-    @Mock
-    private ClubUserRepository clubUserRepository;
+    private ClubUserService clubUserService;
     @Mock
     private ClubRepository clubRepository;
 
     @Test
     void addActivity() {
         //given
-        given(userRepository.existsById(anyLong()))
-                .willReturn(true);
         given(clubRepository.existsById(anyLong()))
                 .willReturn(true);
-        given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(),anyLong()))
-                .willReturn(true);
+        given(clubUserService.readClubManagerId(anyLong())).willReturn(1L);
         when(activityRepository.save(any(ClubActivity.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
 
@@ -56,19 +50,20 @@ class ClubActivityServiceTest {
         ClubActivityRequest request = ClubActivityRequest.builder()
                 .title("액티비티테스트")
                 .activityTime(LocalDateTime.now())
-                .fee(0)
+                .fee("0")
                 .memberLimit(3)
                 .build();
-        clubActivityService.addActivity(request,1L,1L);
+
+        clubActivityService.addActivity(request, 1L, 1L);
 
         // then
-        verify(activityRepository,times(1)).save(captor.capture());
-        assertEquals(1L,captor.getValue().getClubId());
-        assertEquals("액티비티테스트",captor.getValue().getTitle());
+        verify(activityRepository, times(1)).save(captor.capture());
+        assertEquals(1L, captor.getValue().getClubId());
+        assertEquals("액티비티테스트", captor.getValue().getTitle());
         assertNull(captor.getValue().getLocation());
-        assertEquals(0,captor.getValue().getFee());
-        assertEquals(3,captor.getValue().getMemberLimit());
-        assertEquals(0,captor.getValue().getMemberCnt());
+        assertEquals("0", captor.getValue().getFee());
+        assertEquals(3, captor.getValue().getMemberLimit());
+        assertEquals(0, captor.getValue().getMemberCnt());
 
     }
 
@@ -104,8 +99,8 @@ class ClubActivityServiceTest {
         List<ClubActivityResponse> activities = clubActivityService.readAllActivity(1L);
 
         // then
-        assertEquals(2,activities.size());
-        assertEquals("액티비티테스트",activities.get(0).getTitle());
+        assertEquals(2, activities.size());
+        assertEquals("액티비티테스트", activities.get(0).getTitle());
     }
 
     @Test
@@ -119,13 +114,10 @@ class ClubActivityServiceTest {
                 .memberLimit(5)
                 .memberCnt(0)
                 .build();
-
-        given(userRepository.existsById(anyLong()))
-                .willReturn(true);
         given(activityRepository.findById(anyLong()))
                 .willReturn(Optional.of(mockActivity));
-        given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(),anyLong()))
-                .willReturn(true);
+        given(clubUserService.readClubManagerId(anyLong())).willReturn(1L);
+
         when(activityRepository.save(any(ClubActivity.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
 
@@ -135,18 +127,18 @@ class ClubActivityServiceTest {
         ClubActivityRequest request = ClubActivityRequest.builder()
                 .title("액티비티테스트")
                 .activityTime(LocalDateTime.now())
-                .fee(0)
+                .fee("0")
                 .memberLimit(3)
                 .build();
-        clubActivityService.updateActivity(request,1L,1L);
+        clubActivityService.updateActivity(request, 1L, 1L);
 
         // then
-        verify(activityRepository,times(1)).save(captor.capture());
-        assertEquals(1L,captor.getValue().getClubId());
-        assertEquals("액티비티테스트",captor.getValue().getTitle());
+        verify(activityRepository, times(1)).save(captor.capture());
+        assertEquals(1L, captor.getValue().getClubId());
+        assertEquals("액티비티테스트", captor.getValue().getTitle());
         assertNull(captor.getValue().getLocation());
-        assertEquals(0,captor.getValue().getFee());
-        assertEquals(3,captor.getValue().getMemberLimit());
-        assertEquals(0,captor.getValue().getMemberCnt());
+        assertEquals("0", captor.getValue().getFee());
+        assertEquals(3, captor.getValue().getMemberLimit());
+        assertEquals(0, captor.getValue().getMemberCnt());
     }
 }
