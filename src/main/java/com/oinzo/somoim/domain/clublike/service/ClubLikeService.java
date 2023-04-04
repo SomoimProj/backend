@@ -7,6 +7,7 @@ import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clublike.entity.ClubLike;
 import com.oinzo.somoim.domain.clublike.repository.ClubLikeRepository;
+import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ClubLikeService {
 
+	private final ClubUserService clubUserService;
 	private final ClubLikeRepository clubLikeRepository;
 	private final ClubRepository clubRepository;
 
@@ -51,7 +53,11 @@ public class ClubLikeService {
 		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
 		List<ClubLike> clubLikeList = clubLikeRepository.findAllByUserIdOrderByIdDesc(userId);
 		return clubLikeList.stream()
-			.map(clubLike -> ClubResponse.from(clubLike.getClub()))
+			.map(clubLike -> {
+				Club club = clubLike.getClub();
+				Long memberCnt = clubUserService.readMembersCount(club.getId());
+				return ClubResponse.fromClubAndMemberCnt(club, memberCnt);
+			})
 			.collect(Collectors.toList());
 	}
 

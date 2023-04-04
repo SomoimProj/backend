@@ -62,7 +62,6 @@ class BoardLikeServiceTest {
                 .description("테스트 클럽입니다.")
                 .area("서울")
                 .memberLimit(1)
-                .memberCnt(0)
                 .favorite(Favorite.GAME)
                 .build();
         ClubBoard mockBoard = ClubBoard.builder()
@@ -109,7 +108,6 @@ class BoardLikeServiceTest {
                 .description("테스트 클럽입니다.")
                 .area("서울")
                 .memberLimit(1)
-                .memberCnt(0)
                 .favorite(Favorite.GAME)
                 .build();
         ClubBoard mockBoard = ClubBoard.builder()

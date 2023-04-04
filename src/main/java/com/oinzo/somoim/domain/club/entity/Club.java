@@ -29,7 +29,7 @@ public class Club extends BaseEntity {
     private String area;
     @NotNull
     private int memberLimit;
-    private int memberCnt;
+
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private Favorite favorite;
@@ -48,18 +48,9 @@ public class Club extends BaseEntity {
                 .imageUrl(clubCreateRequest.getImageUrl())
                 .area(clubCreateRequest.getArea())
                 .memberLimit(clubCreateRequest.getMemberLimit())
-                .memberCnt(0)
                 .favorite(clubCreateRequest.getFavoriteType())
                 .viewCnt(0)
                 .build();
-    }
-
-    public void plusMemberCnt() {
-        memberCnt++;
-    }
-
-    public void minusMemberCnt() {
-        memberCnt--;
     }
 
     public void updateClub(ClubCreateRequest request) {

@@ -40,8 +40,6 @@ public class ClubUser extends BaseEntity {
 	private Club club;
 
 	public static ClubUser createClubUserManager(User user, Club club) {
-		club.plusMemberCnt();
-
 		return ClubUser.builder()
 			.level(ClubUserLevel.MANAGER)
 			.user(user)
@@ -50,8 +48,6 @@ public class ClubUser extends BaseEntity {
 	}
 
 	public static ClubUser createClubUserMember(User user, Club club) {
-		club.plusMemberCnt();
-
 		return ClubUser.builder()
 			.level(ClubUserLevel.MEMBER)
 			.user(user)

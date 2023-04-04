@@ -45,7 +45,7 @@ public class ClubBoardService {
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB));
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId, clubId))
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
-        Long managerId = clubUserService.getClubManagerId(clubId);
+        Long managerId = clubUserService.readClubManagerId(clubId);
         if (Category.valueOf(request.getCategory()).equals(Category.ANNOUNCEMENT) && !userId.equals(managerId)) {
             throw new BaseException(ErrorCode.NOT_CLUB_MANAGER);
         }
@@ -121,7 +121,7 @@ public class ClubBoardService {
         if (!userId.equals(board.getUser().getId())) {
             throw new BaseException(ErrorCode.FORBIDDEN_REQUEST, "게시판 작성자가 아닙니다.");
         }
-        Long managerId = clubUserService.getClubManagerId(board.getClub().getId());
+        Long managerId = clubUserService.readClubManagerId(board.getClub().getId());
         if (request.getCategoryType() == Category.ANNOUNCEMENT && !userId.equals(managerId)) {
             throw new BaseException(ErrorCode.NOT_CLUB_MANAGER);
         }

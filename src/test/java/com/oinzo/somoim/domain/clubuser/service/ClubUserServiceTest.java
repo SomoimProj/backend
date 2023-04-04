@@ -55,13 +55,16 @@ class ClubUserServiceTest {
 			.description("게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(4)
-			.memberCnt(0)
 			.favorite(Favorite.GAME)
 			.build();
 		given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(), anyLong()))
 			.willReturn(false);
 		given(clubRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockClub));
+		given(clubRepository.existsById(anyLong()))
+			.willReturn(true);
+		given(clubUserRepository.countByClub_Id(anyLong()))
+			.willReturn(5L);
 		given(userRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockUser));
 
@@ -74,7 +77,6 @@ class ClubUserServiceTest {
 		verify(clubUserRepository, times(1)).save(captor.capture());
 		assertEquals(1L, captor.getValue().getUser().getId());
 		assertEquals(1L, captor.getValue().getClub().getId());
-		assertEquals(1, captor.getValue().getClub().getMemberCnt());
 		assertEquals(ClubUserLevel.MEMBER, captor.getValue().getLevel());
 	}
 
@@ -86,14 +88,17 @@ class ClubUserServiceTest {
 			.name("게임 클럽")
 			.description("게임 클럽입니다.")
 			.area("서울")
-			.memberLimit(1)
-			.memberCnt(1)
+			.memberLimit(30)
 			.favorite(Favorite.GAME)
 			.build();
 		given(clubUserRepository.existsByUser_IdAndClub_Id(anyLong(), anyLong()))
 			.willReturn(false);
 		given(clubRepository.findById(anyLong()))
 			.willReturn(Optional.of(mockClub));
+		given(clubRepository.existsById(anyLong()))
+			.willReturn(true);
+		given(clubUserRepository.countByClub_Id(anyLong()))
+			.willReturn(30L);
 
 		// when
 		BaseException exception = assertThrows(BaseException.class,
@@ -126,7 +131,6 @@ class ClubUserServiceTest {
 			.description("게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(10)
-			.memberCnt(2)
 			.favorite(Favorite.GAME)
 			.build();
 		User mockUser1 = User.builder()
@@ -184,7 +188,6 @@ class ClubUserServiceTest {
 			.description("열정맨 게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(10)
-			.memberCnt(2)
 			.favorite(Favorite.GAME)
 			.build();
 		Club mockClub2 = Club.builder()
@@ -193,7 +196,6 @@ class ClubUserServiceTest {
 			.description("스포츠 클럽입니다.")
 			.area("인천")
 			.memberLimit(10)
-			.memberCnt(3)
 			.favorite(Favorite.EXERCISE)
 			.build();
 		User mockUser = User.builder().id(1L).build();
@@ -204,6 +206,10 @@ class ClubUserServiceTest {
 
 		given(clubUserRepository.findByUser_Id(anyLong()))
 			.willReturn(clubUsers);
+		given(clubRepository.existsById(anyLong()))
+			.willReturn(true);
+		given(clubUserRepository.countByClub_Id(anyLong()))
+			.willReturn(5L);
 
 		// when
 		List<ClubResponse> clubs = clubUserService.readJoinClubList(1L);

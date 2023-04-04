@@ -19,26 +19,28 @@ public class ClubDetailResponse {
     private String imageUrl;
     private String area;
     private int memberLimit;
-    private int memberCnt;
+    private Long memberCnt;
+	private Long likeCnt;
     private Favorite favorite;
     private Long managerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static ClubDetailResponse fromClubAndManagerId(Club club, Long managerId) {
-        return ClubDetailResponse.builder()
-                .id(club.getId())
-                .name(club.getName())
-                .description(club.getDescription())
-                .imageUrl(club.getImageUrl())
-                .area(club.getArea())
-                .memberLimit(club.getMemberLimit())
-                .memberCnt(club.getMemberCnt())
-                .favorite(club.getFavorite())
-                .managerId(managerId)
-                .createdAt(club.getCreatedAt())
-                .updatedAt(club.getUpdatedAt())
-                .build();
-    }
-
+	public static ClubDetailResponse fromClubAndManagerIdAndMemberCntAndLikeCnt(
+		Club club, Long managerId, Long memberCnt, Long likeCnt) {
+		return ClubDetailResponse.builder()
+			.id(club.getId())
+			.name(club.getName())
+			.description(club.getDescription())
+			.imageUrl(club.getImageUrl())
+			.area(club.getArea())
+			.memberLimit(club.getMemberLimit())
+			.memberCnt(memberCnt)
+			.likeCnt(likeCnt)
+			.favorite(club.getFavorite())
+			.managerId(managerId)
+			.createdAt(club.getCreatedAt())
+			.updatedAt(club.getUpdatedAt())
+			.build();
+	}
 }

@@ -14,6 +14,7 @@ import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clublike.entity.ClubLike;
 import com.oinzo.somoim.domain.clublike.repository.ClubLikeRepository;
+import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class ClubLikeServiceTest {
 	private ClubLikeService clubLikeService;
 
 	@Mock
+	private ClubUserService clubUserService;
+
+	@Mock
 	private ClubLikeRepository clubLikeRepository;
 
 	@Mock
@@ -44,7 +48,6 @@ class ClubLikeServiceTest {
 			.description("게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(4)
-			.memberCnt(0)
 			.favorite(Favorite.GAME)
 			.build();
 		given(clubRepository.findById(anyLong()))
@@ -87,7 +90,6 @@ class ClubLikeServiceTest {
 			.description("게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(4)
-			.memberCnt(0)
 			.favorite(Favorite.GAME)
 			.build();
 		given(clubRepository.findById(anyLong()))
@@ -112,7 +114,6 @@ class ClubLikeServiceTest {
 			.description("게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(4)
-			.memberCnt(0)
 			.favorite(Favorite.GAME)
 			.build();
 		ClubLike mockClubLike = ClubLike.builder()
@@ -176,7 +177,6 @@ class ClubLikeServiceTest {
 			.description("게임 클럽입니다.")
 			.area("서울")
 			.memberLimit(4)
-			.memberCnt(0)
 			.favorite(Favorite.GAME)
 			.build();
 		Club mockClub2 = Club.builder()
@@ -185,7 +185,6 @@ class ClubLikeServiceTest {
 			.description("음악 클럽입니다.")
 			.area("서울")
 			.memberLimit(4)
-			.memberCnt(0)
 			.favorite(Favorite.MUSIC)
 			.build();
 		ClubLike mockClubLike1 = ClubLike.builder()
@@ -201,6 +200,8 @@ class ClubLikeServiceTest {
 		List<ClubLike> mockClubLikeList = List.of(mockClubLike1, mockClubLike2);
 		given(clubLikeRepository.findAllByUserIdOrderByIdDesc(anyLong()))
 			.willReturn(mockClubLikeList);
+		given(clubUserService.readMembersCount(anyLong()))
+			.willReturn(2L);
 
 		// when
 		List<ClubResponse> clubResponses = clubLikeService.readLikeClubList(1L);

@@ -21,12 +21,12 @@ public class ClubResponse {
     private String imageUrl;
     private String area;
     private int memberLimit;
-    private int memberCnt;
+    private Long memberCnt;
     private Favorite favorite;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static ClubResponse from(Club club) {
+    public static ClubResponse fromClubAndMemberCnt(Club club, Long memberCnt){
         return ClubResponse.builder()
                 .id(club.getId())
                 .name(club.getName())
@@ -34,17 +34,10 @@ public class ClubResponse {
                 .imageUrl(club.getImageUrl())
                 .area(club.getArea())
                 .memberLimit(club.getMemberLimit())
-                .memberCnt(club.getMemberCnt())
+                .memberCnt(memberCnt)
                 .favorite(club.getFavorite())
                 .createdAt(club.getCreatedAt())
                 .updatedAt(club.getUpdatedAt())
                 .build();
     }
-
-    public static List<ClubResponse> listToBoardResponse(List<Club> clubList) {
-        return clubList.stream()
-                .map(ClubResponse::from)
-                .collect(Collectors.toList());
-    }
-
 }

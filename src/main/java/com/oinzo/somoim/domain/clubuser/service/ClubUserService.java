@@ -38,9 +38,9 @@ public class ClubUserService {
 			.orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId));
 
 		// 멤버 정원이 꽉 찼는지 확인
-		if (club.getMemberLimit() == club.getMemberCnt()) {
+		if (club.getMemberLimit() == readMembersCount(clubId)) {
 			throw new BaseException(ErrorCode.CLUB_LIMIT_OVER,
-				"clubId=" + club.getId() + ", memberLimit=" + club.getMemberLimit());
+				"clubId=" + clubId + ", memberLimit=" + club.getMemberLimit());
 		}
 
 		// 클럽 멤버로 등록
@@ -66,7 +66,11 @@ public class ClubUserService {
 		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
 		List<ClubUser> clubUserList = clubUserRepository.findByUser_Id(userId);
 		return clubUserList.stream()
-			.map(clubUser -> ClubResponse.from(clubUser.getClub()))
+			.map(clubUser -> {
+				Club club = clubUser.getClub();
+				Long memberCnt = readMembersCount(club.getId());
+				return ClubResponse.fromClubAndMemberCnt(club, memberCnt);
+			})
 			.collect(Collectors.toList());
 	}
 
@@ -75,5 +79,12 @@ public class ClubUserService {
 		ClubUser managerClubUser = clubUserRepository.findByClub_IdAndLevel(clubId, ClubUserLevel.MANAGER)
 			.orElseThrow(() -> new BaseException(ErrorCode.INTERNAL_SERVER_ERROR, "클럽의 매니저 정보가 조회되지 않습니다. clubId=" + clubId));
 		return managerClubUser.getUser().getId();
+	}
+
+	public Long readMembersCount(Long clubId) {
+		if (!clubRepository.existsById(clubId)) {
+			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
+		}
+		return clubUserRepository.countByClub_Id(clubId);
 	}
 }
