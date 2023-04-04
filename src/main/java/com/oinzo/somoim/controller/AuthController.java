@@ -65,7 +65,7 @@ public class AuthController {
 
 	@PostMapping("/signout")
 	public SuccessResponse<?> signOut(@RequestBody SignOutRequest signOutRequest) {
-		authService.singOut(signOutRequest);
+		authService.singOut(signOutRequest.getAccessToken());
 		return ResponseUtil.success();
 	}
 
