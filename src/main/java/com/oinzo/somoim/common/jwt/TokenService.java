@@ -1,8 +1,9 @@
 package com.oinzo.somoim.common.jwt;
 
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public class TokenService {

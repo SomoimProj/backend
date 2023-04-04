@@ -68,18 +68,16 @@ public class AuthService {
 		return user.getId();
 	}
 
-	public void singOut(SignOutRequest request) {
-		String accessToken = request.getAccessToken();
-
+	public void singOut(String accessToken) {
 		if (!jwtProvider.isValidateToken(accessToken)) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN);
 		}
 
 		Authentication authentication = jwtProvider.getAuthentication(accessToken);
 
-		String key = JwtProperties.REFRESH_TOKEN_PREFIX + authentication.getName();
-		if (redisTemplate.opsForValue().get(key) != null) {
-			redisTemplate.delete(key);
+		String key = JwtProperties.REFRESH_TOKEN_PREFIX + authentication.getPrincipal();
+		if (redisService.get(key) != null) {
+			redisService.delete(key);
 		}
 
 		// 블랙리스트에 accessToken 등록
