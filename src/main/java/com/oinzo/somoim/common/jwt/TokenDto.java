@@ -12,17 +12,11 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenDto {
 
-	private String accessToken;
-	private Date accessTokenExpirationIn;
-	private String refreshToken;
-	private Date refreshTokenExpirationIn;
+	private String token;
+	private Date tokenExpirationIn;
 
-	public LocalDateTime getAccessTokenExpirationDateTime() {
-		return convertToLocalDateTime(accessTokenExpirationIn);
-	}
-
-	public LocalDateTime getRefreshTokenExpirationDateTime() {
-		return convertToLocalDateTime(refreshTokenExpirationIn);
+	public LocalDateTime getTokenExpirationDateTime() {
+		return convertToLocalDateTime(tokenExpirationIn);
 	}
 
 	private LocalDateTime convertToLocalDateTime(Date date) {

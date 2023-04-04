@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -58,10 +57,10 @@ public class AuthController {
 	public SuccessResponse<TokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest,
 												 HttpServletResponse response) {
 		Long userId = authService.signIn(signInRequest);
-		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
-		String refreshToken = tokenDto.getRefreshToken();
-		tokenService.setRefreshTokenCookie(refreshToken, response);
-		return ResponseUtil.success(TokenResponse.from(tokenDto));
+		TokenDto accessToken = jwtProvider.generateAccessToken(userId);
+		TokenDto refreshToken  = jwtProvider.generateRefreshToken(userId);
+		tokenService.setRefreshTokenCookie(refreshToken.getToken(), response);
+		return ResponseUtil.success(TokenResponse.fromAccessTokenAndRefreshToken(accessToken, refreshToken));
 	}
 
 	@PostMapping("/signout")
@@ -71,8 +70,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/reissue")
-	public SuccessResponse<TokenResponse> reissue(HttpServletRequest request, HttpServletResponse response) {
-		TokenDto tokenDto = authService.reissue(request, response);
-		return ResponseUtil.success(TokenResponse.from(tokenDto));
+	public SuccessResponse<TokenResponse> reissue(@CookieValue(value = "refreshToken") String refreshToken) {
+		TokenDto tokenDto = authService.reissue(refreshToken);
+		return ResponseUtil.success(TokenResponse.fromAccessToken(tokenDto));
 	}
 }

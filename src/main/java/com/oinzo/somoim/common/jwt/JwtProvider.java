@@ -1,5 +1,6 @@
 package com.oinzo.somoim.common.jwt;
 
+import com.oinzo.somoim.common.redis.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -25,8 +26,7 @@ import static com.oinzo.somoim.common.jwt.JwtProperties.REFRESH_TOKEN_EXPIRATION
 public class JwtProvider {
 
 	private final UserDetailsService userDetailsService;
-	@Autowired
-	private final RedisTemplate<String, String> redisTemplate;
+	private final RedisService redisService;
 
 
 	private final Key secretKey;
@@ -35,18 +35,18 @@ public class JwtProvider {
 
 	public JwtProvider(
 		UserDetailsService userDetailsService,
-		RedisTemplate<String, String> redisTemplate,
+		RedisService redisService,
 		@Value("${jwt.secret}") String secretKey
 	) {
 		this.userDetailsService = userDetailsService;
-		this.redisTemplate = redisTemplate;
+		this.redisService = redisService;
 
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		this.secretKey = Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	// JWT Access Token, Refresh Token 발급
-	public TokenDto generateAccessTokenAndRefreshToken(Long userId) {
+	// JWT Access Token 발급
+	public TokenDto generateAccessToken(Long userId) {
 		Date now = new Date();
 
 		Date accessTokenExpirationIn = new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION_TIME);
@@ -57,6 +57,16 @@ public class JwtProvider {
 			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 
+		return TokenDto.builder()
+			.token(accessToken)
+			.tokenExpirationIn(accessTokenExpirationIn)
+			.build();
+	}
+
+	// JWT Refresh Token 발급
+	public TokenDto generateRefreshToken(Long userId) {
+		Date now = new Date();
+
 		Date refreshTokenExpirationIn = new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION_TIME);
 		String refreshToken = Jwts.builder()
 			.setSubject(String.valueOf(userId))
@@ -65,18 +75,14 @@ public class JwtProvider {
 			.signWith(secretKey, SignatureAlgorithm.HS256)
 			.compact();
 
-		redisTemplate.opsForValue().set(
+		redisService.set(
 			TOKEN_PREFIX + userId,
 			refreshToken,
-			JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME,
-			TimeUnit.MILLISECONDS
-		);
+			JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME / 1000);
 
 		return TokenDto.builder()
-			.accessToken(accessToken)
-			.accessTokenExpirationIn(accessTokenExpirationIn)
-			.refreshToken(refreshToken)
-			.refreshTokenExpirationIn(refreshTokenExpirationIn)
+			.token(refreshToken)
+			.tokenExpirationIn(refreshTokenExpirationIn)
 			.build();
 	}
 
