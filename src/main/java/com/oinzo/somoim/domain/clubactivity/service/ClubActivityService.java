@@ -44,7 +44,7 @@ public class ClubActivityService {
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_ACTIVITY));
         Long managerId = clubUserService.readClubManagerId(activity.getClubId());
         if (!userId.equals(managerId)) {
-            throw new BaseException(ErrorCode.NOT_CLUB_MANAGER, "액티비티는 매니저만 생성할 수 있습니다.");
+            throw new BaseException(ErrorCode.NOT_CLUB_MANAGER, "액티비티는 매니저만 수정할 수 있습니다.");
         }
         activity.updateClubActivity(request);
         return ClubActivityResponse.from(activityRepository.save(activity));
@@ -55,7 +55,7 @@ public class ClubActivityService {
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_ACTIVITY));
         Long managerId = clubUserService.readClubManagerId(activity.getClubId());
         if (!userId.equals(managerId)) {
-            throw new BaseException(ErrorCode.NOT_CLUB_MANAGER, "액티비티는 매니저만 생성할 수 있습니다.");
+            throw new BaseException(ErrorCode.NOT_CLUB_MANAGER, "액티비티는 매니저만 삭제할 수 있습니다.");
         }
         activityRepository.delete(activity);
     }
