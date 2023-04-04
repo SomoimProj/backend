@@ -12,6 +12,7 @@ import com.oinzo.somoim.domain.boardlike.repository.BoardLikeRepository;
 import com.oinzo.somoim.domain.club.entity.Club;
 import com.oinzo.somoim.domain.club.repository.ClubRepository;
 import com.oinzo.somoim.domain.clubuser.repository.ClubUserRepository;
+import com.oinzo.somoim.domain.clubuser.service.ClubUserService;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -32,9 +33,8 @@ public class ClubBoardService {
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
     private final ClubUserRepository clubUserRepository;
-
+    private final ClubUserService clubUserService;
     private final BoardLikeRepository likeRepository;
-
     private final BoardCommentRepository commentRepository;
 
     @Transactional
@@ -45,6 +45,10 @@ public class ClubBoardService {
                 .orElseThrow(() -> new BaseException(ErrorCode.WRONG_CLUB));
         if (!clubUserRepository.existsByUser_IdAndClub_Id(userId, clubId))
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
+        Long managerId = clubUserService.getClubManagerId(clubId);
+        if (Category.valueOf(request.getCategory()).equals(Category.ANNOUNCEMENT) && !userId.equals(managerId)) {
+            throw new BaseException(ErrorCode.NOT_CLUB_MANAGER);
+        }
         return BoardResponse.from(clubBoardRepository.save(ClubBoard.from(request, club, user)), 0, 0);
     }
 
@@ -116,6 +120,10 @@ public class ClubBoardService {
             throw new BaseException(ErrorCode.NOT_CLUB_MEMBER);
         if (!userId.equals(board.getUser().getId())) {
             throw new BaseException(ErrorCode.FORBIDDEN_REQUEST, "게시판 작성자가 아닙니다.");
+        }
+        Long managerId = clubUserService.getClubManagerId(board.getClub().getId());
+        if (request.getCategoryType() == Category.ANNOUNCEMENT && !userId.equals(managerId)) {
+            throw new BaseException(ErrorCode.NOT_CLUB_MANAGER);
         }
         board.updateClubBoard(request);
         return BoardResponse.from(clubBoardRepository.save(board),
