@@ -212,7 +212,7 @@ class ClubUserServiceTest {
 			.willReturn(5L);
 
 		// when
-		List<ClubResponse> clubs = clubUserService.getJoinClubs(1L);
+		List<ClubResponse> clubs = clubUserService.readJoinClubList(1L);
 
 		// then
 		assertEquals(2, clubs.size());

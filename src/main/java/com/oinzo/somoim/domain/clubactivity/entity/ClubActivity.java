@@ -37,7 +37,15 @@ public class ClubActivity extends BaseEntity {
     @NotNull
     private int memberCnt;
 
-    public static ClubActivity from(ClubActivityRequest request,Long clubId){
+    public void plusMemberCnt() {
+        memberCnt++;
+    }
+
+    public void minusMemberCnt() {
+        memberCnt--;
+    }
+
+    public static ClubActivity from(ClubActivityRequest request, Long clubId) {
         return ClubActivity.builder()
                 .clubId(clubId)
                 .title(request.getTitle())
@@ -49,11 +57,15 @@ public class ClubActivity extends BaseEntity {
                 .build();
     }
 
-    public void updateClubActivity(ClubActivityRequest activityRequest){
-        if (activityRequest.getTitle() != null) this.title = activityRequest.getTitle();
-        if (activityRequest.getActivityTime() != null) this.activityTime = activityRequest.getActivityTime();
-        if (activityRequest.getLocation() != null) this.location = activityRequest.getLocation();
+    public void updateClubActivity(ClubActivityRequest activityRequest) {
+        if (activityRequest.getTitle() != null)
+            this.title = activityRequest.getTitle();
+        if (activityRequest.getActivityTime() != null)
+            this.activityTime = activityRequest.getActivityTime();
+        if (activityRequest.getLocation() != null)
+            this.location = activityRequest.getLocation();
         if (activityRequest.getFee() != 0) this.fee = activityRequest.getFee();
-        if (activityRequest.getMemberLimit() != 0) this.memberLimit = activityRequest.getMemberLimit();
+        if (activityRequest.getMemberLimit() != 0)
+            this.memberLimit = activityRequest.getMemberLimit();
     }
 }

@@ -6,22 +6,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
 public class ClubDetailResponse {
 
-	private Long id;
-	private String name;
-	private String description;
-	private String imageUrl;
-	private String area;
-	private int memberLimit;
-	private Long memberCnt;
-	private Favorite favorite;
-	private Long managerId;
+    private Long id;
+    private String name;
+    private String description;
+    private String imageUrl;
+    private String area;
+    private int memberLimit;
+    private Long memberCnt;
+	private Long likeCnt;
+    private Favorite favorite;
+    private Long managerId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-	public static ClubDetailResponse fromClubAndManagerIdAndMemberCnt(Club club, Long managerId, Long memberCnt){
+	public static ClubDetailResponse fromClubAndManagerIdAndMemberCntAndLikeCnt(
+		Club club, Long managerId, Long memberCnt, Long likeCnt) {
 		return ClubDetailResponse.builder()
 			.id(club.getId())
 			.name(club.getName())
@@ -30,9 +36,11 @@ public class ClubDetailResponse {
 			.area(club.getArea())
 			.memberLimit(club.getMemberLimit())
 			.memberCnt(memberCnt)
+			.likeCnt(likeCnt)
 			.favorite(club.getFavorite())
 			.managerId(managerId)
+			.createdAt(club.getCreatedAt())
+			.updatedAt(club.getUpdatedAt())
 			.build();
 	}
-
 }

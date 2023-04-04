@@ -55,17 +55,17 @@ public class ClubUserService {
 		if (!clubRepository.existsById(clubId)) {
 			throw new BaseException(ErrorCode.WRONG_CLUB, "clubId=" + clubId);
 		}
-		List<ClubUser> clubUsers = clubUserRepository.findByClub_Id(clubId);
-		return clubUsers.stream()
+		List<ClubUser> clubUserList = clubUserRepository.findByClub_Id(clubId);
+		return clubUserList.stream()
 			.map(clubUser -> MemberResponse.from(clubUser.getUser()))
 			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<ClubResponse> getJoinClubs(Long userId) {
+	public List<ClubResponse> readJoinClubList(Long userId) {
 		// userId는 JWT 토큰으로부터 인증된 값이므로 DB에 있는지 조사할 필요 없음.
-		List<ClubUser> clubUsers = clubUserRepository.findByUser_Id(userId);
-		return clubUsers.stream()
+		List<ClubUser> clubUserList = clubUserRepository.findByUser_Id(userId);
+		return clubUserList.stream()
 			.map(clubUser -> {
 				Club club = clubUser.getClub();
 				Long memberCnt = readMembersCount(club.getId());
@@ -75,7 +75,7 @@ public class ClubUserService {
 	}
 
 	@Transactional(readOnly = true)
-	public Long getClubManagerId(long clubId) {
+	public Long readClubManagerId(long clubId) {
 		ClubUser managerClubUser = clubUserRepository.findByClub_IdAndLevel(clubId, ClubUserLevel.MANAGER)
 			.orElseThrow(() -> new BaseException(ErrorCode.INTERNAL_SERVER_ERROR, "클럽의 매니저 정보가 조회되지 않습니다. clubId=" + clubId));
 		return managerClubUser.getUser().getId();
