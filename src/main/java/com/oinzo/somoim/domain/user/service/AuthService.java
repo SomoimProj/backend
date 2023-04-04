@@ -8,6 +8,7 @@ import com.oinzo.somoim.common.jwt.TokenDto;
 import com.oinzo.somoim.common.redis.RedisService;
 import com.oinzo.somoim.config.security.JwtAuthenticationFilter;
 import com.oinzo.somoim.controller.dto.SignInRequest;
+import com.oinzo.somoim.controller.dto.SignOutRequest;
 import com.oinzo.somoim.controller.dto.TokenResponse;
 import com.oinzo.somoim.domain.user.entity.User;
 import com.oinzo.somoim.domain.user.repository.UserRepository;
@@ -67,8 +68,8 @@ public class AuthService {
 		return user.getId();
 	}
 
-	public void singOut(TokenDto tokenDto) {
-		String accessToken = tokenDto.getToken();
+	public void singOut(SignOutRequest request) {
+		String accessToken = request.getAccessToken();
 
 		if (!jwtProvider.isValidateToken(accessToken)) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN);
