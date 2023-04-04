@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -70,8 +71,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/reissue")
-	public SuccessResponse<String> reissue(@RequestBody @Valid TokenDto tokenDto) {
-		String reissue = authService.reissue(tokenDto.getRefreshToken());
-		return ResponseUtil.success(reissue);
+	public SuccessResponse<TokenResponse> reissue(HttpServletRequest request, HttpServletResponse response) {
+		TokenDto tokenDto = authService.reissue(request, response);
+		return ResponseUtil.success(TokenResponse.from(tokenDto));
 	}
 }

@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -88,22 +89,81 @@ public class AuthService {
 	/**
 	 * 토큰 재발급
 	 */
-	public String reissue(String refreshToken) {
+//	public String reissue(String refreshToken) {
+//
+//		Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+//		Long userId = (Long) authentication.getPrincipal();
+//		String refreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
+//
+//		if (!jwtProvider.isValidateToken(refreshTokenInRedis)) {
+//			throw new BaseException(ErrorCode.INVALID_TOKEN, "검증되지 않은 refreshToken 입니다.");
+//		}
+//
+//		if (!refreshToken.equals(refreshTokenInRedis)) {
+//			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 불일치");
+//		}
+//
+//		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+//
+//		return newToken.getAccessToken();
+//	}
+//
+//	public String reissue(HttpServletRequest request) {
+//		if (jwtProvider.isValidateToken(request.getHeader("refreshToken"))) {
+//			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken이 유효하지 않습니다.");
+//		}
+//
+//		Authentication authentication = jwtProvider.getAuthentication(request.getHeader("refreshToken"));
+//		Long userId = (Long) authentication.getPrincipal();
+//
+//		if (userId == null) {
+//			throw new BaseException(ErrorCode.INVALID_TOKEN, "accessToken이 유효하지 않습니다.");
+//		}
+//
+//		String refreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
+//
+//		if (!refreshTokenInRedis.equals(request.getHeader("refreshToken"))) {
+//			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken이 일치하지 않습니다.");
+//		}
+//
+//		Cookie[] cookies = request.getCookies();
+//		cookies.
+//
+//			TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+//
+//		return tokenDto.getAccessToken();
+//	}
 
-		Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+	public TokenDto reissue(HttpServletRequest request, HttpServletResponse response) {
+		if (jwtProvider.isValidateToken(request.getHeader("refreshToken"))) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 이 유효하지 않습니다.");
+		}
+
+		Authentication authentication = jwtProvider.getAuthentication(request.getHeader("refreshToken"));
 		Long userId = (Long) authentication.getPrincipal();
+
+		if (userId == null) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "accessToken 이 유효하지 않습니다.");
+		}
+
+		TokenDto tokenDto = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+		String newAccessToken = tokenDto.getAccessToken();
 		String refreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
 
-		if (!jwtProvider.isValidateToken(refreshTokenInRedis)) {
-			throw new BaseException(ErrorCode.INVALID_TOKEN, "검증되지 않은 refreshToken 입니다.");
+		if (!refreshTokenInRedis.equals(request.getHeader("refreshToken"))) {
+			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 이 일치하지 않습니다.");
 		}
 
-		if (!refreshToken.equals(refreshTokenInRedis)) {
-			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 불일치");
-		}
+		tokenToHeaders(newAccessToken, refreshTokenInRedis, response);
 
-		TokenDto newToken = jwtProvider.generateAccessTokenAndRefreshToken(userId);
+		return TokenDto.builder()
+			.accessToken(newAccessToken)
+			.refreshToken("HttpOnly")
+			.build();
+	}
 
-		return newToken.getAccessToken();
+	public void tokenToHeaders(String authorizationToken, String refreshToken, HttpServletResponse response) {
+		response.addHeader(JwtProperties.AUTHORIZATION_HEADER, JwtProperties.TOKEN_PREFIX + authorizationToken);
+		response.addHeader("refreshToken", refreshToken);
 	}
 }
