@@ -65,12 +65,15 @@ public class EmailService {
 
 		String from = sender;
 		String title = "소모임 회원가입을 위한 인증번호";
+		String text = "<h1>이메일 인증코드</h1>\n"
+			+ "<p>소모임 회원가입을 위해 이메일 인증을 진행합니다.<br>아래의 인증코드를 입력하시면 이메일 인증이 완료됩니다.</p>\n"
+			+ "<p style=\"background: #EFEFEF; font-size: 30px;padding: 10px\">" + code + "</p>";
 
 		MimeMessage message = mailSender.createMimeMessage();
 		message.addRecipients(MimeMessage.RecipientType.TO, email);
 		message.setSubject(title);
 		message.setFrom(from);
-		message.setText(code, "utf-8", "html");
+		message.setText(text, "utf-8", "html");
 
 		return message;
 	}
