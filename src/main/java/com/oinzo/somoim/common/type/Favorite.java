@@ -8,7 +8,6 @@ public enum Favorite {
     OUTDOOR,
     EXERCISE,
     HUMANITIES,
-    BUSINESS,
     FOREIGN,
     CULTURE,
     MUSIC,
