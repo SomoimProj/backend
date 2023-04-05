@@ -40,3 +40,4 @@ logs/
 application-local.yml
 application-prod.yml
 application-secret.yml
+keystore.p12
