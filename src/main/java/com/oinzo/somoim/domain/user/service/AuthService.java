@@ -100,7 +100,7 @@ public class AuthService {
 		}
 
 		String refreshTokenInRedis = (String) redisService.get(JwtProperties.REFRESH_TOKEN_PREFIX + userId);
-		if (!refreshTokenInRedis.equals(refreshToken)) {
+		if (refreshTokenInRedis == null || !refreshTokenInRedis.equals(refreshToken)) {
 			throw new BaseException(ErrorCode.INVALID_TOKEN, "refreshToken 이 일치하지 않습니다.");
 		}
 
