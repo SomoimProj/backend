@@ -50,9 +50,9 @@ class BoardControllerTest {
     void readBoard() {
         // given
         // when
-        BoardResponse board = clubBoardService.readBoard(160L,7L);
+        BoardResponse board = clubBoardService.readBoard(412L,26L);
         // then
-        assertEquals("NORMAL", board.getTitle());
+        assertEquals("환영합니다!", board.getTitle());
     }
 
     @Test
@@ -60,7 +60,7 @@ class BoardControllerTest {
     void updateBoard() {
         // given
         BoardCreateRequest newBoard = new BoardCreateRequest("NORMAL","게시판 테스트","URL","FREE");
-        Club club = clubRepository.findById(1L).orElseThrow();
+        Club club = clubRepository.findById(2255L).orElseThrow();
         User user = userRepository.findById(7L).orElseThrow();
         ClubBoard board = clubBoardRepository.save(ClubBoard.from(newBoard,club,user));
         // when
